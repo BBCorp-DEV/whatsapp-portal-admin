@@ -252,7 +252,7 @@ export default function UserList() {
                   "Email",
                   "Permission",
                   "Date",
-                  "Status",
+                  
                   "Action",
                 ].map((heading, i) => (
                   <TableCell key={i} sx={{ fontWeight: "bold" }}>
@@ -291,13 +291,17 @@ export default function UserList() {
                     <TableCell>{row?.firstName}</TableCell>
                     <TableCell>{row?.lastName}</TableCell>
                     <TableCell>{row.email}</TableCell>
-                    <TableCell>{row.role}</TableCell>
+                    <TableCell>
+                      {Array.isArray(row?.role)
+                        ? row.role.join(", ")
+                        : row?.role}
+                    </TableCell>
                     <TableCell>
                       {" "}
                       {moment(row.createdAt).format("DD-MMM-YYYY")}
                     </TableCell>
 
-                    <TableCell>{row.status}</TableCell>
+                 
                     <TableCell>
                       <Tooltip title="Edit profile">
                         <IconButton
@@ -425,8 +429,7 @@ export default function UserList() {
             }}
           >
             <strong style={{ color: "#b71c1c" }}>
-              {open2?.firstName }{" "}
-              {open2?.lastName}
+              {open2?.firstName} {open2?.lastName}
             </strong>
           </div>
         </DialogContent>
@@ -446,7 +449,7 @@ export default function UserList() {
             sx={{ borderRadius: "8px", px: 3 }}
           >
             {loading ? (
-              <CircularProgress  size={24} sx={{ color: "white" }} />
+              <CircularProgress size={24} sx={{ color: "white" }} />
             ) : (
               "Delete"
             )}

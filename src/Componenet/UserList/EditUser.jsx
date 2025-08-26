@@ -33,36 +33,19 @@ const maxDate = new Date(
 );
 
 const validationSchema = Yup.object({
-  full_name: Yup.string()
-    .matches(
-      /^[A-Za-z]{2,}(?:\s[A-Za-z]{2,})+$/,
-      "Enter at least first and last name with only letters"
-    )
-    .required("Full name is required"),
+  first_name: Yup.string()
+    .min(2, "First name is too short")
+    .required("First name is required"),
+  last_name: Yup.string()
+    .min(2, "Last name is too short")
+    .required("Last name is required"),
   email: Yup.string()
     .email("Enter a valid email")
     .required("Email is required"),
   phone: Yup.string()
     .matches(/^\d{7,15}$/, "Enter a valid phone number")
     .required("Phone number is required"),
-  address: Yup.string().required("Address is required"),
-  national_id: Yup.string(),
-  dob: Yup.string()
-    .required("Date of birth is required")
-    .matches(/^\d{4}-\d{2}-\d{2}$/, "Date must be in YYYY-MM-DD format")
-    .test(
-      "is-valid-date",
-      "Invalid date",
-      (value) => !isNaN(new Date(value).getTime())
-    )
-    .test(
-      "is-between-ages",
-      "You must be between 12 and 90 years old",
-      (value) => {
-        const date = new Date(value);
-        return date >= minDate && date <= maxDate;
-      }
-    ),
+  permissions: Yup.array().of(Yup.string()),
 });
 
 const EditUser = () => {
@@ -88,18 +71,21 @@ const EditUser = () => {
     }
   };
 
+  const [permissionsList] = useState([
+    "Read",
+    "Write",
+    "Delete",
+    "Admin",
+  ]);
+
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      full_name: userDetails?.full_name ?? "",
+      first_name: userDetails?.full_name?.split(" ")[0] ?? "",
+      last_name: userDetails?.full_name?.split(" ")[1] ?? "",
       email: userDetails?.emailid ?? "",
       phone: userDetails?.phone_number ?? "",
-      address: userDetails?.address ?? "",
-      national_id: userDetails?.national_id ?? "",
-      dob: userDetails?.dob
-        ? new Date(userDetails.dob).toISOString().split("T")[0]
-        : "",
-      subscribe: false,
+      permissions: userDetails?.permissions ?? [],
     },
     validationSchema,
     onSubmit: (values) => {
@@ -118,18 +104,14 @@ const EditUser = () => {
     try {
       const response = await axios.put(
         `${API_BASE_URL}api/v1/users/${userDetails?.id}/profile`,
-        // `http://3.144.242.180/api/v1/users/${userDetails?.id}/profile`,
         {
-          address: values?.address,
           emailid: values?.email,
-          dob: values?.dob,
-          full_name: values?.full_name,
-          national_id: values?.national_id,
+          full_name: `${values?.first_name} ${values?.last_name}`,
           phone_number: values?.phone,
+          permissions: values?.permissions,
         },
         { headers: { authorization: `Bearer ${token}` } }
       );
-
       if (response?.data?.success === true) {
         toast.success(response.data.message);
         navigate("/dashboard");
@@ -148,7 +130,6 @@ const EditUser = () => {
           display: "block",
           marginBottom: -5,
           paddingTop: isSmall ? "0px" : "20px",
-         
         }}
       >
         {label}
@@ -168,11 +149,10 @@ const EditUser = () => {
         }
         FormHelperTextProps={{
           style: {
-            color: "red",            // Custom text color
-            fontSize: "0.8rem",      // Custom font size
-            marginTop: "4px",   
-            marginLeft:"0px"  ,
-               // Optional spacing
+            color: "red",
+            fontSize: "0.8rem",
+            marginTop: "4px",
+            marginLeft: "0px",
           },
         }}
         sx={{
@@ -181,13 +161,13 @@ const EditUser = () => {
           ".MuiFilledInput-root": {
             backgroundColor: "#fff",
             borderRadius: 2,
-            width:"100%",
+            width: "100%",
             border: "2px solid #0000004a",
             paddingTop: "3px",
             paddingLeft: "5px",
-            paddingRight: {xs:"0px",md:"135px"},
+            paddingRight: { xs: "0px", md: "135px" },
             "&:before, &:after": {
-              borderBottom: "none !important", // 👈 hides the default underline
+              borderBottom: "none !important",
             },
           },
           ".MuiFilledInput-root:hover": {
@@ -200,9 +180,9 @@ const EditUser = () => {
             color: "#888",
           },
           ".MuiFormHelperText-root": {
-            marginLeft: "0px", // This sets the helper text margin-left
-            color:"red"
-          }
+            marginLeft: "0px",
+            color: "red",
+          },
         }}
       />
     </div>
@@ -259,74 +239,57 @@ const EditUser = () => {
             </Typography>
 
             <form onSubmit={formik.handleSubmit}>
-              {/* Full Name + Email side by side */}
               <Grid container spacing={2}>
-                {[
-                  { label: "Full name", name: "full_name", type: "text" },
-                  { label: "Email", name: "email", type: "email" },
-                ].map(({ label, name, type }) => (
-                  <Grid item xs={12} md={6} key={name}>
-                    {renderTextField({ label, name, type })}
-                  </Grid>
-                ))}
+                <Grid item xs={12} md={6}>
+                  {renderTextField({ label: "First Name", name: "first_name", type: "text" })}
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  {renderTextField({ label: "Last Name", name: "last_name", type: "text" })}
+                </Grid>
               </Grid>
-
-              {/* Phone + Address side by side */}
               <Grid container spacing={2}>
-                {[
-                  { label: "Phone", name: "phone", type: "text" },
-                  { label: "Address", name: "address", type: "text" },
-                ].map(({ label, name, type }) => (
-                  <Grid item xs={12} md={6} key={name}>
-                    {renderTextField({ label, name, type })}
-                  </Grid>
-                ))}
+                <Grid item xs={12} md={6}>
+                  {renderTextField({ label: "Email", name: "email", type: "email" })}
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  {renderTextField({ label: "Phone", name: "phone", type: "text" })}
+                </Grid>
               </Grid>
-
-              {/* Other fields one per row */}
-
-              <Grid container spacing={2}>
-                {[
-                  { label: "National ID", name: "national_id", type: "text" },
-                  { label: "Date of Birth", name: "dob", type: "text" },
-                ].map(({ label, name, type }) => (
-                  <Grid item xs={12} md={6} key={name}>
-                    {renderTextField({ label, name, type })}
-                  </Grid>
-                ))}
-              </Grid>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    name="subscribe"
-                    checked={formik.values.subscribe}
-                    onChange={formik.handleChange}
-                    sx={{
-                      color: "#03A7E5",
-                      "&.Mui-checked": {
-                        color: "#00CFFD",
-                      },
-                    }}
-                  />
-                }
-                sx={{ mt: 1 }}
-                label={
-                  <Typography
-                    variant="body2"
-                    sx={{
-                      color: "#03A7E5",
-                      fontSize: "12px",
-                      lineHeight: "20px",
-                      mt: 3,
-                    }}
-                  >
-                    If you'd like to receive helpful tips, updates, and news
-                    from UhuruCare. We only send relevant content, and you can
-                    unsubscribe anytime.
-                  </Typography>
-                }
-              />
-
+              <Box sx={{ mt: 3 }}>
+                <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 1 }}>
+                  Permissions
+                </Typography>
+                <Grid container spacing={1}>
+                  {permissionsList.map((perm) => (
+                    <Grid item key={perm}>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={formik.values.permissions.includes(perm)}
+                            onChange={(e) => {
+                              const checked = e.target.checked;
+                              formik.setFieldValue(
+                                "permissions",
+                                checked
+                                  ? [...formik.values.permissions, perm]
+                                  : formik.values.permissions.filter((p) => p !== perm)
+                              );
+                            }}
+                            name={perm}
+                            sx={{
+                              color: "#03A7E5",
+                              "&.Mui-checked": {
+                                color: "#00CFFD",
+                              },
+                            }}
+                          />
+                        }
+                        label={perm}
+                      />
+                    </Grid>
+                  ))}
+                </Grid>
+              </Box>
               <Button
                 type="submit"
                 variant="contained"

@@ -38,21 +38,22 @@ const Dashboard = () => {
       {/* Top Cards */}
       <Grid container spacing={3}>
         {[
-          {
-            title: "Total Deposits",
-            value: "$75,000",
-            gradient: "linear-gradient(135deg,#1976d2,#42a5f5)",
-          },
-          {
-            title: "Total Withdrawals",
-            value: "$50,000",
-            gradient: "linear-gradient(135deg,#d32f2f,#ef5350)",
-          },
-          {
-            title: "Total Users",
-            value: "1,200",
-            gradient: "linear-gradient(135deg,#2e7d32,#66bb6a)",
-          },
+ {
+  title: "Total Deposits",
+  value: "$75,000",
+  gradient: "linear-gradient(135deg,#e0e0e0,#ffffff)",
+},
+{
+  title: "Total Withdrawals",
+  value: "$50,000",
+  gradient: "linear-gradient(135deg,#e0e0e0,#ffffff)",
+},
+{
+  title: "Total Users",
+  value: "1,200",
+  gradient: "linear-gradient(135deg,#e0e0e0,#ffffff)",
+},
+
         ].map((card, index) => (
           <Grid size={{ xs: 12, md: 4 }}>
             <Card
@@ -61,7 +62,7 @@ const Dashboard = () => {
                 borderRadius: 3,
                 minHeight: 140,
                 background: card.gradient,
-                color: "#fff",
+                color: "#000",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",

@@ -179,7 +179,7 @@ export default function UserList() {
 
   return (
     <>
-      <Box sx={{ width: "100%", backgroundColor: "#F5F5F5", p: 0 }}>
+      <Box sx={{ width: "100%", backgroundColor: "#F5F5F5", pl: 2 }}>
         <Box
           sx={{
             display: "flex",

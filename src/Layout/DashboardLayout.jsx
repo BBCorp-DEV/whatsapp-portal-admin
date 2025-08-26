@@ -299,7 +299,7 @@ export default function DashboardLayout({ children }) {
               display: "flex",
               alignItems: "center",
               background: "#ffffffff",
-              padding: "6px 51px",
+              padding: "11.8px 51px",
               marginLeft: isMobile ? "0px" : "-39px",
               height: "100%",
               width: isMobile ? "100%" : "255px",
@@ -318,7 +318,7 @@ export default function DashboardLayout({ children }) {
             <img
               src="Images/NavbarLogo1.png"
               alt="logo"
-              style={{ height: 55, marginRight: 5.5, marginLeft: "-22px",cursor:"pointer" }}
+              style={{ height: 40, marginRight: 5.5, marginLeft: "-22px",cursor:"pointer" }}
               // onClick={handleLogoClick}
             />
             {/* <Typography

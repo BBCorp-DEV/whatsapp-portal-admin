@@ -41,6 +41,8 @@ const LoginPage = () => {
     return passwordRegex.test(password);
   };
 
+  
+
   const handleSubmit = (e) => {
     e.preventDefault();
     let valid = true;

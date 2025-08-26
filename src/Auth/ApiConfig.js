@@ -13,7 +13,7 @@
 
 
 const url = "https://whatsapp.3pay.xyz"; //  main Staging
-export const API_BASE_URL = "https://uhurucare.com/"; // main Staging
+export const API_BASE_URL = "https://whatsapp.3pay.xyz"; // main Staging
 export const IMAGEURL = "https://uhurucare.com/"; // main Staging
 const ApiConfig = {
   contactUs: `${url}api/v1/content/contactForm`,
@@ -29,6 +29,10 @@ const ApiConfig = {
   withdrawalList: `${url}/api/v1/withdrawal/list`,
   transferList: `${url}/api/v1/transfer/list`,
   accountList: `${url}/api/v1/account/list`,
+  createUser: `${url}/api/v1/user/create`,
+  userList: `${url}/api/v1/user/list`,
+  userUpdate: `${url}/api/v1/user/update`,
+  userDelete: `${url}/api/v1/user/delete`,
   changepassword: `${url}api/v1/auth/changepassword`,
   uploadSignup: `${url}api/v1/auth/enrollment/upload`,
   users: `${url}api/v1/users`,

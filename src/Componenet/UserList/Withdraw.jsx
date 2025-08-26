@@ -69,17 +69,17 @@ export default function WithDraw() {
   
         if (response?.status === 200) {
           setPaginatedUsers(response?.data);
-          toast.success(
-            response?.data?.message || "Deposits loaded successfully ✅"
-          );
+          // toast.success(
+          //   response?.data?.message || "Deposits loaded successfully ✅"
+          // );
         } else {
-          toast.error(response?.data?.message || "Something went wrong ❌");
+          // toast.error(response?.data?.message || "Something went wrong ❌");
         }
       } catch (error) {
         console.error("API ERROR RESPONSE:", error?.response?.data || error);
-        toast.error(
-          error?.response?.data?.message || "Failed to fetch deposits ❌"
-        );
+        // toast.error(
+        //   error?.response?.data?.message || "Failed to fetch deposits ❌"
+        // );
         return error?.response;
       }
     };

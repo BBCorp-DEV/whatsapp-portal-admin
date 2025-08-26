@@ -84,7 +84,7 @@ export default function Transfer() {
   const selectData = async () => {
     // Example: update selected claim statuses (static mode now)
     console.log("Selected IDs:", selectedClaimIds, "New Status:", age);
-    toast.success("Status updated successfully (static mode)");
+    // toast.success("Status updated successfully (static mode)");
     setOpen(false);
   };
 
@@ -107,17 +107,17 @@ export default function Transfer() {
 
       if (response?.status === 200) {
         setStaticClaims(response?.data);
-        toast.success(
-          response?.data?.message || "Transfer successfully ✅"
-        );
+        // toast.success(
+        //   response?.data?.message || "Transfer successfully ✅"
+        // );
       } else {
-        toast.error(response?.data?.message || "Something went wrong ❌");
+        // toast.error(response?.data?.message || "Something went wrong ❌");
       }
     } catch (error) {
       console.error("API ERROR RESPONSE:", error?.response?.data || error);
-      toast.error(
-        error?.response?.data?.message || "Failed to fetch deposits ❌"
-      );
+      // toast.error(
+      //   error?.response?.data?.message || "Failed to fetch deposits ❌"
+      // );
       return error?.response;
     }
   };

@@ -122,17 +122,17 @@ export default function UserList() {
 
       if (response.status === 200) {
         setUserStoredData(response?.data?.data?.docs);
-        toast.success(
-          response?.data?.message || "Users loaded successfully ✅"
-        );
+        // toast.success(
+        //   response?.data?.message || "Users loaded successfully ✅"
+        // );
       } else {
-        toast.error(response?.data?.message || "Something went wrong ❌");
+        // toast.error(response?.data?.message || "Something went wrong ❌");
         setUserStoredData([]);
       }
     } catch (error) {
       console.log("error", error);
       setUserStoredData([]);
-      toast.error(error?.response?.data?.message || "Failed to fetch users ❌");
+      // toast.error(error?.response?.data?.message || "Failed to fetch users ❌");
     } finally {
       setLoading(false);
     }

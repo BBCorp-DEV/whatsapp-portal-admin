@@ -40,7 +40,7 @@ const AddUser = () => {
     "Withdrawal",
     "Transfer",
     "Account",
-    "Error Log"
+    "Error Log",
   ];
 
   const formik = useFormik({
@@ -87,25 +87,32 @@ const AddUser = () => {
     const token = window.localStorage.getItem("adminToken");
     setLoading(true);
     try {
+      // Convert permissions object to array of selected permissions
+      const selectedPermissions = Object.keys(values.permissions).filter(
+        (key) => values.permissions[key]
+      );
       const response = await axios({
         method: "POST",
-        url: ApiConfig.users,
+        url: ApiConfig.createUser,
         headers: {
           authorization: `Bearer ${token}`,
         },
         data: {
-          emailid: values?.email,
-          first_name: values?.firstName,
-          last_name: values?.lastName,
-          phone_number: values?.phoneNumber,
+          email: values?.email,
+          firstName: values?.firstName,
+          lastName: values?.lastName,
+          phone: values?.phoneNumber,
           password: values?.password,
-          role: values?.role || "hospital",
+          countryCode: "+91",
+          userType: "USER",
           type_of_hospital: formik.values.type,
+          role: selectedPermissions,
         },
       });
-      if (response.data?.success === true) {
+      console.log("bwgbeg",response)
+      if (response.status=== 200) {
         toast.success(response.data?.message);
-        navigate("/users");
+        navigate("/user-list");
         setLoading(false);
       } else {
         setLoading(false);
@@ -194,8 +201,10 @@ const AddUser = () => {
                 flexDirection={{ xs: "column", sm: "row" }}
                 gap={2}
               >
-                {[{ label: "First Name", name: "firstName", type: "text" },
-                  { label: "Last Name", name: "lastName", type: "text" }].map(({ label, name, type }) => (
+                {[
+                  { label: "First Name", name: "firstName", type: "text" },
+                  { label: "Last Name", name: "lastName", type: "text" },
+                ].map(({ label, name, type }) => (
                   <Box key={name} flex={1}>
                     <label
                       style={{
@@ -216,8 +225,14 @@ const AddUser = () => {
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       fullWidth
-                      error={formik.touched[name] && Boolean(formik.errors[name])}
-                      helperText={formik.touched[name] && formik.errors[name] ? formik.errors[name] : " "}
+                      error={
+                        formik.touched[name] && Boolean(formik.errors[name])
+                      }
+                      helperText={
+                        formik.touched[name] && formik.errors[name]
+                          ? formik.errors[name]
+                          : " "
+                      }
                       FormHelperTextProps={{
                         style: {
                           color: "red",
@@ -269,8 +284,10 @@ const AddUser = () => {
                 flexDirection={{ xs: "column", sm: "row" }}
                 gap={2}
               >
-                {[{ label: "Email", name: "email", type: "email" },
-                  { label: "Phone Number", name: "phoneNumber", type: "text" }].map(({ label, name, type }) => (
+                {[
+                  { label: "Email", name: "email", type: "email" },
+                  { label: "Phone Number", name: "phoneNumber", type: "text" },
+                ].map(({ label, name, type }) => (
                   <Box key={name} flex={1}>
                     <label
                       style={{
@@ -291,8 +308,14 @@ const AddUser = () => {
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       fullWidth
-                      error={formik.touched[name] && Boolean(formik.errors[name])}
-                      helperText={formik.touched[name] && formik.errors[name] ? formik.errors[name] : " "}
+                      error={
+                        formik.touched[name] && Boolean(formik.errors[name])
+                      }
+                      helperText={
+                        formik.touched[name] && formik.errors[name]
+                          ? formik.errors[name]
+                          : " "
+                      }
                       FormHelperTextProps={{
                         style: {
                           color: "red",
@@ -351,7 +374,7 @@ const AddUser = () => {
                   {
                     label: "Confirm Password",
                     name: "confirmPassword",
-                    type: "password",
+                    type: "text",
                   },
                 ].map(({ label, name, type }) => (
                   <Box key={name} flex={1}>
@@ -553,7 +576,11 @@ const AddUser = () => {
 
               {/* Permission Checkboxes */}
               <Box sx={{ mt: 3, mb: 2 }}>
-                <Typography variant="subtitle1" fontWeight={600} sx={{ color: "#0077cc", mb: 1 }}>
+                <Typography
+                  variant="subtitle1"
+                  fontWeight={600}
+                  sx={{ color: "#0077cc", mb: 1 }}
+                >
                   Permissions
                 </Typography>
                 <Grid container spacing={2}>
@@ -563,8 +590,11 @@ const AddUser = () => {
                         control={
                           <Checkbox
                             checked={formik.values.permissions[section]}
-                            onChange={e => {
-                              formik.setFieldValue(`permissions.${section}`, e.target.checked);
+                            onChange={(e) => {
+                              formik.setFieldValue(
+                                `permissions.${section}`,
+                                e.target.checked
+                              );
                             }}
                             sx={{
                               color: "#0077cc",
@@ -574,7 +604,16 @@ const AddUser = () => {
                             }}
                           />
                         }
-                        label={<Typography sx={{ color: "#0077cc", fontSize: { xs: "13px", sm: "14px" } }}>{section}</Typography>}
+                        label={
+                          <Typography
+                            sx={{
+                              color: "#0077cc",
+                              fontSize: { xs: "13px", sm: "14px" },
+                            }}
+                          >
+                            {section}
+                          </Typography>
+                        }
                       />
                     </Grid>
                   ))}

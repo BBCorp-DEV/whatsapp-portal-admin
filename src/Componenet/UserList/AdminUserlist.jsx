@@ -252,7 +252,7 @@ export default function UserList() {
                   "Email",
                   "Permission",
                   "Date",
-                  
+
                   "Action",
                 ].map((heading, i) => (
                   <TableCell key={i} sx={{ fontWeight: "bold" }}>
@@ -292,16 +292,29 @@ export default function UserList() {
                     <TableCell>{row?.lastName}</TableCell>
                     <TableCell>{row.email}</TableCell>
                     <TableCell>
-                      {Array.isArray(row?.role)
-                        ? row.role.join(", ")
-                        : row?.role}
+                      {Array.isArray(row?.role) ? (
+                        <Tooltip title={row.role.join(", ")} arrow>
+                          <span>
+                            {row.role.join(", ").length > 18
+                              ? row.role.join(", ").slice(0, 18) + "..."
+                              : row.role.join(", ")}
+                          </span>
+                        </Tooltip>
+                      ) : (
+                        <Tooltip title={row?.role || ""} arrow>
+                          <span>
+                            {row?.role?.length > 18
+                              ? row.role.slice(0, 18) + "..."
+                              : row.role}
+                          </span>
+                        </Tooltip>
+                      )}
                     </TableCell>
                     <TableCell>
                       {" "}
                       {moment(row.createdAt).format("DD-MMM-YYYY")}
                     </TableCell>
 
-                 
                     <TableCell>
                       <Tooltip title="Edit profile">
                         <IconButton

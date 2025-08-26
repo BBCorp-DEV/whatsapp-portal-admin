@@ -370,7 +370,7 @@ const AddUser = () => {
                 gap={2}
               >
                 {[
-                  { label: "Password", name: "password", type: "password" },
+                  { label: "Password", name: "password", type: "text" },
                   {
                     label: "Confirm Password",
                     name: "confirmPassword",

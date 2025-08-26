@@ -13,7 +13,7 @@
 
 
 const url = "https://whatsapp.3pay.xyz"; //  main Staging
-export const API_BASE_URL = "https://uhurucare.com/"; // main Staging
+export const API_BASE_URL = "https://whatsapp.3pay.xyz"; // main Staging
 export const IMAGEURL = "https://uhurucare.com/"; // main Staging
 const ApiConfig = {
   contactUs: `${url}api/v1/content/contactForm`,

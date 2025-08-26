@@ -17,8 +17,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../Auth/context/Auth";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { API_BASE_URL } from "../../Auth/ApiConfig";
 import { IoArrowBackSharp } from "react-icons/io5";
+import { API_BASE_URL } from "../../Auth/ApiConfig";
 
 const today = new Date();
 const minDate = new Date(
@@ -52,40 +52,35 @@ const EditUser = () => {
   const navigate = useNavigate();
   const auth = useContext(AuthContext);
   const location = useLocation();
-  const { userData } = location?.state || {};
+  console.log("cjvfergvyer", location);
+  const userData = location?.state?.userData;
+  console.log("cjvferg8888vyer", userData);
   const [userDetails, setUserDetails] = useState({});
 
-  const getProfileDataIds = async (id) => {
-    const token = window.localStorage.getItem("adminToken");
-    try {
-      const response = await axios.get(`${API_BASE_URL}api/v1/users/${id}`, {
-        headers: { authorization: `Bearer ${token}` },
-      });
-      if (response.data.success) {
-        setUserDetails(response.data.data);
-      } else {
-        toast.error(response?.data?.message ?? "Please try again");
-      }
-    } catch (error) {
-      toast.error(error?.response?.data?.message ?? "Please try again");
-    }
-  };
+ 
 
-  const [permissionsList] = useState([
-    "Read",
-    "Write",
-    "Delete",
-    "Admin",
-  ]);
+  // List all possible permissions here
+  const allPermissions = [
+    "Dashboard",
+    "Deposit Management",
+    "WhatsApp User",
+    "Withdrawal",
+    "Transfer",
+    "Account",
+    "Error Log",
+    // Add more as needed
+  ];
+
+  // Permissions the user currently has
 
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      first_name: userDetails?.full_name?.split(" ")[0] ?? "",
-      last_name: userDetails?.full_name?.split(" ")[1] ?? "",
-      email: userDetails?.emailid ?? "",
-      phone: userDetails?.phone_number ?? "",
-      permissions: userDetails?.permissions ?? [],
+      first_name: userData?.firstName ?? "",
+      last_name: userData?.lastName ?? "",
+      email: userData?.email ?? "",
+      phone: userData?.phone ?? "",
+  permissions: userDetails?.permissions ?? [],
     },
     validationSchema,
     onSubmit: (values) => {
@@ -93,28 +88,24 @@ const EditUser = () => {
     },
   });
 
-  useEffect(() => {
-    if (userData?.id) {
-      getProfileDataIds(userData.id);
-    }
-  }, [userData?.id]);
-
   const EditProfileHandler = async (values) => {
     const token = window.localStorage.getItem("adminToken");
     try {
       const response = await axios.put(
-        `${API_BASE_URL}api/v1/users/${userDetails?.id}/profile`,
+      `https://whatsapp.3pay.xyz/api/v1/user/update?id=${userData?.id}`,
         {
-          emailid: values?.email,
-          full_name: `${values?.first_name} ${values?.last_name}`,
-          phone_number: values?.phone,
-          permissions: values?.permissions,
+          email: values?.email,
+          firstName: `${values?.first_name}`,
+          // lasName: `${values?.last_name}`,
+          phone: values?.phone,
+          role: values?.permissions,
+          userType: "USER",
         },
         { headers: { authorization: `Bearer ${token}` } }
       );
-      if (response?.data?.success === true) {
+      if (response?.status === 200) {
         toast.success(response.data.message);
-        navigate("/dashboard");
+        navigate("/user-list");
         auth.getProfileData();
       }
     } catch (error) {
@@ -155,6 +146,7 @@ const EditUser = () => {
             marginLeft: "0px",
           },
         }}
+        InputProps={name === "email" ? { readOnly: true } : {}}
         sx={{
           mt: 2,
           input: { color: "black", padding: "10px" },
@@ -189,24 +181,24 @@ const EditUser = () => {
   );
 
   return (
-    <Box sx={{ position: "relative", overflow: "hidden", }}>
-        <Box
-              sx={{
-                cursor: "pointer",
-                background: "#82828214;",
-                width: "45px",
-                height: "45px",
-                borderRadius: "50%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-              onClick={() => navigate("/user-list")}
-            >
-              <IconButton sx={{ color: "#000", p: 0 }}>
-                <IoArrowBackSharp size={25} />
-              </IconButton>
-            </Box>
+    <Box sx={{ position: "relative", overflow: "hidden" }}>
+      <Box
+        sx={{
+          cursor: "pointer",
+          background: "#82828214;",
+          width: "45px",
+          height: "45px",
+          borderRadius: "50%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+        onClick={() => navigate("/user-list")}
+      >
+        <IconButton sx={{ color: "#000", p: 0 }}>
+          <IoArrowBackSharp size={25} />
+        </IconButton>
+      </Box>
       <Grid
         spacing={5}
         container
@@ -215,7 +207,7 @@ const EditUser = () => {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          marginTop:"10px"
+          marginTop: "10px",
         }}
       >
         <Grid item xs={12} md={6} lg={6}>
@@ -232,8 +224,11 @@ const EditUser = () => {
               boxShadow: 1,
             }}
           >
-            <Typography variant="h5" fontWeight="bold" gutterBottom
-            sx={{fontSize:{xs:"1.4rem",md:"1.5rem"}}}
+            <Typography
+              variant="h5"
+              fontWeight="bold"
+              gutterBottom
+              sx={{ fontSize: { xs: "1.4rem", md: "1.5rem" } }}
             >
               Edit User Details
             </Typography>
@@ -241,26 +236,46 @@ const EditUser = () => {
             <form onSubmit={formik.handleSubmit}>
               <Grid container spacing={2}>
                 <Grid item xs={12} md={6}>
-                  {renderTextField({ label: "First Name", name: "first_name", type: "text" })}
+                  {renderTextField({
+                    label: "First Name",
+                    name: "first_name",
+                    type: "text",
+                  })}
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  {renderTextField({ label: "Last Name", name: "last_name", type: "text" })}
+                  {renderTextField({
+                    label: "Last Name",
+                    name: "last_name",
+                    type: "text",
+                  })}
                 </Grid>
               </Grid>
               <Grid container spacing={2}>
                 <Grid item xs={12} md={6}>
-                  {renderTextField({ label: "Email", name: "email", type: "email" })}
+                  {renderTextField({
+                    label: "Email",
+                    name: "email",
+                    type: "email",
+                  })}
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  {renderTextField({ label: "Phone", name: "phone", type: "text" })}
+                  {renderTextField({
+                    label: "Phone",
+                    name: "phone",
+                    type: "text",
+                  })}
                 </Grid>
               </Grid>
               <Box sx={{ mt: 3 }}>
-                <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 1 }}>
+                <Typography
+                  variant="subtitle1"
+                  fontWeight="bold"
+                  sx={{ mb: 1 }}
+                >
                   Permissions
                 </Typography>
                 <Grid container spacing={1}>
-                  {permissionsList.map((perm) => (
+                  {allPermissions.map((perm) => (
                     <Grid item key={perm}>
                       <FormControlLabel
                         control={

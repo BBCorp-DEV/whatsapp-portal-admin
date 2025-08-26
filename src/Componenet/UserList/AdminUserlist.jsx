@@ -346,7 +346,7 @@ export default function UserList() {
                         </IconButton>
                       </Tooltip> */}
 
-                      <Tooltip title="View">
+                      <Tooltip title="View User">
                         <IconButton
                           onClick={() =>
                             navigate("/view-user", { state: { userData: row } })

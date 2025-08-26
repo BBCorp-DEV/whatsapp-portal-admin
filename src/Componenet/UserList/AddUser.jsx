@@ -46,7 +46,9 @@ const AddUser = () => {
   const formik = useFormik({
     initialValues: {
       firstName: "",
+      lastName: "",
       email: "",
+      phoneNumber: "",
       role: userData?.role === "admin" ? "" : "hospital",
       password: "",
       confirmPassword: "",
@@ -57,11 +59,17 @@ const AddUser = () => {
     },
     validationSchema: Yup.object({
       firstName: Yup.string()
-        .matches(/^[A-Za-z]+(?: [A-Za-z]+)*$/, "Enter a valid full name")
-        .required("Full name is required"),
+        .matches(/^[A-Za-z]+$/, "Enter a valid first name")
+        .required("First name is required"),
+      lastName: Yup.string()
+        .matches(/^[A-Za-z]+$/, "Enter a valid last name")
+        .required("Last name is required"),
       email: Yup.string()
         .email("Invalid email address")
         .required("Email is required"),
+      phoneNumber: Yup.string()
+        .matches(/^\d{10,15}$/, "Enter a valid phone number")
+        .required("Phone number is required"),
       role: Yup.string().required("Role is required"),
       password: Yup.string()
         .min(8, "Password must be at least 8 characters")
@@ -69,7 +77,6 @@ const AddUser = () => {
       confirmPassword: Yup.string()
         .oneOf([Yup.ref("password"), null], "Passwords must match")
         .required("Confirm Password is required"),
-      // Optionally, you can add validation for permissions if needed
     }),
     onSubmit: (values) => {
       Adduserhandler(values);
@@ -88,7 +95,9 @@ const AddUser = () => {
         },
         data: {
           emailid: values?.email,
-          full_name: values?.firstName,
+          first_name: values?.firstName,
+          last_name: values?.lastName,
+          phone_number: values?.phoneNumber,
           password: values?.password,
           role: values?.role || "hospital",
           type_of_hospital: formik.values.type,
@@ -179,16 +188,14 @@ const AddUser = () => {
             </Typography>
 
             <form onSubmit={formik.handleSubmit}>
-              {/* Full Name & Email */}
+              {/* First Name, Last Name, Email, Phone Number */}
               <Box
                 display="flex"
                 flexDirection={{ xs: "column", sm: "row" }}
                 gap={2}
               >
-                {[
-                  { label: "Full name", name: "firstName", type: "text" },
-                  { label: "Email", name: "email", type: "email" },
-                ].map(({ label, name, type }) => (
+                {[{ label: "First Name", name: "firstName", type: "text" },
+                  { label: "Last Name", name: "lastName", type: "text" }].map(({ label, name, type }) => (
                   <Box key={name} flex={1}>
                     <label
                       style={{
@@ -209,20 +216,14 @@ const AddUser = () => {
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       fullWidth
-                      error={
-                        formik.touched[name] && Boolean(formik.errors[name])
-                      }
-                      helperText={
-                        formik.touched[name] && formik.errors[name]
-                          ? formik.errors[name]
-                          : " "
-                      }
+                      error={formik.touched[name] && Boolean(formik.errors[name])}
+                      helperText={formik.touched[name] && formik.errors[name] ? formik.errors[name] : " "}
                       FormHelperTextProps={{
                         style: {
-                          color: "red", // Custom text color
-                          fontSize: "0.8rem", // Custom font size
+                          color: "red",
+                          fontSize: "0.8rem",
                           marginTop: "4px",
-                          marginLeft: "0px", // Optional spacing
+                          marginLeft: "0px",
                         },
                       }}
                       sx={{
@@ -242,7 +243,7 @@ const AddUser = () => {
                           paddingLeft: "5px",
                           paddingRight: { xs: "0px", md: "135px" },
                           "&:before, &:after": {
-                            borderBottom: "none !important", // 👈 hides the default underline
+                            borderBottom: "none !important",
                           },
                         },
                         ".MuiFilledInput-root:hover": {
@@ -255,7 +256,82 @@ const AddUser = () => {
                           color: "#888",
                         },
                         ".MuiFormHelperText-root": {
-                          marginLeft: "0px", // This sets the helper text margin-left
+                          marginLeft: "0px",
+                          color: "red",
+                        },
+                      }}
+                    />
+                  </Box>
+                ))}
+              </Box>
+              <Box
+                display="flex"
+                flexDirection={{ xs: "column", sm: "row" }}
+                gap={2}
+              >
+                {[{ label: "Email", name: "email", type: "email" },
+                  { label: "Phone Number", name: "phoneNumber", type: "text" }].map(({ label, name, type }) => (
+                  <Box key={name} flex={1}>
+                    <label
+                      style={{
+                        color: "#000",
+                        display: "block",
+                        marginBottom: -5,
+                        paddingTop: isSmall ? "0px" : "20px",
+                      }}
+                    >
+                      {label}
+                    </label>
+                    <TextField
+                      placeholder={`Enter ${label.toLowerCase()}`}
+                      variant="filled"
+                      type={type}
+                      name={name}
+                      value={formik.values[name]}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      fullWidth
+                      error={formik.touched[name] && Boolean(formik.errors[name])}
+                      helperText={formik.touched[name] && formik.errors[name] ? formik.errors[name] : " "}
+                      FormHelperTextProps={{
+                        style: {
+                          color: "red",
+                          fontSize: "0.8rem",
+                          marginTop: "4px",
+                          marginLeft: "0px",
+                        },
+                      }}
+                      sx={{
+                        mt: 2,
+                        input: {
+                          color: "black",
+                          padding: "10px",
+                          "::placeholder": {
+                            color: "#888",
+                          },
+                        },
+                        ".MuiFilledInput-root": {
+                          backgroundColor: "#fff",
+                          borderRadius: 2,
+                          border: "2px solid #0000004a",
+                          paddingTop: "3px",
+                          paddingLeft: "5px",
+                          paddingRight: { xs: "0px", md: "135px" },
+                          "&:before, &:after": {
+                            borderBottom: "none !important",
+                          },
+                        },
+                        ".MuiFilledInput-root:hover": {
+                          border: "2px solid #0077cc",
+                        },
+                        ".MuiFormHelperText-root": {
+                          color: "#f44336",
+                        },
+                        ".MuiFilledInput-input::placeholder": {
+                          color: "#888",
+                        },
+                        ".MuiFormHelperText-root": {
+                          marginLeft: "0px",
                           color: "red",
                         },
                       }}

@@ -298,11 +298,11 @@ export default function DashboardLayout({ children }) {
             sx={{
               display: "flex",
               alignItems: "center",
-              background: "#fff",
+              background: "#ffffffff",
               padding: "6px 51px",
               marginLeft: isMobile ? "0px" : "-39px",
               height: "100%",
-              width: isMobile ? "100%" : "auto",
+              width: isMobile ? "100%" : "255px",
             }}
           >
             {isMobile && (
@@ -316,19 +316,19 @@ export default function DashboardLayout({ children }) {
               </IconButton>
             )}
             <img
-              src="Images/NavbarLogo.jpg"
+              src="Images/NavbarLogo1.png"
               alt="logo"
-              style={{ height: 60, marginRight: 5.5, marginLeft: "-22px",cursor:"pointer" }}
+              style={{ height: 55, marginRight: 5.5, marginLeft: "-22px",cursor:"pointer" }}
               // onClick={handleLogoClick}
             />
-            <Typography
+            {/* <Typography
               variant="h6"
               fontWeight="bold"
               color="#000"
               sx={{ fontSize: "24.4px", marginRight: "-22px" }}
             >
               Connect
-            </Typography>
+            </Typography> */}
           </Box>
         </Toolbar>
       </AppBar>

@@ -14,6 +14,7 @@ import {
   FormHelperText,
   IconButton,
   useMediaQuery,
+  CircularProgress,
 } from "@mui/material";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -635,7 +636,12 @@ const AddUser = () => {
                   fontSize: { xs: "14px", sm: "16px" },
                 }}
               >
-                {loading ? "Adding..." : "Add User"}
+                
+                 {loading ? (
+                                  <CircularProgress size={24} sx={{ color: "#fff" }} />
+                                ) : (
+                                  "Add User"
+                                )}
               </Button>
             </form>
           </Paper>

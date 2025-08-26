@@ -37,11 +37,12 @@ export default function AuthProvider(props) {
     try {
       const res = await getDataHandlerWithToken("profile");
       if (res) {
-        setUserData(res?.data?.data);
-        localStorage.setItem("typeOfHospital", res?.data?.data?.type_of_hospital);
+        console.log("sdkgfkjasdgfsad",res);
+        
+        setUserData(res);
         console.log("adfsdafsadfsadf",res);
         
-        localStorage.setItem("userType", res?.data?.data?.role);
+        // localStorage.setItem("userType", res?.role);
         setIsLoading(false);
       } else {
         setIsLoading(false);

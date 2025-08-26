@@ -29,7 +29,6 @@ import ExpandLess from "@mui/icons-material/ExpandLess";
 import { PiUsersThreeFill } from "react-icons/pi";
 import { AiOutlineMedicineBox } from "react-icons/ai";
 
-
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import { FaQ } from "react-icons/fa6";
 
@@ -58,14 +57,15 @@ export default function DashboardLayout({ children }) {
   const location = useLocation();
   const auth = React.useContext(AuthContext);
   const userData = auth?.userData;
+  console.log("vewfvrfgib", userData);
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleLogout = () => {
-  setOpenLogoutDialog(false);
-  localStorage.removeItem("adminToken");
-  navigate("/");
+    setOpenLogoutDialog(false);
+    localStorage.removeItem("adminToken");
+    navigate("/");
   };
 
   const icons = [
@@ -80,9 +80,9 @@ export default function DashboardLayout({ children }) {
     <GiStaticGuard />,
     <PiUsersThreeFill />,
     <FaQ />,
-      <FaHospitalUser />,
-         <MdOutlineUnsubscribe />,
-          <MdOutlineReportGmailerrorred />,
+    <FaHospitalUser />,
+    <MdOutlineUnsubscribe />,
+    <MdOutlineReportGmailerrorred />,
   ];
 
   const handleDrawerToggle = () => {
@@ -99,56 +99,81 @@ export default function DashboardLayout({ children }) {
     navigate("/");
   };
 
+  const allMenuItems = [
+    {
+      text: "Dashboard",
+      path: "/dashboard",
+       icon: <MdDashboard size={24} />,
+      roles: ["Dashboard"],
+    },
+    {
+      text: "Deposit",
+      path: "/deposit-list",
+      icon: <MdPayments size={24} />,
+      roles: ["Deposit Management"],
+    },
+    {
+      text: "User Management",
+      path: "/user-list",
+      icon: <FaUsers size={24} />,
+      roles: ["admin"],
+    },
+    {
+      text: "WhatsApp User",
+      path: "/whatsapp-user",
+      icon: <PiUsersThreeFill size={24} />,
+      roles: ["WhatsApp User"],
+    },
+    {
+      text: "Withdrawal",
+      path: "/withdrawal-list",
+      icon: <MdPayments size={24} />,
+      roles: ["Withdrawal"],
+    },
+    {
+      text: "Transfer",
+      path: "/transfer",
+      icon: <FaHospitalUser size={24} />,
+      roles: ["Transfer"],
+    },
+    {
+      text: "Account",
+      path: "/acounts-list",
+      icon: <FaHospitalUser size={24} />,
+      roles: ["Account"],
+    },
+    {
+      text: "Error Log",
+      path: "/error-lists",
+      icon: <MdOutlineReportGmailerrorred size={24} />,
+      roles: ["admin", "Error Log"],
+    },
+  ];
 
-  const roleBasedMenuItems = {
-    policyholder: [
-      { text: "Dashboard", path: "/dashboard-policy" },
-      { text: "Policy", path: "/policyList" },
-      { text: "Payment", path: "/payments" },
-      { text: "Plan", path: "/user-plan" },
-    ],
-    insurance: [
-      { text: "Dashboard", path: "/dashboard-insurance" },
-      { text: "User Management", path: "/users-mNgement" },
-      { text: "Claim", path: "/claimList" },
-      { text: "Policy", path: "/policyList" },
-      { text: "Payment", path: "/payments" },
-    ],
-    admin: [
-      { text: "Dashboard", path: "/dashboard" },
-      { text: "Deposit", path: "/deposit-list" },
-      { text: "User Management", path: "/user-list" },
-      { text: "WhatsApp user", path: "/whatsapp-user" },
-      { text: "Withdrawal", path: "/withdrawal-list" },
-      { text: "Transfer", path: "/transfer" },
-      { text: "Account", path: "/acounts-list" },
-      { text: "Error Log", path: "/error-lists" },
-      // { text: "Sub Admin", path: "/sub-admin" },
-      // { text: "Medicine", path: "/medicine" },
-      // { text: "Diagnosis", path: "/diagnosis" },
-      // { text: "Report Management", path: "/report" },
-      // { text: "Static Management", path: "/about" },
-      // { text: "Team Management", path: "/team" },
-      // { text: "FAQ", path: "/faq" },
-      // {
-      //   text: "Static",
-      //   icon: <GiStaticGuard />,
-      //   children: [
-      //     { text: "Team", path: "/team" },
-      //     { text: "About", path: "/about" },
-      //   ],
-      // },
-      // { text: "faq", path: "/faq" },
-    ],
-    hospital: [
-      { text: "Dashboard", path: "/dashboard-hospital" },
-      { text: "Policy", path: "/policies" },
-      { text: "Claim", path: "/claimList" },
-    ],
-  };
+  // const roleBasedMenuItems = {
 
-  const menuItems = roleBasedMenuItems[ "admin"] || [];
+  //   admin: [
+  //     { text: "Dashboard", path: "/dashboard", },
+  //     { text: "Deposit", path: "/deposit-list" },
+  //     { text: "User Management", path: "/user-list" },
+  //     { text: "WhatsApp user", path: "/whatsapp-user" },
+  //     { text: "Withdrawal", path: "/withdrawal-list" },
+  //     { text: "Transfer", path: "/transfer" },
+  //     { text: "Account", path: "/acounts-list" },
+  //     { text: "Error Log", path: "/error-lists" },
+  //   ],
 
+  // };
+  const userRoles = userData?.role || []; // e.g. ["WhatsApp User", "Account"]
+  const userType = userData?.userType;
+
+  // const menuItems = roleBasedMenuItems[ "admin"] || [];
+const menuItems =
+  userType === "ADMIN"
+    ? allMenuItems
+    : allMenuItems.filter((item) =>
+        item.roles.some((role) => userRoles.includes(role))
+      );
   const drawerContent = (
     <Box
       sx={{
@@ -162,101 +187,30 @@ export default function DashboardLayout({ children }) {
       <Box>
         <Toolbar />
         <List>
-          {menuItems?.map((item, index) => {
-            const isParentActive =
-              location.pathname.startsWith(item.path || "") ||
-              (item.children &&
-                item.children.some((child) =>
-                  location.pathname.startsWith(child.path)
-                ));
-            const hasChildren = !!item.children;
-            const isStaticItem = item.text === "Static";
-            const isActive = isParentActive || (isStaticItem && staticOpen);
-
+          {menuItems.map((item) => {
+            const isActive = location.pathname.startsWith(item.path);
             return (
-              <React.Fragment key={item.text}>
-                <ListItem disablePadding>
-                  <ListItemButton
-                    onClick={() => {
-                      if (hasChildren) {
-                        setStaticOpen((prev) => !prev);
-                      } else {
-                        navigate(item.path);
-                        if (isMobile) setMobileOpen(false);
-                      }
-                    }}
-                    sx={{
-                      backgroundColor: isActive ? "#0077cc" : "transparent",
-                      borderRadius: "8px",
-                      mb: 1,
-                      "&:hover": {
-                        backgroundColor: isActive ? "#0077cc" : "#f0f0f0",
-                      },
-                    }}
-                  >
-                    <ListItemIcon
-                      sx={{
-                        color: isActive ? "#fff" : "inherit",
-                        fontSize: "23px",
-                        minWidth: { xs: "40px", md: "42px" },
-                      }}
-                    >
-                      {item.icon || icons[index]}
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={item.text}
-                      sx={{ color: isActive ? "#fff" : "inherit" }}
-                    />
-                    {hasChildren &&
-                      (staticOpen ? (
-                        <ExpandLess sx={{ color: "#fff" }} />
-                      ) : (
-                        <ExpandMore sx={{ color: "#fff" }} />
-                      ))}
-                  </ListItemButton>
-                </ListItem>
-
-                {hasChildren && (
-                  <Collapse in={staticOpen} timeout="auto" unmountOnExit>
-                    <List component="div" disablePadding sx={{ pl: 4 }}>
-                      {item.children.map((child) => {
-                        const isChildActive = location.pathname.startsWith(
-                          child.path
-                        );
-                        return (
-                          <ListItem key={child.text} disablePadding>
-                            <ListItemButton
-                              component={Link}
-                              to={child.path}
-                              onClick={() => isMobile && setMobileOpen(false)}
-                              sx={{
-                                backgroundColor: isChildActive
-                                  ? "#0077cc"
-                                  : "transparent",
-                                borderRadius: "8px",
-                                mb: 1,
-                                "&:hover": {
-                                  backgroundColor: isChildActive
-                                    ? "#0077cc"
-                                    : "#f0f0f0",
-                                },
-                              }}
-                            >
-                              <ListItemText
-                                primary={child.text}
-                                sx={{
-                                  color: isChildActive ? "#fff" : "inherit",
-                                  pl: 2,
-                                }}
-                              />
-                            </ListItemButton>
-                          </ListItem>
-                        );
-                      })}
-                    </List>
-                  </Collapse>
-                )}
-              </React.Fragment>
+              <ListItem key={item.text} disablePadding>
+                <ListItemButton
+                  onClick={() => navigate(item.path)}
+                  sx={{
+                    backgroundColor: isActive ? "#0077cc" : "transparent",
+                    borderRadius: "8px",
+                    mb: 1,
+                    "&:hover": {
+                      backgroundColor: isActive ? "#0077cc" : "#f0f0f0",
+                    },
+                  }}
+                >
+                  <ListItemIcon sx={{ color: isActive ? "#fff" : "inherit" }}>
+                    {item.icon}
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={item.text}
+                    sx={{ color: isActive ? "#fff" : "inherit" }}
+                  />
+                </ListItemButton>
+              </ListItem>
             );
           })}
         </List>
@@ -318,7 +272,12 @@ export default function DashboardLayout({ children }) {
             <img
               src="Images/NavbarLogo1.png"
               alt="logo"
-              style={{ height: 40, marginRight: 5.5, marginLeft: "-22px",cursor:"pointer" }}
+              style={{
+                height: 40,
+                marginRight: 5.5,
+                marginLeft: "-22px",
+                cursor: "pointer",
+              }}
               // onClick={handleLogoClick}
             />
             {/* <Typography

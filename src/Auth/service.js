@@ -1,12 +1,6 @@
 import axios from "axios";
 import toast from "react-hot-toast";
 import ApiConfig from "./ApiConfig";
-
-
-
-
-
-
 export const postDataHandler = async (endPoint, data) => {
   try {
     const res = await axios({
@@ -61,10 +55,6 @@ export const postDataHandlerWithToken = async (endpoint, data, headers) => { //d
     throw error;
   }
 };
-
-
-
-
 export const getDataHandlerWithToken = async (endPoint, data) => {
   console.log("ADfasdfsadf");
   try {

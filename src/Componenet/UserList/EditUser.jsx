@@ -73,29 +73,14 @@ const EditUser = () => {
 
   // Permissions the user currently has
 
-  const [permissionsList] = useState([
-    "Read",
-    "Write",
-    "Delete",
-    "Admin",
-  ]);
-
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-<<<<<<< HEAD
-      first_name: userDetails?.full_name?.split(" ")[0] ?? "",
-      last_name: userDetails?.full_name?.split(" ")[1] ?? "",
-      email: userDetails?.emailid ?? "",
-      phone: userDetails?.phone_number ?? "",
-      permissions: userDetails?.permissions ?? [],
-=======
       first_name: userData?.firstName ?? "",
       last_name: userData?.lastName ?? "",
       email: userData?.email ?? "",
       phone: userData?.phone ?? "",
   permissions: userDetails?.permissions ?? [],
->>>>>>> ba8cb769eae9e5063c600f86a2a2f51beda0cafc
     },
     validationSchema,
     onSubmit: (values) => {
@@ -107,18 +92,6 @@ const EditUser = () => {
     const token = window.localStorage.getItem("adminToken");
     try {
       const response = await axios.put(
-<<<<<<< HEAD
-        `${API_BASE_URL}api/v1/users/${userDetails?.id}/profile`,
-        {
-          emailid: values?.email,
-          full_name: `${values?.first_name} ${values?.last_name}`,
-          phone_number: values?.phone,
-          permissions: values?.permissions,
-        },
-        { headers: { authorization: `Bearer ${token}` } }
-      );
-      if (response?.data?.success === true) {
-=======
       `https://whatsapp.3pay.xyz/api/v1/user/update?id=${userData?.id}`,
         {
           email: values?.email,
@@ -131,7 +104,6 @@ const EditUser = () => {
         { headers: { authorization: `Bearer ${token}` } }
       );
       if (response?.status === 200) {
->>>>>>> ba8cb769eae9e5063c600f86a2a2f51beda0cafc
         toast.success(response.data.message);
         navigate("/user-list");
         auth.getProfileData();
@@ -264,12 +236,6 @@ const EditUser = () => {
             <form onSubmit={formik.handleSubmit}>
               <Grid container spacing={2}>
                 <Grid item xs={12} md={6}>
-<<<<<<< HEAD
-                  {renderTextField({ label: "First Name", name: "first_name", type: "text" })}
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  {renderTextField({ label: "Last Name", name: "last_name", type: "text" })}
-=======
                   {renderTextField({
                     label: "First Name",
                     name: "first_name",
@@ -282,25 +248,10 @@ const EditUser = () => {
                     name: "last_name",
                     type: "text",
                   })}
->>>>>>> ba8cb769eae9e5063c600f86a2a2f51beda0cafc
                 </Grid>
               </Grid>
               <Grid container spacing={2}>
                 <Grid item xs={12} md={6}>
-<<<<<<< HEAD
-                  {renderTextField({ label: "Email", name: "email", type: "email" })}
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  {renderTextField({ label: "Phone", name: "phone", type: "text" })}
-                </Grid>
-              </Grid>
-              <Box sx={{ mt: 3 }}>
-                <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 1 }}>
-                  Permissions
-                </Typography>
-                <Grid container spacing={1}>
-                  {permissionsList.map((perm) => (
-=======
                   {renderTextField({
                     label: "Email",
                     name: "email",
@@ -325,7 +276,6 @@ const EditUser = () => {
                 </Typography>
                 <Grid container spacing={1}>
                   {allPermissions.map((perm) => (
->>>>>>> ba8cb769eae9e5063c600f86a2a2f51beda0cafc
                     <Grid item key={perm}>
                       <FormControlLabel
                         control={

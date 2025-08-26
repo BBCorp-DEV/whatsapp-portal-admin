@@ -24,7 +24,7 @@ const ApiConfig = {
   login: `${url}/api/v1/auth/login`,
   signup: `${url}api/v1/auth/signup`,
   enrollment: `${url}api/v1/auth/enrollment`,
-  profile: `${url}api/v1/auth/profile`,
+  profile: `${url}/api/v1/auth/getProfile`,
   depositList: `${url}/api/v1/deposit/list`,
   withdrawalList: `${url}/api/v1/withdrawal/list`,
   transferList: `${url}/api/v1/transfer/list`,

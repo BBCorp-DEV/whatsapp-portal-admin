@@ -1,0 +1,132 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Payment Success</title>
+  <style>
+    body {
+      background-color: #f9fafb;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      font-family: "Inter", "Arial", sans-serif;
+    }
+
+    .container {
+      text-align: center;
+      background: white;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      max-width: 500px;
+      width: 90%;
+    }
+
+    .icon {
+      width: 64px;
+      height: 64px;
+      margin-bottom: 24px;
+      justify-content: center;
+      display: flex;
+      width: 100%;
+    }
+
+    .icon svg {
+      width: 100%;
+      height: 100%;
+      stroke: #10b981;
+      stroke-width: 2;
+      fill: none;
+   
+    }
+
+    h1 {
+      font-size: 28px;
+      color: #111827;
+      margin-bottom: 16px;
+    }
+
+    p {
+      font-size: 16px;
+      color: #6b7280;
+      margin: 4px 0;
+    }
+
+    .button {
+      display: inline-block;
+      margin-top: 30px;
+      padding: 12px 24px;
+      font-size: 16px;
+      color: white;
+      background: linear-gradient(to right, #0077CC, #0077CC);
+      border: none;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background 0.3s;
+    }
+
+    .button:hover {
+      background: linear-gradient(to right, #0077ccd0, #0077CC);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="icon">
+      <!-- simple checkmark icon -->
+      <svg viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="10" stroke="#10b981" stroke-width="2" fill="none"/>
+        <path d="M8 12l2 2 4-4" stroke="#10b981" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <h1>Your payment has been received</h1>
+    <p>Thank you for your payment. Your plan has been upgraded to premium!</p>
+ 
+    <a href="/dashboard" class="button">Go to your dashboard</a>
+  </div>
+
+  <script>
+
+    window.addEventListener('DOMContentLoaded', function () {
+      const params = new URLSearchParams(window.location.search);
+
+      const reference = params.get('reference');
+      console.log('Reference:', reference);
+
+      if (reference) {
+        fetch(`http://3.147.175.116/api/v1/payments/confirm?reference_id=${reference}`, {
+          method: 'GET',
+        })
+          .then(response => response.json())
+          .then(data => {
+            console.log('API Response:', data);
+
+            if (data?.data?.jwtToken) {
+              window.localStorage.setItem("adminToken", data.data.jwtToken);
+              window.localStorage.setItem("userData", JSON.stringify(data.data));
+
+              // Redirect to dashboard
+              // window.location.href = "/dashboard";
+            } else {
+              console.error('JWT Token not found in API response');
+            }
+          })
+          .catch(error => {
+            console.error('Error calling API:', error);
+          });
+      } else {
+        console.error('reference not found in URL');
+      }
+    });
+
+  </script>
+
+</body>
+</html>

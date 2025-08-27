@@ -44,6 +44,7 @@ export default function UserList() {
   const [userStoredData, setUserStoredData] = useState([]);
   console.log("resfhgvgcgData", userStoredData);
   const [loading, setLoading] = useState(false);
+  const [dataLoading, setDataLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
@@ -149,7 +150,7 @@ export default function UserList() {
 
   const handleDeleteUser = async (id) => {
     const token = window.localStorage.getItem("adminToken");
-    setLoading(true);
+    setDataLoading(true);
 
     try {
       const response = await axios({
@@ -503,7 +504,7 @@ export default function UserList() {
               },
             }}
           >
-            {loading ? (
+            {dataLoading ? (
               <CircularProgress size={22} sx={{ color: "white" }} />
             ) : (
               "Delete"

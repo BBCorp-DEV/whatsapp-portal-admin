@@ -202,12 +202,12 @@ const menuItems =
                     },
                   }}
                 >
-                  <ListItemIcon sx={{ color: isActive ? "#fff" : "inherit" }}>
+                  <ListItemIcon sx={{ color: isActive ? "#fff" : "inherit" ,}}>
                     {item.icon}
                   </ListItemIcon>
                   <ListItemText
                     primary={item.text}
-                    sx={{ color: isActive ? "#fff" : "inherit" }}
+                    sx={{ color: isActive ? "#fff" : "inherit",ml:"-15px" }}
                   />
                 </ListItemButton>
               </ListItem>

@@ -19,7 +19,7 @@ import { AuthContext } from "../../Auth/context/Auth";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { IoArrowBackSharp } from "react-icons/io5";
-import { API_BASE_URL } from "../../Auth/ApiConfig";
+import ApiConfig, { API_BASE_URL } from "../../Auth/ApiConfig";
 
 const today = new Date();
 const minDate = new Date(
@@ -95,7 +95,7 @@ const EditUser = () => {
 
     try {
       const response = await axios.put(
-        `https://whatsapp.3pay.xyz/api/v1/user/update?id=${userData?.id}`,
+        `${ApiConfig.userUpdate}?id=${userData?.id}`,
         {
           email: values?.email,
           firstName: `${values?.first_name}`,

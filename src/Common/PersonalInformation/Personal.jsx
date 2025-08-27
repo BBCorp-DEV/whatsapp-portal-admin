@@ -11,10 +11,12 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import MoneyOffIcon from "@mui/icons-material/MoneyOff";
+import GroupIcon from "@mui/icons-material/Group";
+import ApiConfig from "../../Auth/ApiConfig";
 
 // API integration
-const BASE_API_URL = "http://44.215.1.228:9000/api/v1/dashboard/stats";
-const AUTH_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZTQ0NzZiLWZiYjgtNDBiMS05Y2U3LWViNzYyMjA3NjQzOCIsInVzZXJUeXBlIjoiQURNSU4iLCJlbWFpbCI6InN1cmFqQG1haWxpbmF0b3IuY29tIiwicGhvbmUiOiI4MzQwNDM0OTc2IiwiaWF0IjoxNzU2MjkyODEzLCJleHAiOjE3NTYzNzkyMTN9.PhPbDW_Eek1rxLKgZ9pCdmBi9biQRdNhMwbHVb-RFxY";
 
 const Dashboard = () => {
   const [stats, setStats] = useState(null);
@@ -26,7 +28,7 @@ const Dashboard = () => {
   useEffect(() => {
     setLoading(true);
     setError(null);
-    fetch(`${BASE_API_URL}?filter=${filter}`, {
+    fetch(`${ApiConfig.dashboardList}?filter=${filter}`, {
       method: "GET",
       headers: {
         authorization: `Bearer ${token}`,

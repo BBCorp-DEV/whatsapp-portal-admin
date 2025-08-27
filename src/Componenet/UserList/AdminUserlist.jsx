@@ -22,18 +22,19 @@ import {
   DialogActions,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import {
-  MdModeEditOutline,
-  MdBlock,
-  MdOutlineRemoveRedEye,
-} from "react-icons/md";
-import { TbPasswordUser, TbTrash } from "react-icons/tb";
+import { MdModeEditOutline, MdOutlineRemoveRedEye } from "react-icons/md";
+import { TbTrash } from "react-icons/tb";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import DownloadIcon from "@mui/icons-material/Download";
 import toast from "react-hot-toast";
 import { AuthContext } from "../../Auth/context/Auth";
 import ApiConfig from "../../Auth/ApiConfig";
 import axios from "axios";
 import moment from "moment";
+
+// Excel libraries
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
 export default function UserList() {
   const navigate = useNavigate();
@@ -42,18 +43,12 @@ export default function UserList() {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [userStoredData, setUserStoredData] = useState([]);
-  console.log("resfhgvgcgData", userStoredData);
   const [loading, setLoading] = useState(false);
   const [dataLoading, setDataLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
-  const [idd1, setidd1] = useState("");
-  const [idd2, setidd2] = useState("");
-  const [open1, setOpen1] = useState(false);
   const [open2, setOpen2] = useState(false);
-  const [password, setPassword] = useState("");
-  const [passwordError, setPasswordError] = useState(false);
   const [hideOnScroll, setHideOnScroll] = useState(false);
   const effectRan = useRef(false);
 
@@ -66,41 +61,16 @@ export default function UserList() {
     setPage(1); // Reset to first page on search
   };
 
-  const OpenModal1 = (user, status) => {
-    setidd1(status);
-    setOpen1(user);
-  };
-  const handleClose1 = () => setOpen1(false);
-
-  const OpenModal2 = (user, status) => {
-    setidd2(status);
+  const OpenModal2 = (user) => {
     setOpen2(user);
   };
   const handleClose2 = () => setOpen2(false);
 
-  const StatusActiveBlock = async (id) => {
-    setUserStoredData((prevData) =>
-      prevData.map((user) =>
-        user.id === id ? { ...user, status: idd1 } : user
-      )
-    );
-    toast.success(`User status changed to ${idd1}`);
-    setOpen1(false);
-  };
-
-  const PasswordUpdateHandler = async (id) => {
-    if (!password.trim()) {
-      setPasswordError(true);
-      return;
-    }
-    toast.success(`Password updated successfully for user ID ${id}`);
-    setPassword("");
-    setOpen2(false);
-  };
   const handleCopy = (text) => {
     navigator.clipboard.writeText(text);
     toast.success("Copied to userid ✅");
   };
+
   useEffect(() => {
     const handleScroll = () => {
       setHideOnScroll(window.scrollY > 0);
@@ -121,7 +91,7 @@ export default function UserList() {
         },
         params: {
           page: page,
-          limit: limit, // ✅ fixed
+          limit: limit,
           search: searchQuery,
         },
       });
@@ -133,16 +103,16 @@ export default function UserList() {
         //   response?.data?.message || "Users loaded successfully ✅"
         // );
       } else {
-        // toast.error(response?.data?.message || "Something went wrong ❌");
+        setUserStoredData([]);
       }
     } catch (error) {
       console.log("error", error);
-
-      // toast.error(error?.response?.data?.message || "Failed to fetch users ❌");
+      setUserStoredData([]);
     } finally {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     userListing();
   }, [page, limit, searchQuery]);
@@ -158,9 +128,7 @@ export default function UserList() {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-        params: {
-          id: id,
-        },
+        params: { id: id },
       });
 
       if (response.status === 200) {
@@ -175,6 +143,56 @@ export default function UserList() {
     } catch (error) {
       console.error("Delete error:", error);
       toast.error(error?.response?.data?.message || "Failed to delete user ❌");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Download Excel function
+  const downloadExcel = async () => {
+    const token = window.localStorage.getItem("adminToken");
+    setLoading(true);
+    try {
+      // Fetch all users without pagination
+      const response = await axios({
+        method: "GET",
+        url: ApiConfig.userList,
+        headers: { authorization: `Bearer ${token}` },
+        params: { page: 1, limit: 10000 }, // get all users
+      });
+
+      const allUsers = response?.data?.data?.docs || [];
+
+      if (!allUsers.length) {
+        toast.error("No user data to export ❌");
+        return;
+      }
+
+      const excelData = allUsers.map((user) => ({
+        "User ID": user.id,
+        "First Name": user.firstName,
+        "Last Name": user.lastName,
+        Email: user.email,
+        Role: Array.isArray(user.role) ? user.role.join(", ") : user.role,
+        "Created At": moment(user.createdAt).format("DD-MMM-YYYY"),
+        Status: user.status,
+      }));
+
+      const worksheet = XLSX.utils.json_to_sheet(excelData);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Users");
+
+      const excelBuffer = XLSX.write(workbook, {
+        bookType: "xlsx",
+        type: "array",
+      });
+      const data = new Blob([excelBuffer], {
+        type: "application/octet-stream",
+      });
+      saveAs(data, "user-list.xlsx");
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to export users ❌");
     } finally {
       setLoading(false);
     }
@@ -237,12 +255,27 @@ export default function UserList() {
                 borderRadius: "8px",
                 fontWeight: "bold",
                 color: "#fff",
-                "&:hover": {
-                  backgroundColor: "#0077cc",
-                },
+                "&:hover": { backgroundColor: "#0077cc" },
               }}
             >
               Add User
+            </Button>
+            <Button
+              variant="contained"
+              onClick={downloadExcel}
+              sx={{
+                backgroundColor: "#0077cc",
+                textTransform: "none",
+                px: 4,
+                py: 1,
+                borderRadius: "8px",
+                fontWeight: "bold",
+                color: "#fff",
+                "&:hover": { backgroundColor: "#0077cc" },
+              }}
+            >
+              <DownloadIcon />
+              &nbsp; Download Xlsx
             </Button>
           </Box>
         </Box>
@@ -262,7 +295,6 @@ export default function UserList() {
                   "Email",
                   "Permission",
                   "Date",
-
                   "Action",
                 ].map((heading, i) => (
                   <TableCell key={i} sx={{ fontWeight: "bold" }}>
@@ -321,10 +353,8 @@ export default function UserList() {
                       )}
                     </TableCell>
                     <TableCell>
-                      {" "}
                       {moment(row.createdAt).format("DD-MMM-YYYY")}
                     </TableCell>
-
                     <TableCell>
                       <Tooltip title="Edit profile">
                         <IconButton
@@ -335,27 +365,6 @@ export default function UserList() {
                           <MdModeEditOutline />
                         </IconButton>
                       </Tooltip>
-                      {/* <Tooltip
-                        title={
-                          row.status === "active" ? "Deactivate" : "Activate"
-                        }
-                      >
-                        <IconButton
-                          onClick={() =>
-                            OpenModal1(
-                              row,
-                              row.status === "active" ? "inactive" : "active"
-                            )
-                          }
-                        >
-                          <MdBlock
-                            style={{
-                              color: row.status === "active" ? "red" : "green",
-                            }}
-                          />
-                        </IconButton>
-                      </Tooltip> */}
-
                       <Tooltip title="View User">
                         <IconButton
                           onClick={() =>
@@ -366,7 +375,7 @@ export default function UserList() {
                         </IconButton>
                       </Tooltip>
                       <Tooltip title="Delete User">
-                        <IconButton onClick={() => OpenModal2(row, row.status)}>
+                        <IconButton onClick={() => OpenModal2(row)}>
                           <TbTrash />
                         </IconButton>
                       </Tooltip>
@@ -375,7 +384,7 @@ export default function UserList() {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={6} align="center">
+                  <TableCell colSpan={7} align="center">
                     No data found
                   </TableCell>
                 </TableRow>
@@ -385,21 +394,7 @@ export default function UserList() {
         </TableContainer>
 
         {totalPages > 1 && userStoredData.length > 0 && (
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              textAlign: "center",
-              // marginTop: "10px",
-              padding: "20px",
-              "& .Mui-selected": {
-                backgroundColor: "#0077cc !important",
-                color: "#fff !important",
-                borderRadius: "5px",
-              },
-              "& .MuiPaginationItem-root": { color: "black" },
-            }}
-          >
+          <Box sx={{ display: "flex", justifyContent: "center", p: 2 }}>
             <Pagination
               page={page}
               count={totalPages}
@@ -409,24 +404,7 @@ export default function UserList() {
         )}
       </Box>
 
-      {/* Status Change Dialog */}
-      <Dialog open={open1} onClose={handleClose1} maxWidth="xs" fullWidth>
-        <DialogTitle textAlign="center">
-          {open1?.status === "active" ? "Block user" : "Activate user"}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText textAlign="center">
-            Are you sure you want to{" "}
-            {open1?.status === "active" ? "block" : "activate"} the user?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions sx={{ justifyContent: "center", pb: 2 }}>
-          <Button onClick={handleClose1}>No</Button>
-          <Button onClick={() => StatusActiveBlock(open1?.id)}>Yes</Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Update Password Dialog */}
+      {/* Delete User Dialog */}
       <Dialog
         open={open2}
         onClose={handleClose2}
@@ -435,11 +413,10 @@ export default function UserList() {
         PaperProps={{
           sx: {
             borderRadius: "16px",
-            boxShadow: "0px 8px 24px rgba(0,0,0,0.12)", // softer shadow
+            boxShadow: "0px 8px 24px rgba(0,0,0,0.12)",
           },
         }}
       >
-        {/* Title */}
         <DialogTitle
           sx={{
             textAlign: "center",
@@ -451,8 +428,6 @@ export default function UserList() {
         >
           Delete User
         </DialogTitle>
-
-        {/* Content */}
         <DialogContent sx={{ textAlign: "center", py: 2 }}>
           <p
             style={{
@@ -466,24 +441,12 @@ export default function UserList() {
             <strong>This action cannot be undone.</strong>
           </p>
         </DialogContent>
-
-        {/* Actions */}
-        <DialogActions
-          sx={{
-            justifyContent: "center",
-            gap: 2,
-            pb: 2,
-          }}
-        >
+        <DialogActions sx={{ justifyContent: "center", gap: 2, pb: 2 }}>
           <Button
             onClick={handleClose2}
             variant="outlined"
             color="inherit"
-            sx={{
-              borderRadius: "8px",
-              px: 3,
-              textTransform: "none",
-            }}
+            sx={{ borderRadius: "8px", px: 3, textTransform: "none" }}
           >
             Cancel
           </Button>
@@ -492,18 +455,9 @@ export default function UserList() {
             variant="contained"
             color="error"
             disabled={loading}
-            sx={{
-              borderRadius: "8px",
-              px: 3,
-              textTransform: "none",
-              // boxShadow: "0px 4px 12px rgba(60, 71, 193, 0.3)",
-              background: loading ? "#0077cc" : "#0077cc",
-              "&:hover": {
-                background: "#0077cc",
-              },
-            }}
+            sx={{ borderRadius: "8px", px: 3, textTransform: "none",background:"#0077CC" }}
           >
-            {dataLoading ? (
+            {loading ? (
               <CircularProgress size={22} sx={{ color: "white" }} />
             ) : (
               "Delete"

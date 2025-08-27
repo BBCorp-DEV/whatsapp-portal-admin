@@ -28,6 +28,9 @@ import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import { PiUsersThreeFill } from "react-icons/pi";
 import { AiOutlineMedicineBox } from "react-icons/ai";
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+import BeenhereIcon from '@mui/icons-material/Beenhere';
+import ContactMailIcon from '@mui/icons-material/ContactMail';
 
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import { FaQ } from "react-icons/fa6";
@@ -131,13 +134,13 @@ export default function DashboardLayout({ children }) {
     {
       text: "WhatsApp User",
       path: "/whatsapp-user",
-      icon: <PiUsersThreeFill size={24} />,
+      icon: <WhatsAppIcon size={24} />,
       roles: ["WhatsApp User"],
     },
       {
       text: "Deposit",
       path: "/deposit-list",
-      icon: <MdPayments size={24} />,
+      icon: <BeenhereIcon size={24} />,
       roles: ["Deposit Management"],
     },
     {
@@ -155,7 +158,7 @@ export default function DashboardLayout({ children }) {
     {
       text: "Account",
       path: "/acounts-list",
-      icon: <FaHospitalUser size={24} />,
+      icon: <ContactMailIcon size={24} />,
       roles: ["Account"],
     },
     {
@@ -202,34 +205,42 @@ const menuItems =
     >
       <Box>
         <Toolbar />
-        <List>
-          {menuItems.map((item) => {
-            const isActive = location.pathname.startsWith(item.path);
-            return (
-              <ListItem key={item.text} disablePadding>
-                <ListItemButton
-                  onClick={() => navigate(item.path)}
-                  sx={{
-                    backgroundColor: isActive ? "#0077cc" : "transparent",
-                    borderRadius: "8px",
-                    mb: 1,
-                    "&:hover": {
-                      backgroundColor: isActive ? "#0077cc" : "#f0f0f0",
-                    },
-                  }}
-                >
-                  <ListItemIcon sx={{ color: isActive ? "#fff" : "inherit" }}>
-                    {item.icon}
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={item.text}
-                    sx={{ color: isActive ? "#ffffffff" : "inherit",marginLeft:"-15px" }}
-                  />
-                </ListItemButton>
-              </ListItem>
-            );
-          })}
-        </List>
+     <List>
+  {menuItems.map((item) => {
+    const isActive = location.pathname.startsWith(item.path);
+    return (
+      <ListItem key={item.text} disablePadding>
+        <ListItemButton
+          onClick={() => navigate(item.path)}
+          sx={{
+            backgroundColor: isActive ? "#0077cc" : "transparent",
+            borderRadius: "8px",
+            mb: 1,
+            px: 1, // reduce padding inside button
+            "&:hover": {
+              backgroundColor: isActive ? "#0077cc" : "#f0f0f0",
+            },
+          }}
+        >
+          <ListItemIcon
+            sx={{
+              color: isActive ? "#fff" : "inherit",
+              minWidth: "auto", // ✅ remove default spacing
+              mr: 2, // optional: small margin between icon and text
+            }}
+          >
+            {item.icon}
+          </ListItemIcon>
+          <ListItemText
+            primary={item.text}
+            sx={{ color: isActive ? "#fff" : "inherit" }}
+          />
+        </ListItemButton>
+      </ListItem>
+    );
+  })}
+</List>
+
       </Box>
 
       <Box>

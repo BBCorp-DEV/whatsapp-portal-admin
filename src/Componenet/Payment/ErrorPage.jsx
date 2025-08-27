@@ -86,7 +86,8 @@ export default function ErrorPage() {
           height: "100vh",
           background: "#F5F5F5",
           marginTop: { xs: "0px", md: "0px" },
-          p:2
+            px: 2,
+        py:0,
         }}
       >
         <Box

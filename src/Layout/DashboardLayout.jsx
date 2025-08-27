@@ -208,7 +208,7 @@ const menuItems =
                   </ListItemIcon>
                   <ListItemText
                     primary={item.text}
-                    sx={{ color: isActive ? "#fff" : "inherit" }}
+                    sx={{ color: isActive ? "#ffffffff" : "inherit",marginLeft:"-15px" }}
                   />
                 </ListItemButton>
               </ListItem>
@@ -242,7 +242,7 @@ const menuItems =
         position="fixed"
         sx={{
           zIndex: (theme) => theme.zIndex.drawer + 1,
-          background: "#F5F5F5",
+          background: "#f5f5f5ff",
           boxShadow: "none",
         }}
       >

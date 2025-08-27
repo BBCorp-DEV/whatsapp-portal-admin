@@ -39,7 +39,7 @@ const Dashboard = () => {
       <Grid container spacing={3}>
         {[
  {
-  title: "Total Deposits",
+  title: "Total De88888posits",
   value: "$75,000",
   gradient: "linear-gradient(135deg,#e0e0e0,#ffffff)",
 },

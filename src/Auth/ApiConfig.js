@@ -1,5 +1,6 @@
 // const url = "https://whatsapp.3pay.xyz"; //  main Staging
-const url = "https://1f9dq437-9000.inc1.devtunnels.ms"; //  main Staging
+// const url = "https://1f9dq437-9000.inc1.devtunnels.ms";
+const url = "http://44.215.1.228:9000"
 export const API_BASE_URL = "https://whatsapp.3pay.xyz"; // main Staging
 export const IMAGEURL = "https://uhurucare.com/"; // main Staging
 const ApiConfig = {

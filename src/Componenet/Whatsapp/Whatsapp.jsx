@@ -101,7 +101,8 @@ export default function Whatsapp() {
         width: "100%",
         backgroundColor: "#F5F5F5",
         minHeight: "100vh",
-        p: 2,
+           px: 2,
+        py:0,
       }}
     >
       {/* Header + Search + Filter */}

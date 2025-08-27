@@ -268,7 +268,7 @@ const menuItems =
         position="fixed"
         sx={{
           zIndex: (theme) => theme.zIndex.drawer + 1,
-          background: "#FFF",
+          background: "#f5f5f5ff",
           boxShadow: "none",
         }}
       >

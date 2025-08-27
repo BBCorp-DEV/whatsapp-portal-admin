@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
-import { Card, CardContent, Typography, Grid, Box, CircularProgress } from "@mui/material";
+import { FormControl, InputLabel, Select, MenuItem, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, IconButton } from "@mui/material";
+import { Card, CardContent, Typography, Grid, Box, CircularProgress,Paper, } from "@mui/material";
 import {
   LineChart,
   Line,
@@ -14,15 +14,26 @@ import {
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import MoneyOffIcon from "@mui/icons-material/MoneyOff";
 import GroupIcon from "@mui/icons-material/Group";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import { MdModeEditOutline, MdOutlineRemoveRedEye } from "react-icons/md";
 import ApiConfig from "../../Auth/ApiConfig";
+import moment from "moment";
+import { TbTrash } from "react-icons/tb";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 // API integration
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [filter, setFilter] = useState("daily");
+  const [page,setPage] = useState(10);
+  const [open2,setOpen2] = useState(false);
+  const [userStoredData,setUserStoredData] = useState([]);
   const token = window.localStorage.getItem("adminToken");
 
   useEffect(() => {
@@ -40,11 +51,38 @@ const Dashboard = () => {
         setLoading(false);
       })
       .catch((err) => {
-        setError("Failed to fetch stats");
+        setError("Service not Working");
         setLoading(false);
       });
   }, [filter, token]);
+  const userListing = async () => {
+    const token = window.localStorage.getItem("adminToken");
+    setLoading(true);
+    try {
+      const response = await axios({
+        method: "GET",
+        url: ApiConfig.userList,
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      });
 
+      if (response.status === 200) {
+       setUserStoredData(response?.data?.data?.docs?.slice(0, 6));
+      } else {
+        setUserStoredData([]);
+      }
+    } catch (error) {
+      console.log("error", error);
+      setUserStoredData([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    userListing();
+  }, []);
   // Prepare card data from API response
   const topCards = stats
     ? [
@@ -99,7 +137,13 @@ const Dashboard = () => {
        
       ]
     : [];
-
+  const handleCopy = (text) => {
+    navigator.clipboard.writeText(text);
+    toast.success("Copied to userid ✅");
+  };
+    const OpenModal2 = (user) => {
+    setOpen2(user);
+  };
   // Prepare dailyData for chart (example: only one day from API, so keep dummy for now)
   const dailyData = [
     {
@@ -151,10 +195,10 @@ if (loading) {
   }
 
   return (
-    <Box sx={{ px: { xs: 2, sm: 4, md: 4 }, py: 2, width: "100%" }}>
+    <Box sx={{ px: { xs: 2, sm: 4, md: 2 }, py: 2, width: "100%" }}>
       {/* Filter Dropdown */}
       <Box sx={{ mb: 3, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <Typography sx={{ fontWeight: "bold",fontSize:'22px' }}>Dashboard ({filter.charAt(0).toUpperCase() + filter.slice(1)})</Typography>
+        <Typography  variant="h4" sx={{ fontWeight: "700" }}>Dashboard ({filter.charAt(0).toUpperCase() + filter.slice(1)})</Typography>
         <FormControl sx={{ minWidth: 150 }} size="small">
           <InputLabel id="dashboard-filter-label">Filter</InputLabel>
           <Select
@@ -203,7 +247,7 @@ if (loading) {
         ))}
       </Grid>
 
-      <Grid container spacing={2}>
+      {/* <Grid container spacing={2}>
         <Grid size={{ xs: 12, md: 6 }}>
           <Card sx={{ boxShadow: 5, borderRadius: 3, height: "100%" }}>
             <CardContent sx={{ height: "100%", mr: 3 }}>
@@ -278,7 +322,120 @@ if (loading) {
             </CardContent>
           </Card>
         </Grid>
-      </Grid>
+      </Grid> */}
+      <Typography variant="h4" sx={{ fontWeight: "700" }}>User Details</Typography>
+        <TableContainer
+          component={Paper}
+          elevation={3}
+          sx={{ mt: 2, borderRadius: "10px" }}
+        >
+          <Table>
+            <TableHead>
+              <TableRow>
+                {[
+                  "User Id",
+                  "First Name",
+                  "Last Name",
+                  "Email",
+                  // "Permission",
+                  "Date",
+                  // "Action",
+                ].map((heading, i) => (
+                  <TableCell key={i} sx={{ fontWeight: "bold" }}>
+                    {heading}
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {loading ? (
+                <TableRow>
+                  <TableCell colSpan={7} align="center">
+                    <Box sx={{ py: 4 }}>
+                      <CircularProgress />
+                    </Box>
+                  </TableCell>
+                </TableRow>
+              ) : userStoredData.length > 0 ? (
+                userStoredData.map((row, index) => (
+                  <TableRow
+                    key={index}
+                    sx={{ background: index % 2 === 0 ? "#f5f5f5" : "#fff" }}
+                  >
+                    <TableCell>
+                      {row?.id?.slice(0, 4)}...{row?.id?.slice(-4)}
+                      <Tooltip title="Copy ID">
+                        <IconButton
+                          size="small"
+                          onClick={() => handleCopy(row?.id)}
+                          sx={{ ml: 1 }}
+                        >
+                          <ContentCopyIcon fontSize="inherit" />
+                        </IconButton>
+                      </Tooltip>
+                    </TableCell>
+                    <TableCell>{row?.firstName}</TableCell>
+                    <TableCell>{row?.lastName}</TableCell>
+                    <TableCell>{row.email}</TableCell>
+                    {/* <TableCell>
+                      {Array.isArray(row?.role) ? (
+                        <Tooltip title={row.role.join(", ")} arrow>
+                          <span>
+                            {row.role.join(", ").length > 18
+                              ? row.role.join(", ").slice(0, 18) + "..."
+                              : row.role.join(", ")}
+                          </span>
+                        </Tooltip>
+                      ) : (
+                        <Tooltip title={row?.role || ""} arrow>
+                          <span>
+                            {row?.role?.length > 18
+                              ? row.role.slice(0, 18) + "..."
+                              : row.role}
+                          </span>
+                        </Tooltip>
+                      )}
+                    </TableCell> */}
+                    <TableCell>
+                      {moment(row.createdAt).format("DD-MMM-YYYY")}
+                    </TableCell>
+                    <TableCell>
+                      <Tooltip title="Edit profile">
+                        <IconButton
+                          onClick={() =>
+                            navigate("/edit-user", { state: { userData: row } })
+                          }
+                        >
+                          <MdModeEditOutline />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="View User">
+                        <IconButton
+                          onClick={() =>
+                            navigate("/view-user", { state: { userData: row } })
+                          }
+                        >
+                          <MdOutlineRemoveRedEye />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Delete User">
+                        <IconButton onClick={() => OpenModal2(row)}>
+                          <TbTrash />
+                        </IconButton>
+                      </Tooltip>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={7} align="center">
+                    No data found
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
     </Box>
   );
 };

@@ -1,5 +1,3 @@
-
-
 import React, { useContext, useEffect, useRef, useState } from "react";
 import {
   Table,
@@ -24,13 +22,10 @@ import {
   DialogActions,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import {
-  MdModeEditOutline,
-  MdOutlineRemoveRedEye,
-} from "react-icons/md";
+import { MdModeEditOutline, MdOutlineRemoveRedEye } from "react-icons/md";
 import { TbTrash } from "react-icons/tb";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import DownloadIcon from '@mui/icons-material/Download';
+import DownloadIcon from "@mui/icons-material/Download";
 import toast from "react-hot-toast";
 import { AuthContext } from "../../Auth/context/Auth";
 import ApiConfig from "../../Auth/ApiConfig";
@@ -49,6 +44,7 @@ export default function UserList() {
   const [searchQuery, setSearchQuery] = useState("");
   const [userStoredData, setUserStoredData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [dataLoading, setDataLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
@@ -103,6 +99,9 @@ export default function UserList() {
       if (response.status === 200) {
         setUserStoredData(response?.data?.data?.docs);
         setTotalPages(response?.data?.data?.totalPages)
+        // toast.success(
+        //   response?.data?.message || "Users loaded successfully ✅"
+        // );
       } else {
         setUserStoredData([]);
       }
@@ -120,7 +119,7 @@ export default function UserList() {
 
   const handleDeleteUser = async (id) => {
     const token = window.localStorage.getItem("adminToken");
-    setLoading(true);
+    setDataLoading(true);
 
     try {
       const response = await axios({
@@ -133,7 +132,9 @@ export default function UserList() {
       });
 
       if (response.status === 200) {
-        toast.success(response?.data?.message || "User deleted successfully ✅");
+        toast.success(
+          response?.data?.message || "User deleted successfully ✅"
+        );
         handleClose2();
         userListing();
       } else {
@@ -171,18 +172,23 @@ export default function UserList() {
         "User ID": user.id,
         "First Name": user.firstName,
         "Last Name": user.lastName,
-        "Email": user.email,
-        "Role": Array.isArray(user.role) ? user.role.join(", ") : user.role,
+        Email: user.email,
+        Role: Array.isArray(user.role) ? user.role.join(", ") : user.role,
         "Created At": moment(user.createdAt).format("DD-MMM-YYYY"),
-        "Status": user.status,
+        Status: user.status,
       }));
 
       const worksheet = XLSX.utils.json_to_sheet(excelData);
       const workbook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(workbook, worksheet, "Users");
 
-      const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
-      const data = new Blob([excelBuffer], { type: "application/octet-stream" });
+      const excelBuffer = XLSX.write(workbook, {
+        bookType: "xlsx",
+        type: "array",
+      });
+      const data = new Blob([excelBuffer], {
+        type: "application/octet-stream",
+      });
       saveAs(data, "user-list.xlsx");
     } catch (error) {
       console.error(error);
@@ -194,11 +200,36 @@ export default function UserList() {
 
   return (
     <>
-      <Box sx={{ height: "100vh", marginTop: 0, background: "#F5F5F5", p: 2 }}>
-        <Box sx={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 2, alignItems: "center", mb: 2, flexDirection: { xs: "column", sm: "row" } }}>
-          <Typography variant="h4" sx={{ fontWeight: 700 }}>User List</Typography>
+      <Box
+        sx={{
+          height: "100vh",
+          marginTop: { xs: "0px", md: "0px" },
+          background: "#F5F5F5",
+          p: 2,
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            flexWrap: "wrap",
+            gap: 2,
+            alignItems: "center",
+            mb: 2,
+            flexDirection: { xs: "column", sm: "row" },
+          }}
+        >
+          <Typography variant="h4" sx={{ fontWeight: 700 }}>
+            User List
+          </Typography>
 
-          <Box sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" }, gap: 2 }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: { xs: "column", sm: "row" },
+              gap: 2,
+            }}
+          >
             <TextField
               variant="outlined"
               size="small"
@@ -206,31 +237,68 @@ export default function UserList() {
               type="search"
               value={searchQuery}
               onChange={handleSearchQueryChange}
-              sx={{ backgroundColor: "#fff", borderRadius: "8px", minWidth: { xs: "100%", sm: 200 } }}
+              sx={{
+                backgroundColor: "#fff",
+                borderRadius: "8px",
+                minWidth: { xs: "100%", sm: 200 },
+              }}
             />
             <Button
               variant="contained"
               onClick={() => navigate("/add-user")}
-              sx={{ backgroundColor: "#0077cc", textTransform: "none", px: 4, py: 1, borderRadius: "8px", fontWeight: "bold", color: "#fff", "&:hover": { backgroundColor: "#0077cc" } }}
+              sx={{
+                backgroundColor: "#0077cc",
+                textTransform: "none",
+                px: 4,
+                py: 1,
+                borderRadius: "8px",
+                fontWeight: "bold",
+                color: "#fff",
+                "&:hover": { backgroundColor: "#0077cc" },
+              }}
             >
               Add User
             </Button>
             <Button
               variant="contained"
               onClick={downloadExcel}
-              sx={{ backgroundColor: "#0077cc", textTransform: "none", px: 4, py: 1, borderRadius: "8px", fontWeight: "bold", color: "#fff", "&:hover": { backgroundColor: "#0077cc" } }}
+              sx={{
+                backgroundColor: "#0077cc",
+                textTransform: "none",
+                px: 4,
+                py: 1,
+                borderRadius: "8px",
+                fontWeight: "bold",
+                color: "#fff",
+                "&:hover": { backgroundColor: "#0077cc" },
+              }}
             >
-             <DownloadIcon />&nbsp; Download Xlsx
+              <DownloadIcon />
+              &nbsp; Download Xlsx
             </Button>
           </Box>
         </Box>
 
-        <TableContainer component={Paper} elevation={3} sx={{ mt: 2, borderRadius: "10px" }}>
+        <TableContainer
+          component={Paper}
+          elevation={3}
+          sx={{ mt: 2, borderRadius: "10px" }}
+        >
           <Table>
             <TableHead>
               <TableRow>
-                {["User Id", "First Name", "Last Name", "Email", "Permission", "Date", "Action"].map((heading, i) => (
-                  <TableCell key={i} sx={{ fontWeight: "bold" }}>{heading}</TableCell>
+                {[
+                  "User Id",
+                  "First Name",
+                  "Last Name",
+                  "Email",
+                  "Permission",
+                  "Date",
+                  "Action",
+                ].map((heading, i) => (
+                  <TableCell key={i} sx={{ fontWeight: "bold" }}>
+                    {heading}
+                  </TableCell>
                 ))}
               </TableRow>
             </TableHead>
@@ -245,11 +313,18 @@ export default function UserList() {
                 </TableRow>
               ) : userStoredData.length > 0 ? (
                 userStoredData.map((row, index) => (
-                  <TableRow key={index} sx={{ background: index % 2 === 0 ? "#f5f5f5" : "#fff" }}>
+                  <TableRow
+                    key={index}
+                    sx={{ background: index % 2 === 0 ? "#f5f5f5" : "#fff" }}
+                  >
                     <TableCell>
                       {row?.id?.slice(0, 4)}...{row?.id?.slice(-4)}
                       <Tooltip title="Copy ID">
-                        <IconButton size="small" onClick={() => handleCopy(row?.id)} sx={{ ml: 1 }}>
+                        <IconButton
+                          size="small"
+                          onClick={() => handleCopy(row?.id)}
+                          sx={{ ml: 1 }}
+                        >
                           <ContentCopyIcon fontSize="inherit" />
                         </IconButton>
                       </Tooltip>
@@ -260,23 +335,41 @@ export default function UserList() {
                     <TableCell>
                       {Array.isArray(row?.role) ? (
                         <Tooltip title={row.role.join(", ")} arrow>
-                          <span>{row.role.join(", ").length > 18 ? row.role.join(", ").slice(0, 18) + "..." : row.role.join(", ")}</span>
+                          <span>
+                            {row.role.join(", ").length > 18
+                              ? row.role.join(", ").slice(0, 18) + "..."
+                              : row.role.join(", ")}
+                          </span>
                         </Tooltip>
                       ) : (
                         <Tooltip title={row?.role || ""} arrow>
-                          <span>{row?.role?.length > 18 ? row.role.slice(0, 18) + "..." : row.role}</span>
+                          <span>
+                            {row?.role?.length > 18
+                              ? row.role.slice(0, 18) + "..."
+                              : row.role}
+                          </span>
                         </Tooltip>
                       )}
                     </TableCell>
-                    <TableCell>{moment(row.createdAt).format("DD-MMM-YYYY")}</TableCell>
+                    <TableCell>
+                      {moment(row.createdAt).format("DD-MMM-YYYY")}
+                    </TableCell>
                     <TableCell>
                       <Tooltip title="Edit profile">
-                        <IconButton onClick={() => navigate("/edit-user", { state: { userData: row } })}>
+                        <IconButton
+                          onClick={() =>
+                            navigate("/edit-user", { state: { userData: row } })
+                          }
+                        >
                           <MdModeEditOutline />
                         </IconButton>
                       </Tooltip>
                       <Tooltip title="View User">
-                        <IconButton onClick={() => navigate("/view-user", { state: { userData: row } })}>
+                        <IconButton
+                          onClick={() =>
+                            navigate("/view-user", { state: { userData: row } })
+                          }
+                        >
                           <MdOutlineRemoveRedEye />
                         </IconButton>
                       </Tooltip>
@@ -301,28 +394,76 @@ export default function UserList() {
 
         {totalPages > 1 && userStoredData.length > 0 && (
           <Box sx={{ display: "flex", justifyContent: "center", p: 2 }}>
-            <Pagination page={page} count={totalPages} onChange={handlePageChange} />
+            <Pagination
+              page={page}
+              count={totalPages}
+              onChange={handlePageChange}
+            />
           </Box>
         )}
       </Box>
 
       {/* Delete User Dialog */}
-      <Dialog open={open2} onClose={handleClose2} maxWidth="xs" fullWidth PaperProps={{ sx: { borderRadius: "16px", boxShadow: "0px 8px 24px rgba(0,0,0,0.12)" } }}>
-        <DialogTitle sx={{ textAlign: "center", fontWeight: 600, fontSize: "20px", color: "#000", pb: 1 }}>Delete User</DialogTitle>
+      <Dialog
+        open={open2}
+        onClose={handleClose2}
+        maxWidth="xs"
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: "16px",
+            boxShadow: "0px 8px 24px rgba(0,0,0,0.12)",
+          },
+        }}
+      >
+        <DialogTitle
+          sx={{
+            textAlign: "center",
+            fontWeight: 600,
+            fontSize: "20px",
+            color: "#000",
+            pb: 1,
+          }}
+        >
+          Delete User
+        </DialogTitle>
         <DialogContent sx={{ textAlign: "center", py: 2 }}>
-          <p style={{ marginBottom: "10px", fontSize: "15px", color: "#555", lineHeight: 1.6 }}>
+          <p
+            style={{
+              marginBottom: "10px",
+              fontSize: "15px",
+              color: "#555",
+              lineHeight: 1.6,
+            }}
+          >
             Are you sure you want to delete this user? <br />
             <strong>This action cannot be undone.</strong>
           </p>
         </DialogContent>
         <DialogActions sx={{ justifyContent: "center", gap: 2, pb: 2 }}>
-          <Button onClick={handleClose2} variant="outlined" color="inherit" sx={{ borderRadius: "8px", px: 3, textTransform: "none" }}>Cancel</Button>
-          <Button onClick={() => handleDeleteUser(open2?.id)} variant="contained" color="error" disabled={loading} sx={{ borderRadius: "8px", px: 3, textTransform: "none" }}>
-            {loading ? <CircularProgress size={22} sx={{ color: "white" }} /> : "Delete"}
+          <Button
+            onClick={handleClose2}
+            variant="outlined"
+            color="inherit"
+            sx={{ borderRadius: "8px", px: 3, textTransform: "none" }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={() => handleDeleteUser(open2?.id)}
+            variant="contained"
+            color="error"
+            disabled={loading}
+            sx={{ borderRadius: "8px", px: 3, textTransform: "none",background:"#0077CC" }}
+          >
+            {loading ? (
+              <CircularProgress size={22} sx={{ color: "white" }} />
+            ) : (
+              "Delete"
+            )}
           </Button>
         </DialogActions>
       </Dialog>
     </>
   );
 }
-

@@ -133,7 +133,7 @@ export default function Transfer() {
       <Box
         sx={{
           height: "100vh",
-          marginTop: { xs: "0px", md: "3rem" },
+          marginTop: { xs: "0px", md: "0px" },
           background: "#F5F5F5",
           p:2
         }}
@@ -152,7 +152,7 @@ export default function Transfer() {
           <Typography
             variant="h4"
             sx={{
-              fontSize: "30px",
+
               fontWeight: "700",
               // fontFamily: "rubik",
               mb: { xs: 1, md: 0 },

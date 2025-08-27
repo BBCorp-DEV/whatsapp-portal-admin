@@ -85,7 +85,7 @@ export default function Account() {
       <Box
         sx={{
           height: "100vh",
-          marginTop: { xs: "0px", md: "3rem" },
+          marginTop: { xs: "0px", md: "0px" },
           background: "#F5F5F5",
           p:2
         }}
@@ -100,7 +100,7 @@ export default function Account() {
         >
           <Typography
             variant="h4"
-            sx={{ fontSize: "30px", fontWeight: "700",}}
+            sx={{  fontWeight: "700",}}
           >
             Account List
           </Typography>

@@ -128,7 +128,7 @@ export default function Error() {
         sx={{
           height: "100vh",
           background: "#F5F5F5",
-          marginTop: { xs: "0px", md: "3rem" },
+          marginTop: { xs: "0px", md: "0px" },
           p:2
         }}
       >
@@ -141,7 +141,7 @@ export default function Error() {
         >
           <Typography
             variant="h4"
-            sx={{ fontSize: "30px", fontWeight: "700", }}
+            sx={{ fontWeight: "700", }}
           >
             Error List
           </Typography>

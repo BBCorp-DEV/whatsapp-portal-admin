@@ -179,7 +179,14 @@ export default function UserList() {
 
   return (
     <>
-      <Box sx={{ width: "100%", backgroundColor: "#F5F5F5", pl: 2 }}>
+      <Box
+        sx={{
+          height: "100vh",
+          marginTop: { xs: "0px", md: "0px" },
+          background: "#F5F5F5",
+          p: 2,
+        }}
+      >
         <Box
           sx={{
             display: "flex",
@@ -202,7 +209,22 @@ export default function UserList() {
               gap: 2,
             }}
           >
-            <Button
+        
+
+            <TextField
+              variant="outlined"
+              size="small"
+              placeholder="Search..."
+              type="search"
+              value={searchQuery}
+              onChange={handleSearchQueryChange}
+              sx={{
+                backgroundColor: "#fff",
+                borderRadius: "8px",
+                minWidth: { xs: "100%", sm: 200 },
+              }}
+            />
+                <Button
               variant="contained"
               onClick={() => navigate("/add-user")}
               sx={{
@@ -220,20 +242,6 @@ export default function UserList() {
             >
               Add User
             </Button>
-
-            <TextField
-              variant="outlined"
-              size="small"
-              placeholder="Search..."
-              type="search"
-              value={searchQuery}
-              onChange={handleSearchQueryChange}
-              sx={{
-                backgroundColor: "#fff",
-                borderRadius: "8px",
-                minWidth: { xs: "100%", sm: 200 },
-              }}
-            />
           </Box>
         </Box>
 

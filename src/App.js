@@ -407,21 +407,21 @@ const App = () => {
             <Route
               path="/deposit-list"
               element={
-                // <AuthGuard>
+                <AuthGuard>
                   <DashboardLayout>
                     <Deposite />
                   </DashboardLayout>
-                // </AuthGuard>
+                 </AuthGuard>
               }
             />
             <Route
               path="/user-list"
               element={
-                // <AuthGuard>
+                <AuthGuard>
                   <DashboardLayout>
                <AdminUserlist />
                   </DashboardLayout>
-                // </AuthGuard>
+                 </AuthGuard>
               }
             />
             <Route
@@ -438,44 +438,44 @@ const App = () => {
             <Route
               path="/whatsapp-user"
               element={
-                // <AuthGuard>
+                <AuthGuard>
                   <DashboardLayout>
                    {/* <InsuranceUser /> */}
                    <Whatsapp />
                   </DashboardLayout>
-                // </AuthGuard>
+                 </AuthGuard>
               }
             />
             <Route
               path="/withdrawal-list"
               element={
-                // <AuthGuard>
+                <AuthGuard>
                   <DashboardLayout>
                    <WithDraw />
                  
                   </DashboardLayout>
-                // </AuthGuard>
+                   </AuthGuard>
               }
             />
             <Route
               path="/add-user"
               element={
-                // <AuthGuard>
+                <AuthGuard>
                   <DashboardLayout>
                     <AddUser />
                        {/* <Subadmin /> */}
                   </DashboardLayout>
-                // </AuthGuard>
+                 </AuthGuard>
               }
             />
             <Route
               path="/edit-user"
               element={
-                // <AuthGuard>
+                <AuthGuard>
                   <DashboardLayout>
                     <EditUser />
                   </DashboardLayout>
-                // </AuthGuard>
+                 </AuthGuard>
               }
             />
             <Route
@@ -491,11 +491,11 @@ const App = () => {
             <Route
               path="/error-list"
               element={
-                // <AuthGuard>
+                <AuthGuard>
                   <DashboardLayout>
                     <AddPaln />
                   </DashboardLayout>
-                // </AuthGuard>
+                 </AuthGuard>
               }
             />
             <Route
@@ -521,11 +521,11 @@ const App = () => {
             <Route
               path="/error-lists"
               element={
-                // <AuthGuard>
+                <AuthGuard>
                   <DashboardLayout>
                 <Error />
                   </DashboardLayout>
-                // </AuthGuard>
+                 </AuthGuard>
               }
             />
             <Route
@@ -542,12 +542,12 @@ const App = () => {
             <Route
               path="/acounts-list"
               element={
-                // <AuthGuard>
+                <AuthGuard>
                   <DashboardLayout>
              
                     <Account />
                   </DashboardLayout>
-                // </AuthGuard>
+                 </AuthGuard>
               }
             />
             <Route

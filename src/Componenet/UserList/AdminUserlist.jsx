@@ -134,11 +134,10 @@ export default function UserList() {
         // );
       } else {
         // toast.error(response?.data?.message || "Something went wrong ❌");
-   
       }
     } catch (error) {
       console.log("error", error);
-    
+
       // toast.error(error?.response?.data?.message || "Failed to fetch users ❌");
     } finally {
       setLoading(false);

@@ -4,12 +4,12 @@ import { calculateTimeLeft } from "../utils";
 import { getDataHandlerWithToken } from "../service";
 export const AuthContext = createContext();
 
-const setSession = (accessToken) => {
-  if (accessToken) {
-    localStorage.setItem("creatturAccessToken", accessToken);
-    axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
+const setSession = (adminToken) => {
+  if (adminToken) {
+    localStorage.setItem("adminToken", adminToken);
+    axios.defaults.headers.common.Authorization = `Bearer ${adminToken}`;
   } else {
-    localStorage.removeItem("creatturAccessToken");
+    localStorage.removeItem("adminToken");
     localStorage.removeItem("userType");
     delete axios.defaults.headers.common.Authorization;
   }

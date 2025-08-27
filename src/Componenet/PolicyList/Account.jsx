@@ -54,15 +54,15 @@ export default function Account() {
 
       if (response.status === 200) {
         setUserStoredData(response?.data);
-            toast.success(response?.data?.message || "Users loaded successfully ✅");
+            // toast.success(response?.data?.message || "Users loaded successfully ✅");
       } else {
- toast.error(response?.data?.message || "Something went wrong ❌");
+//  toast.error(response?.data?.message || "Something went wrong ❌");
         setUserStoredData([]);
       }
     } catch (error) {
       console.log("error", error);
       setUserStoredData([]);
-      toast.error(error?.response?.data?.message || "Failed to fetch users ❌");
+      // toast.error(error?.response?.data?.message || "Failed to fetch users ❌");
     } finally {
       setLoading(false);
     }
@@ -85,7 +85,7 @@ export default function Account() {
       <Box
         sx={{
           height: "100vh",
-          marginTop: { xs: "0px", md: "3rem" },
+          marginTop: { xs: "0px", md: "0px" },
           background: "#F5F5F5",
           p:2
         }}
@@ -100,7 +100,7 @@ export default function Account() {
         >
           <Typography
             variant="h4"
-            sx={{ fontSize: "30px", fontWeight: "700",}}
+            sx={{  fontWeight: "700",}}
           >
             Account List
           </Typography>
@@ -111,11 +111,16 @@ export default function Account() {
             type="search"
             value={searchQuery}
             onChange={handleSearchQueryChange}
-            sx={{
+         sx={{
               backgroundColor: "#fff",
               borderRadius: "8px",
               marginTop: { xs: "10px", md: "0px" },
               minWidth: 200,
+              "& .MuiOutlinedInput-root": {
+                paddingRight: 0,
+                padding: "2.5px 0px",
+                borderRadius: "10px",
+              },
             }}
           />
         </Box>

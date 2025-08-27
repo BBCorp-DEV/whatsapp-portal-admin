@@ -110,8 +110,8 @@ const AddUser = () => {
           role: selectedPermissions,
         },
       });
-      console.log("bwgbeg",response)
-      if (response.status=== 200) {
+      console.log("bwgbeg", response);
+      if (response.status === 200) {
         toast.success(response.data?.message);
         navigate("/user-list");
         setLoading(false);
@@ -212,7 +212,7 @@ const AddUser = () => {
                         color: "#000",
                         display: "block",
                         marginBottom: -5,
-                        paddingTop: isSmall ? "0px" : "20px",
+                        paddingTop: isSmall ? "0px" : "0px",
                       }}
                     >
                       {label}
@@ -580,7 +580,7 @@ const AddUser = () => {
                 <Typography
                   variant="subtitle1"
                   fontWeight={600}
-                  sx={{ color: "#0077cc", mb: 1 }}
+                  sx={{ color: "#000", mb: 1 }}
                 >
                   Permissions
                 </Typography>
@@ -600,7 +600,7 @@ const AddUser = () => {
                             sx={{
                               color: "#0077cc",
                               "&.Mui-checked": {
-                                color: "#00CFFD",
+                                color: "#0077cc",
                               },
                             }}
                           />
@@ -608,7 +608,7 @@ const AddUser = () => {
                         label={
                           <Typography
                             sx={{
-                              color: "#0077cc",
+                              color: "#000",
                               fontSize: { xs: "13px", sm: "14px" },
                             }}
                           >
@@ -636,12 +636,11 @@ const AddUser = () => {
                   fontSize: { xs: "14px", sm: "16px" },
                 }}
               >
-                
-                 {loading ? (
-                                  <CircularProgress size={24} sx={{ color: "#fff" }} />
-                                ) : (
-                                  "Add User"
-                                )}
+                {loading ? (
+                  <CircularProgress size={24} sx={{ color: "#fff" }} />
+                ) : (
+                  "Submit"
+                )}
               </Button>
             </form>
           </Paper>

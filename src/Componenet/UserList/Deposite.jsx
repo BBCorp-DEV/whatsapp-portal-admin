@@ -13,15 +13,21 @@ import {
   CircularProgress,
   Pagination,
   MenuItem,
+  Tooltip,
+  IconButton,
 } from "@mui/material";
 import axios from "axios";
 import ApiConfig from "../../Auth/ApiConfig";
 import toast from "react-hot-toast";
+import moment from "moment";
+import { IoEyeSharp } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
 
 const statusOptions = ["all", "pending", "success", "failed"];
 const typeOptions = ["Bank Transfer", "UPI", "Wallet"];
 
 export default function Deposite() {
+  const navigate = useNavigate()
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [paginatedDeposits, setPaginatedDeposits] = useState([]);
@@ -52,7 +58,7 @@ export default function Deposite() {
       console.log("depositResponse", response);
 
       if (response?.status === 200) {
-        setPaginatedDeposits(response?.data);
+        setPaginatedDeposits(response?.data?.data?.docs);
           setLoading(false)
         // toast.success(
         //   response?.data?.message || "Deposits loaded successfully ✅"
@@ -160,7 +166,7 @@ export default function Deposite() {
         <Table>
           <TableHead>
             <TableRow>
-              {["Sr. No.", "Username", "Amount", "Date", "Type", "Status"].map(
+              {["Sr. No.", "Username", "Amount", "Date", "Type", "Status","Action"].map(
                 (heading, i) => (
                   <TableCell key={i} sx={{ fontWeight: "bold" }}>
                     {heading}
@@ -183,14 +189,26 @@ export default function Deposite() {
                   sx={{ background: index % 2 === 0 ? "#f5f5f5" : "#fff" }}
                 >
                   <TableCell>{(page - 1) * limit + index + 1}</TableCell>
-                  <TableCell>{row.username}</TableCell>
-                  <TableCell>${row.amount}</TableCell>
-                  <TableCell>{"25-08-2025"}</TableCell>
-                  <TableCell>{row.type}</TableCell>
+                  <TableCell>{row.name}</TableCell>
+                  <TableCell>{row.requestData?.amount}</TableCell>
+                  <TableCell>  {moment(row.createdAt).format("YYYY-MM-DD")}</TableCell>
+                  <TableCell>{row.requestData?.transactionType}</TableCell>
+                  <TableCell>{row.status}</TableCell>
 
-                  <TableCell sx={{ textTransform: "capitalize" }}>
-                    {row.status}
-                  </TableCell>
+           
+                   <TableCell>
+                                      <Tooltip title="Vie Deposit">
+                                        <IconButton
+                                          onClick={() =>
+                                            navigate("/view-deposit", {
+                                              state: { paginatedDeposits },
+                                            })
+                                          }
+                                        >
+                                          <IoEyeSharp />
+                                        </IconButton>
+                                      </Tooltip>
+                                    </TableCell>
                 </TableRow>
               ))
             ) : (

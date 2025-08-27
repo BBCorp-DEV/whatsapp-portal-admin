@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { Card, CardContent, Typography, Grid, Box, CircularProgress } from "@mui/material";
 import {
   LineChart,
@@ -15,21 +16,24 @@ import MoneyOffIcon from "@mui/icons-material/MoneyOff";
 import GroupIcon from "@mui/icons-material/Group";
 
 // API integration
-const API_URL = "http://44.215.1.228:9000/api/v1/dashboard/stats?filter=daily";
+const BASE_API_URL = "http://44.215.1.228:9000/api/v1/dashboard/stats";
 const AUTH_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZTQ0NzZiLWZiYjgtNDBiMS05Y2U3LWViNzYyMjA3NjQzOCIsInVzZXJUeXBlIjoiQURNSU4iLCJlbWFpbCI6InN1cmFqQG1haWxpbmF0b3IuY29tIiwicGhvbmUiOiI4MzQwNDM0OTc2IiwiaWF0IjoxNzU2MjkyODEzLCJleHAiOjE3NTYzNzkyMTN9.PhPbDW_Eek1rxLKgZ9pCdmBi9biQRdNhMwbHVb-RFxY";
 
 const Dashboard = () => {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-    const token = window.localStorage.getItem("adminToken");
+  const [filter, setFilter] = useState("daily");
+  const token = window.localStorage.getItem("adminToken");
 
   useEffect(() => {
-    fetch(API_URL, {
+    setLoading(true);
+    setError(null);
+    fetch(`${BASE_API_URL}?filter=${filter}`, {
       method: "GET",
       headers: {
-          authorization: `Bearer ${token}`,
-        },
+        authorization: `Bearer ${token}`,
+      },
     })
       .then((res) => res.json())
       .then((data) => {
@@ -40,7 +44,7 @@ const Dashboard = () => {
         setError("Failed to fetch stats");
         setLoading(false);
       });
-  }, []);
+  }, [filter, token]);
 
   // Prepare card data from API response
   const topCards = stats
@@ -149,6 +153,25 @@ if (loading) {
 
   return (
     <Box sx={{ px: { xs: 2, sm: 4, md: 4 }, py: 2, width: "100%" }}>
+      {/* Filter Dropdown */}
+      <Box sx={{ mb: 3, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <Typography sx={{ fontWeight: "bold",fontSize:'22px' }}>Dashboard ({filter.charAt(0).toUpperCase() + filter.slice(1)})</Typography>
+        <FormControl sx={{ minWidth: 150 }} size="small">
+          <InputLabel id="dashboard-filter-label">Filter</InputLabel>
+          <Select
+            labelId="dashboard-filter-label"
+            id="dashboard-filter"
+            value={filter}
+            label="Filter"
+            onChange={e => setFilter(e.target.value)}
+          >
+            <MenuItem value="daily">Daily</MenuItem>
+            <MenuItem value="weekly">Weekly</MenuItem>
+            <MenuItem value="monthly">Monthly</MenuItem>
+          </Select>
+        </FormControl>
+      </Box>
+
       {/* Top Cards */}
       <Grid container spacing={3}>
         {topCards.map((card, i) => (
@@ -163,10 +186,10 @@ if (loading) {
                 borderRadius: 3,
                 px: 3,
                 py: 2,
-                boxShadow: 6,
+                boxShadow: 2,
                 mb: 4,
                 transition: "0.3s",
-                "&:hover": { transform: "translateY(-6px)", boxShadow: 12 },
+                "&:hover": { transform: "translateY(-6px)", boxShadow: 6 },
               }}
             >
               <CardContent sx={{ flex: 1, p: 0 }}>

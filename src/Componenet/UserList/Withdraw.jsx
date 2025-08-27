@@ -123,7 +123,7 @@ export default function WithDraw() {
         <Table>
           <TableHead>
             <TableRow>
-              {["Serial Number", "Full Name", "Email", "Role", "Status", "Action"].map((heading, i) => (
+              {["Sr. No.", "Username", "Amount", "Date", "Type", "Status"].map((heading, i) => (
                 <TableCell key={i} sx={{ fontWeight: "bold" }}>
                   {heading}
                 </TableCell>

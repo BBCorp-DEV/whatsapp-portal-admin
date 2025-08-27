@@ -106,12 +106,7 @@ export default function DashboardLayout({ children }) {
        icon: <MdDashboard size={24} />,
       roles: ["Dashboard"],
     },
-    {
-      text: "Deposit",
-      path: "/deposit-list",
-      icon: <MdPayments size={24} />,
-      roles: ["Deposit Management"],
-    },
+  
     {
       text: "User Management",
       path: "/user-list",
@@ -123,6 +118,12 @@ export default function DashboardLayout({ children }) {
       path: "/whatsapp-user",
       icon: <PiUsersThreeFill size={24} />,
       roles: ["WhatsApp User"],
+    },
+      {
+      text: "Deposit",
+      path: "/deposit-list",
+      icon: <MdPayments size={24} />,
+      roles: ["Deposit Management"],
     },
     {
       text: "Withdrawal",

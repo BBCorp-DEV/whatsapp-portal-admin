@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -14,6 +14,8 @@ import {
   Pagination,
   MenuItem,
 } from "@mui/material";
+import axios from "axios";
+import ApiConfig from "../../Auth/ApiConfig";
 
 const statusOptions = ["all", "pending", "success", "failed"];
 const typeOptions = ["Bank Transfer", "UPI", "Wallet"];
@@ -21,7 +23,13 @@ const typeOptions = ["Bank Transfer", "UPI", "Wallet"];
 export default function Whatsapp() {
   const [deposits] = useState([
     { id: 1, username: "alice", amount: 200, type: "UPI", status: "pending" },
-    { id: 2, username: "bob", amount: 500, type: "Bank Transfer", status: "success" },
+    {
+      id: 2,
+      username: "bob",
+      amount: 500,
+      type: "Bank Transfer",
+      status: "success",
+    },
     { id: 3, username: "carol", amount: 300, type: "Wallet", status: "failed" },
     ...Array.from({ length: 27 }, (_, i) => ({
       id: i + 4,
@@ -34,25 +42,68 @@ export default function Whatsapp() {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [whatsData, setWhatsData] = useState([]);
   const [page, setPage] = useState(1);
   const limit = 10;
   const [loading] = useState(false);
 
   const filteredDeposits = deposits.filter((d) => {
-    const matchesSearch = d.username.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch = d.username
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
     const matchesStatus = statusFilter === "all" || d.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
 
   const totalPages = Math.ceil(filteredDeposits.length / limit);
-  const paginatedDeposits = filteredDeposits.slice((page - 1) * limit, page * limit);
+  const paginatedDeposits = filteredDeposits.slice(
+    (page - 1) * limit,
+    page * limit
+  );
 
   const handlePageChange = (_, value) => {
     setPage(value);
   };
+  const whatisting = async () => {
+    try {
+      const token = window.localStorage.getItem("adminToken");
+      const response = await axios({
+        method: "GET",
+        url: ApiConfig?.whatsAppList,
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
 
+      console.log("depositResponse", response);
+
+      if (response?.status === 200) {
+        setWhatsData(response?.data);
+      } else {
+        // toast.error(response?.data?.message || "Something went wrong ❌");
+      }
+    } catch (error) {
+      console.error("API ERROR RESPONSE:", error?.response?.data || error);
+
+      // toast.error(
+      //   error?.response?.data?.message || "Failed to fetch deposits ❌"
+      // );
+      return error?.response;
+    }
+  };
+  useEffect(() => {
+    whatisting();
+  }, []);
   return (
-    <Box sx={{ width: "100%", backgroundColor: "#F5F5F5", minHeight: "100vh", p: 2 }}>
+    <Box
+      sx={{
+        width: "100%",
+        backgroundColor: "#F5F5F5",
+        minHeight: "100vh",
+        p: 2,
+      }}
+    >
       {/* Header + Search + Filter */}
       <Box
         sx={{
@@ -69,7 +120,13 @@ export default function Whatsapp() {
           Whatsapp Management
         </Typography>
 
-        <Box sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" }, gap: 2 }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: { xs: "column", sm: "row" },
+            gap: 2,
+          }}
+        >
           {/* Search */}
           <TextField
             variant="outlined"
@@ -114,15 +171,21 @@ export default function Whatsapp() {
       </Box>
 
       {/* Table */}
-      <TableContainer component={Paper} elevation={3} sx={{ mt: 2, borderRadius: "10px" }}>
+      <TableContainer
+        component={Paper}
+        elevation={3}
+        sx={{ mt: 2, borderRadius: "10px" }}
+      >
         <Table>
           <TableHead>
             <TableRow>
-              {["Sr. No.", "Username", "Amount", "Date","Type", "Status"].map((heading, i) => (
-                <TableCell key={i} sx={{ fontWeight: "bold" }}>
-                  {heading}
-                </TableCell>
-              ))}
+              {["Sr. No.", "Name", "Email", "Phone", "Status", "Date"].map(
+                (heading, i) => (
+                  <TableCell key={i} sx={{ fontWeight: "bold" }}>
+                    {heading}
+                  </TableCell>
+                )
+              )}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -132,8 +195,8 @@ export default function Whatsapp() {
                   <CircularProgress />
                 </TableCell>
               </TableRow>
-            ) : paginatedDeposits.length > 0 ? (
-              paginatedDeposits.map((row, index) => (
+            ) : whatsData.length > 0 ? (
+              whatsData.map((row, index) => (
                 <TableRow
                   key={row.id}
                   sx={{ background: index % 2 === 0 ? "#f5f5f5" : "#fff" }}
@@ -141,16 +204,18 @@ export default function Whatsapp() {
                   <TableCell>{(page - 1) * limit + index + 1}</TableCell>
                   <TableCell>{row.username}</TableCell>
                   <TableCell>${row.amount}</TableCell>
-                       <TableCell>{"25-08-2025"}</TableCell>
+                  <TableCell>{"25-08-2025"}</TableCell>
                   <TableCell>{row.type}</TableCell>
-             
-                  <TableCell sx={{ textTransform: "capitalize" }}>{row.status}</TableCell>
+
+                  <TableCell sx={{ textTransform: "capitalize" }}>
+                    {row.status}
+                  </TableCell>
                 </TableRow>
               ))
             ) : (
               <TableRow>
                 <TableCell colSpan={5} align="center">
-                  No deposits found
+                  No data found
                 </TableCell>
               </TableRow>
             )}
@@ -159,16 +224,15 @@ export default function Whatsapp() {
       </TableContainer>
 
       {/* Pagination */}
-      {totalPages > 1 && (
+      {/* {totalPages > 1 && (
         <Box sx={{ display: "flex", justifyContent: "center", p: 2 }}>
-          <Pagination page={page} count={totalPages} onChange={handlePageChange} />
+          <Pagination
+            page={page}
+            count={totalPages}
+            onChange={handlePageChange}
+          />
         </Box>
-      )}
+      )} */}
     </Box>
   );
 }
-
-
-
-
-

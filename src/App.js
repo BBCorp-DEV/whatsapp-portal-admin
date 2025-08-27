@@ -16,9 +16,10 @@ import ViewUserList from "./Componenet/UserList/ViewUserList";
 import Deposite from "./Componenet/UserList/Deposite";
 import Whatsapp from "./Componenet/Whatsapp/Whatsapp";
 import WithDraw from "./Componenet/UserList/Withdraw";
-import Error from "./Componenet/Payment/Error";
 import Personal from "../src/Common/PersonalInformation/Personal"
 import Transfer from "./Componenet/ClaimList/Transfer"
+import ErrorPage from "./Componenet/Payment/ErrorPage"
+
 
 
 // Home Page Component
@@ -147,7 +148,7 @@ const App = () => {
               element={
                 <AuthGuard>
                   <DashboardLayout>
-                <Error />
+              <ErrorPage />
                   </DashboardLayout>
                  </AuthGuard>
               }

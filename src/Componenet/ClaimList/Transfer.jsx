@@ -228,12 +228,14 @@ export default function Transfer() {
             <TableHead>
               <TableRow>
                 {[
-                  "Date",
-                  "Full Name",
-                  "Claim Number",
-                  "Claim Amount",
-                  "Claim Approved Amount",
+                  "Sr. No.",
+                  "Name",
+                  "From Account",
+                  "To Account",
+                  "Amount",
+                  "Currency",
                   "Status",
+                  "Date",
                   ...(userData?.role !== "hospital" ? ["Action"] : []),
                 ].map((heading, i) => (
                   <TableCell

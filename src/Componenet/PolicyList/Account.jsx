@@ -137,12 +137,13 @@ export default function Account() {
             <TableHead>
               <TableRow>
                 {[
-                  "Serial Number",
-                  "Policy Name",
-                  "Email",
-                  "Policy Holder",
+                  "Sr No.",
+                  "Name",
+                  "Account Name",
+                  "Account Type",
+                  "Currency",
                   "Status",
-                  "Action",
+                  "Date",
                 ].map((heading, i) => (
                   <TableCell key={i} sx={{ fontWeight: "bold" }}>
                     {heading}

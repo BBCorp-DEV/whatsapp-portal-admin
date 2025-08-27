@@ -105,7 +105,17 @@ export default function WithDraw() {
           type="search"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          sx={{ backgroundColor: "#fff", borderRadius: "8px", minWidth: 200 }}
+         sx={{
+              backgroundColor: "#fff",
+              borderRadius: "8px",
+              marginTop: { xs: "10px", md: "0px" },
+              minWidth: 200,
+              "& .MuiOutlinedInput-root": {
+                paddingRight: 0,
+                padding: "2.5px 0px",
+                borderRadius: "10px",
+              },
+            }}
         />
       </Box>
 

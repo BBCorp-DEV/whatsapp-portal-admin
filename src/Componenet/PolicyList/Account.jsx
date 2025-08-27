@@ -111,11 +111,16 @@ export default function Account() {
             type="search"
             value={searchQuery}
             onChange={handleSearchQueryChange}
-            sx={{
+         sx={{
               backgroundColor: "#fff",
               borderRadius: "8px",
               marginTop: { xs: "10px", md: "0px" },
               minWidth: 200,
+              "& .MuiOutlinedInput-root": {
+                paddingRight: 0,
+                padding: "2.5px 0px",
+                borderRadius: "10px",
+              },
             }}
           />
         </Box>

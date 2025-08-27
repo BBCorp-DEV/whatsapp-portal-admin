@@ -50,13 +50,24 @@ const drawerWidth = 240;
 
 export default function DashboardLayout({ children }) {
   const [openLogoutDialog, setOpenLogoutDialog] = React.useState(false);
-  const [mobileOpen, setMobileOpen] = React.useState(false);
+  // Read sidebar state from localStorage on mount
+  const [mobileOpen, setMobileOpen] = React.useState(() => {
+    const stored = localStorage.getItem("sidebarOpen");
+    return stored === null ? false : stored === "true";
+  });
   const [staticOpen, setStaticOpen] = React.useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
   const auth = React.useContext(AuthContext);
-  const userData = auth?.userData;
+  // Try to get userData from context, fallback to localStorage
+  let userData = auth?.userData;
+  if (!userData || Object.keys(userData).length === 0) {
+    const storedUserData = localStorage.getItem("userData");
+    if (storedUserData) {
+      userData = JSON.parse(storedUserData);
+    }
+  }
   console.log("vewfvrfgib", userData);
 
   const theme = useTheme();
@@ -86,12 +97,16 @@ export default function DashboardLayout({ children }) {
   ];
 
   const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
+    setMobileOpen((prev) => {
+      localStorage.setItem("sidebarOpen", !prev);
+      return !prev;
+    });
+  } 
 
   React.useEffect(() => {
     if (isMobile) {
       setMobileOpen(false);
+      localStorage.setItem("sidebarOpen", false);
     }
   }, [location.pathname, isMobile]);
 

@@ -38,11 +38,9 @@ export default function AuthProvider(props) {
       const res = await getDataHandlerWithToken("profile");
       if (res) {
         console.log("sdkgfkjasdgfsad",res);
-        
         setUserData(res);
-        console.log("adfsdafsadfsadf",res);
-        
-        // localStorage.setItem("userType", res?.role);
+        // Store profile data in localStorage
+        localStorage.setItem("userData", JSON.stringify(res));
         setIsLoading(false);
       } else {
         setIsLoading(false);

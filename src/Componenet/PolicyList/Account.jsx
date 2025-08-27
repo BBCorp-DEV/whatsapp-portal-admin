@@ -21,6 +21,7 @@ import ApiConfig from "../../Auth/ApiConfig";
 import axios from "axios";
 import { AuthContext } from "../../Auth/context/Auth";
 import toast from "react-hot-toast";
+import moment from "moment";
 
 export default function Account() {
   const location = useLocation();
@@ -52,7 +53,7 @@ export default function Account() {
       });
 
       if (response.status === 200) {
-        setUserStoredData(response?.data);
+        setUserStoredData(response?.data?.data?.docs);
             // toast.success(response?.data?.message || "Users loaded successfully ✅");
       } else {
 //  toast.error(response?.data?.message || "Something went wrong ❌");
@@ -142,9 +143,10 @@ export default function Account() {
                   "Name",
                   "Account Name",
                   "Account Type",
-                  "Currency",
+                  "Amount",
                   "Status",
                   "Date",
+                  "Action"
                 ].map((heading, i) => (
                   <TableCell key={i} sx={{ fontWeight: "bold" }}>
                     {heading}
@@ -169,23 +171,25 @@ export default function Account() {
                       background: index % 2 === 0 ? "#f5f5f5" : "#fff",
                     }}
                   >
-                    <TableCell>{index + 1}</TableCell>
+                    <TableCell> {(page - 1) * limit + index + 1}</TableCell>
                     <TableCell sx={{ fontWeight: 500 }}>
-                      {row.plan_name}
+                      {row.name}
                     </TableCell>
                     <TableCell sx={{ fontWeight: 500 }}>
-                      {row.emailid}
+                      {row.requestData?.name}
                     </TableCell>
                     <TableCell sx={{ fontWeight: 500 }}>
-                      {row.full_name}
+                      {row.requestData?.type}
                     </TableCell>
+                    <TableCell>{row.requestData?.balance}</TableCell>
                     <TableCell>{row.status}</TableCell>
+                    <TableCell>  {moment(row.createdAt).format("YYYY-MM-DD")}</TableCell>
                     <TableCell>
                       <Tooltip title="View Policy">
                         <IconButton
                           onClick={() =>
-                            navigate("/viewpolicy", {
-                              state: { row },
+                            navigate("/view-account", {
+                              state: { userStoredData },
                             })
                           }
                         >

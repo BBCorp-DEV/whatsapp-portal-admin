@@ -639,7 +639,7 @@ const AddUser = () => {
                 {loading ? (
                   <CircularProgress size={24} sx={{ color: "#fff" }} />
                 ) : (
-                  "Add User"
+                  "Submit"
                 )}
               </Button>
             </form>

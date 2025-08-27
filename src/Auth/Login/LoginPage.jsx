@@ -117,7 +117,8 @@ const LoginPage = () => {
           container
           sx={{
             minHeight: { xs: "60vh", md: "100vh" },
-            backgroundColor: "#fdfbf9",
+            // backgroundColor: "#fdfbf9",
+               backgroundColor: "#f9f9f9ff",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -138,7 +139,7 @@ const LoginPage = () => {
             <Paper
               elevation={0}
               sx={{
-                backgroundColor: "#f9f9f9ff",
+                backgroundColor: "#fdfbf9",
                 p: 5,
                 borderRadius: 2,
                 width: "100%",

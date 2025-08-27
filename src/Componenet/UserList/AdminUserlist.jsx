@@ -430,7 +430,7 @@ export default function UserList() {
       textAlign: "center",
       fontWeight: 600,
       fontSize: "20px",
-      color: "#d32f2f",
+      color: "#000",
       pb: 1,
     }}
   >
@@ -481,10 +481,10 @@ export default function UserList() {
         borderRadius: "8px",
         px: 3,
         textTransform: "none",
-        boxShadow: "0px 4px 12px rgba(211,47,47,0.3)",
-        background: loading ? "#b71c1c" : "#d32f2f",
+        // boxShadow: "0px 4px 12px rgba(60, 71, 193, 0.3)",
+        background: loading ? "#0077cc" : "#0077cc",
         "&:hover": {
-          background: "#b71c1c",
+          background: "#0077cc",
         },
       }}
     >

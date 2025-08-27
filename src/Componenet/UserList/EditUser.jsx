@@ -328,7 +328,7 @@ const EditUser = () => {
                 {loading ? (
                   <CircularProgress size={24} sx={{ color: "#fff" }} />
                 ) : (
-                  "Submit"
+                  "Update"
                 )}
               </Button>
             </form>

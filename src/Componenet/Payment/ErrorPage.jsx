@@ -12,12 +12,16 @@ import {
   CircularProgress,
   Pagination,
   TextField,
+  Tooltip,
+  IconButton,
 } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import ApiConfig from "../../Auth/ApiConfig";
 import PlansCard from "../../Common/DashboardCards/PlansCard";
+import { IoEyeSharp } from "react-icons/io5";
 import { AuthContext } from "../../Auth/context/Auth";
+import moment from "moment";
 
 export default function ErrorPage() {
   const location = useLocation();
@@ -29,25 +33,21 @@ export default function ErrorPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(1); // keep page starting from 1 for Pagination
   const [limit, setLimit] = useState(10);
-  const [errorData,setErrorData]= useState([])
+  const [errorData, setErrorData] = useState([]);
   const auth = useContext(AuthContext);
   const userData = auth.userData;
 
   // 🔹 Static Data fallback
- 
-
 
   const handlePageChange = (event, value) => {
     setPage(value);
   };
 
-
   const handleSearchQueryChange = (event) => {
     setSearchQuery(event.target.value);
   };
 
-
-    const errortisting = async () => {
+  const errortisting = async () => {
     try {
       const token = window.localStorage.getItem("adminToken");
       const response = await axios({
@@ -57,12 +57,17 @@ export default function ErrorPage() {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
+        params: {
+          page: page,
+          limit: limit,
+        },
       });
 
       console.log("depositResponse", response);
 
       if (response?.status === 200) {
-        setErrorData(response?.data);
+        setErrorData(response?.data?.data?.docs);
+        setTotalPages(response?.data?.data?.totalPages);
       } else {
         // toast.error(response?.data?.message || "Something went wrong ❌");
       }
@@ -77,7 +82,7 @@ export default function ErrorPage() {
   };
   useEffect(() => {
     errortisting();
-  }, []);
+  }, [page, limit]);
   return (
     <>
       {["admin", "insurance"].includes(userData?.role) && <PlansCard />}
@@ -86,8 +91,8 @@ export default function ErrorPage() {
           height: "100vh",
           background: "#F5F5F5",
           marginTop: { xs: "0px", md: "0px" },
-            px: 2,
-        py:0,
+          px: 2,
+          py: 0,
         }}
       >
         <Box
@@ -97,10 +102,7 @@ export default function ErrorPage() {
             flexDirection: { xs: "column", md: "row" },
           }}
         >
-          <Typography
-            variant="h4"
-            sx={{ fontWeight: "700", }}
-          >
+          <Typography variant="h4" sx={{ fontWeight: "700" }}>
             Error List
           </Typography>
           <TextField
@@ -142,9 +144,10 @@ export default function ErrorPage() {
                   "Name",
                   "URL",
                   "Method",
+                  "Status Code",
                   "Status",
                   "Date",
-              
+                  "Action",
                 ].map((heading, i) => (
                   <TableCell key={i} sx={{ fontWeight: "bold" }}>
                     {heading}
@@ -171,16 +174,36 @@ export default function ErrorPage() {
                       "&:last-child td, &:last-child th": { border: 0 },
                     }}
                   >
-                    <TableCell>
-                      {row.transaction_id} {row?.reference_id}
+                    <TableCell align="left">
+                      {(page - 1) * limit + index + 1}
                     </TableCell>
-                    <TableCell>{row.full_name}</TableCell>
-                    <TableCell>{row.payment_for}</TableCell>
-                    <TableCell>{row.policy_id}</TableCell>
+                    <TableCell>{row.name}</TableCell>
+                    <TableCell align="left">
+                      <Tooltip title={row.url} arrow>
+                        <span>
+                          {row.url?.length > 20
+                            ? row.url.substring(0, 20) + "..."
+                            : row.url}
+                        </span>
+                      </Tooltip>
+                    </TableCell>
                     <TableCell>{row.method}</TableCell>
+                    <TableCell>{row.statusCode}</TableCell>
                     <TableCell>{row.status}</TableCell>
                     <TableCell>
-                      {row.amount} {row?.currency}
+                      {" "}
+                      {moment(row.createdAt).format("YYYY-MM-DD")}
+                    </TableCell>
+                    <TableCell align="center">
+                      <Tooltip title={"View Claim"}>
+                        <IconButton
+                          onClick={() =>
+                            navigate("/view-error", { state: { errorData } })
+                          }
+                        >
+                          <IoEyeSharp />
+                        </IconButton>
+                      </Tooltip>
                     </TableCell>
                   </TableRow>
                 ))

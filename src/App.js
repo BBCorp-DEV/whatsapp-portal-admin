@@ -19,6 +19,12 @@ import WithDraw from "./Componenet/UserList/Withdraw";
 import Personal from "../src/Common/PersonalInformation/Personal"
 import Transfer from "./Componenet/ClaimList/Transfer"
 import ErrorPage from "./Componenet/Payment/ErrorPage"
+import AccountView from "./Componenet/AccountView"
+import WhatsAppView from "./Componenet/WhatsAppView"
+import DepositView from "./Componenet/DepositView"
+import TransferView from "./Componenet/TransferView"
+import ErrorView from "./Componenet/ErrorView"
+import WitddrawView from "./Componenet/WitddrawView"
 
 
 
@@ -175,6 +181,66 @@ const App = () => {
                 // <AuthGuard>
                   <DashboardLayout>
                   <ViewUserList />
+                  </DashboardLayout>
+                // </AuthGuard>
+              }
+            />
+            <Route
+              path="/view-whatsapp"
+              element={
+                // <AuthGuard>
+                  <DashboardLayout>
+                 <WhatsAppView />
+                  </DashboardLayout>
+                // </AuthGuard>
+              }
+            />
+            <Route
+              path="/view-deposit"
+              element={
+                // <AuthGuard>
+                  <DashboardLayout>
+                  <DepositView />
+                  </DashboardLayout>
+                // </AuthGuard>
+              }
+            />
+            <Route
+              path="/view-transfer"
+              element={
+                // <AuthGuard>
+                  <DashboardLayout>
+                  <TransferView />
+                  </DashboardLayout>
+                // </AuthGuard>
+              }
+            />
+            <Route
+              path="/view-account"
+              element={
+                // <AuthGuard>
+                  <DashboardLayout>
+                 <AccountView />
+                  </DashboardLayout>
+                // </AuthGuard>
+              }
+            />
+            <Route
+              path="/view-error"
+              element={
+                // <AuthGuard>
+                  <DashboardLayout>
+                  <ErrorView />
+                  </DashboardLayout>
+                // </AuthGuard>
+              }
+            />
+            <Route
+              path="/view-withdrawal"
+              element={
+                // <AuthGuard>
+                  <DashboardLayout>
+                 <WitddrawView   />
                   </DashboardLayout>
                 // </AuthGuard>
               }

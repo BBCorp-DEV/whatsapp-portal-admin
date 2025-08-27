@@ -195,7 +195,7 @@ export default function ErrorPage() {
                       {moment(row.createdAt).format("YYYY-MM-DD")}
                     </TableCell>
                     <TableCell align="center">
-                      <Tooltip title={"View Claim"}>
+                      <Tooltip title={"View Error"}>
                         <IconButton
                           onClick={() =>
                             navigate("/view-error", { state: { errorData } })

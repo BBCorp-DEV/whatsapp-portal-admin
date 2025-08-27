@@ -28,7 +28,7 @@ export default function Deposite() {
   const [totalPages, setTotalPages] = useState(1);
   const [page, setPage] = useState(1);
   const limit = 10;
-  const [loading] = useState(false);
+  const [loading,setLoading] = useState(false);
    const effectRan = useRef(false);
 
   const handlePageChange = (_, value) => {
@@ -36,6 +36,7 @@ export default function Deposite() {
   };
 
   const depositListing = async () => {
+    setLoading(true)
     try {
       const token = window.localStorage.getItem("adminToken");
 
@@ -52,6 +53,7 @@ export default function Deposite() {
 
       if (response?.status === 200) {
         setPaginatedDeposits(response?.data);
+          setLoading(false)
         // toast.success(
         //   response?.data?.message || "Deposits loaded successfully ✅"
         // );
@@ -59,6 +61,7 @@ export default function Deposite() {
         // toast.error(response?.data?.message || "Something went wrong ❌");
       }
     } catch (error) {
+        setLoading(false)
       console.error("API ERROR RESPONSE:", error?.response?.data || error);
       // toast.error(
       //   error?.response?.data?.message || "Failed to fetch deposits ❌"

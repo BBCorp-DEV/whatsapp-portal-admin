@@ -54,8 +54,8 @@ export default function Transfer() {
   const [selectedItems, setSelectedItems] = useState([]);
   const [selectedClaimIds, setSelectedClaimIds] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
-  const [staticClaims,setStaticClaims] = useState([]);
-    const effectRan = useRef(false);
+  const [staticClaims, setStaticClaims] = useState([]);
+  const effectRan = useRef(false);
 
   const auth = useContext(AuthContext);
   const userData = auth.userData;
@@ -63,7 +63,6 @@ export default function Transfer() {
   const handlePageChange = (event, value) => {
     setPage(value);
   };
-
 
   // ---------- Handlers ----------
   const handleSearchQueryChange = (event) => {
@@ -91,6 +90,7 @@ export default function Transfer() {
   const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
   const checkedIcon = <CheckBoxIcon fontSize="small" />;
   const depositListing = async () => {
+    setLoading(true);
     try {
       const token = window.localStorage.getItem("adminToken");
 
@@ -107,6 +107,7 @@ export default function Transfer() {
 
       if (response?.status === 200) {
         setStaticClaims(response?.data);
+        setLoading(false);
         // toast.success(
         //   response?.data?.message || "Transfer successfully ✅"
         // );
@@ -115,6 +116,7 @@ export default function Transfer() {
       }
     } catch (error) {
       console.error("API ERROR RESPONSE:", error?.response?.data || error);
+      setLoading(false);
       // toast.error(
       //   error?.response?.data?.message || "Failed to fetch deposits ❌"
       // );
@@ -126,7 +128,7 @@ export default function Transfer() {
       depositListing();
       effectRan.current = true; // ✅ prevents second run
     }
-  }, [])
+  }, []);
   return (
     <>
       {["admin", "insurance"].includes(userData?.role) && <ClaimCard />}
@@ -135,7 +137,7 @@ export default function Transfer() {
           height: "100vh",
           marginTop: { xs: "0px", md: "0px" },
           background: "#F5F5F5",
-          p:2
+          p: 2,
         }}
       >
         {/* Header */}
@@ -152,7 +154,7 @@ export default function Transfer() {
           <Typography
             variant="h4"
             sx={{
-
+              fontSize: "30px",
               fontWeight: "700",
               // fontFamily: "rubik",
               mb: { xs: 1, md: 0 },
@@ -243,67 +245,76 @@ export default function Transfer() {
                 ))}
               </TableRow>
             </TableHead>
-           <TableBody>
-  {loading ? (
-    <TableRow>
-      <TableCell colSpan={7} align="center">
-        <CircularProgress />
-      </TableCell>
-    </TableRow>
-  ) : staticClaims.length > 0 ? (
-    staticClaims
-      .filter((row) =>
-        row.full_name.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-      .filter((row) => (status ? row.status === status : true))
-      .map((row, index) => (
-        <TableRow
-          key={index}
-          sx={{
-            backgroundColor: index % 2 === 0 ? "#f9f9f9" : "#ffffff",
-          }}
-        >
-          <TableCell align="center">
-            {moment(row.created_at).format("YYYY-MM-DD")}
-          </TableCell>
-          <TableCell align="center">{row.full_name}</TableCell>
-          <TableCell align="center">{row.claim_number}</TableCell>
-          <TableCell align="center">{row.claim_amount}</TableCell>
-          <TableCell align="center">{row.claim_approved_amount}</TableCell>
-          <TableCell align="center">
-            {row.status.charAt(0).toUpperCase() + row.status.slice(1)}
-          </TableCell>
-          {userData?.role !== "hospital" && (
-            <TableCell align="center">
-              <Tooltip title={"View Claim"}>
-                <IconButton
-                  onClick={() =>
-                    navigate("/viewClaim", { state: { row } })
-                  }
-                >
-                  <IoEyeSharp />
-                </IconButton>
-              </Tooltip>
-            </TableCell>
-          )}
-        </TableRow>
-      ))
-  ) : (
-    <TableRow>
-      <TableCell colSpan={7} align="center">
-        No Data Found
-      </TableCell>
-    </TableRow>
-  )}
-</TableBody>
-
+            <TableBody>
+              {loading ? (
+                <TableRow>
+                  <TableCell colSpan={7} align="center">
+                    <CircularProgress />
+                  </TableCell>
+                </TableRow>
+              ) : staticClaims.length > 0 ? (
+                staticClaims
+                  .filter((row) =>
+                    row.full_name
+                      .toLowerCase()
+                      .includes(searchQuery.toLowerCase())
+                  )
+                  .filter((row) => (status ? row.status === status : true))
+                  .map((row, index) => (
+                    <TableRow
+                      key={index}
+                      sx={{
+                        backgroundColor:
+                          index % 2 === 0 ? "#f9f9f9" : "#ffffff",
+                      }}
+                    >
+                      <TableCell align="center">
+                        {moment(row.created_at).format("YYYY-MM-DD")}
+                      </TableCell>
+                      <TableCell align="center">{row.full_name}</TableCell>
+                      <TableCell align="center">{row.claim_number}</TableCell>
+                      <TableCell align="center">{row.claim_amount}</TableCell>
+                      <TableCell align="center">
+                        {row.claim_approved_amount}
+                      </TableCell>
+                      <TableCell align="center">
+                        {row.status.charAt(0).toUpperCase() +
+                          row.status.slice(1)}
+                      </TableCell>
+                      {userData?.role !== "hospital" && (
+                        <TableCell align="center">
+                          <Tooltip title={"View Claim"}>
+                            <IconButton
+                              onClick={() =>
+                                navigate("/viewClaim", { state: { row } })
+                              }
+                            >
+                              <IoEyeSharp />
+                            </IconButton>
+                          </Tooltip>
+                        </TableCell>
+                      )}
+                    </TableRow>
+                  ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={7} align="center">
+                    No Data Found
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
           </Table>
         </TableContainer>
 
         {/* Pagination (dummy for static mode) */}
         {totalPages > 1 && (
           <Box sx={{ display: "flex", justifyContent: "center", p: 2 }}>
-            <Pagination page={page} onChange={handlePageChange} count={totalPages} />
+            <Pagination
+              page={page}
+              onChange={handlePageChange}
+              count={totalPages}
+            />
           </Box>
         )}
 

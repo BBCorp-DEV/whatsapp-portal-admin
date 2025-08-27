@@ -57,8 +57,7 @@ const EditUser = () => {
   const userData = location?.state?.userData;
   console.log("cjvferg8888vyer", userData);
   const [userDetails, setUserDetails] = useState({});
-const [loading, setLoading] = useState(false);
- 
+  const [loading, setLoading] = useState(false);
 
   // List all possible permissions here
   const allPermissions = [
@@ -74,30 +73,29 @@ const [loading, setLoading] = useState(false);
 
   // Permissions the user currently has
 
- const formik = useFormik({
-  enableReinitialize: true,
-  initialValues: {
-    first_name: userData?.firstName ?? "",
-    last_name: userData?.lastName ?? "",
-    email: userData?.email ?? "",
-    phone: userData?.phone ?? "",
-    // ✅ use role instead of permissions
-    permissions: Array.isArray(userData?.role) ? userData.role : [],
-  },
-  validationSchema,
-  onSubmit: (values) => {
-    EditProfileHandler(values);
-  },
-});
-
+  const formik = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      first_name: userData?.firstName ?? "",
+      last_name: userData?.lastName ?? "",
+      email: userData?.email ?? "",
+      phone: userData?.phone ?? "",
+      // ✅ use role instead of permissions
+      permissions: Array.isArray(userData?.role) ? userData.role : [],
+    },
+    validationSchema,
+    onSubmit: (values) => {
+      EditProfileHandler(values);
+    },
+  });
 
   const EditProfileHandler = async (values) => {
     setLoading(true);
     const token = window.localStorage.getItem("adminToken");
-     
+
     try {
       const response = await axios.put(
-      `https://whatsapp.3pay.xyz/api/v1/user/update?id=${userData?.id}`,
+        `https://whatsapp.3pay.xyz/api/v1/user/update?id=${userData?.id}`,
         {
           email: values?.email,
           firstName: `${values?.first_name}`,
@@ -115,7 +113,7 @@ const [loading, setLoading] = useState(false);
       }
     } catch (error) {
       toast.error(error?.response?.data?.message);
-      setLoading(false); 
+      setLoading(false);
     }
   };
   const isSmall = useMediaQuery("(max-width:600px)");
@@ -189,22 +187,22 @@ const [loading, setLoading] = useState(false);
   return (
     <Box sx={{ position: "relative", overflow: "hidden" }}>
       <Box
-              sx={{
-                cursor: "pointer",
-                background: "#82828214;",
-                width: "45px",
-                height: "45px",
-                borderRadius: "50%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-              onClick={() => navigate("/user-list")}
-            >
-              <IconButton sx={{ color: "#000", p: 0 }}>
-                <IoArrowBackSharp size={25} />
-              </IconButton>
-            </Box>
+        sx={{
+          cursor: "pointer",
+          background: "#82828214;",
+          width: "45px",
+          height: "45px",
+          borderRadius: "50%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+        onClick={() => navigate("/user-list")}
+      >
+        <IconButton sx={{ color: "#000", p: 0 }}>
+          <IoArrowBackSharp size={25} />
+        </IconButton>
+      </Box>
       <Grid
         spacing={5}
         container
@@ -286,23 +284,23 @@ const [loading, setLoading] = useState(false);
                       <FormControlLabel
                         control={
                           <Checkbox
-  checked={formik.values.permissions.includes(perm)} // ✅ now matches
-  onChange={(e) => {
-    const checked = e.target.checked;
-    formik.setFieldValue(
-      "permissions",
-      checked
-        ? [...formik.values.permissions, perm]
-        : formik.values.permissions.filter((p) => p !== perm)
-    );
-  }}
-
-
+                            checked={formik.values.permissions.includes(perm)} // ✅ now matches
+                            onChange={(e) => {
+                              const checked = e.target.checked;
+                              formik.setFieldValue(
+                                "permissions",
+                                checked
+                                  ? [...formik.values.permissions, perm]
+                                  : formik.values.permissions.filter(
+                                      (p) => p !== perm
+                                    )
+                              );
+                            }}
                             name={perm}
                             sx={{
                               color: "#03A7E5",
                               "&.Mui-checked": {
-                                color: "#00CFFD",
+                                color: "#03A7E5",
                               },
                             }}
                           />
@@ -317,7 +315,7 @@ const [loading, setLoading] = useState(false);
                 type="submit"
                 variant="contained"
                 fullWidth
-                disabled={loading} 
+                disabled={loading}
                 sx={{
                   mt: 4,
                   background: "#0077cc",
@@ -327,7 +325,7 @@ const [loading, setLoading] = useState(false);
                   padding: "10px",
                 }}
               >
-                 {loading ? (
+                {loading ? (
                   <CircularProgress size={24} sx={{ color: "#fff" }} />
                 ) : (
                   "Submit"

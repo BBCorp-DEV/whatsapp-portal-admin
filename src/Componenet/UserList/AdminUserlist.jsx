@@ -118,10 +118,16 @@ export default function UserList() {
         headers: {
           authorization: `Bearer ${token}`,
         },
+        params: {
+          page: page,
+          limit: limit, // ✅ fixed
+          search: searchQuery,
+        },
       });
 
       if (response.status === 200) {
         setUserStoredData(response?.data?.data?.docs);
+        setTotalPages(response?.data?.data?.totalPages)
         // toast.success(
         //   response?.data?.message || "Users loaded successfully ✅"
         // );
@@ -138,11 +144,8 @@ export default function UserList() {
     }
   };
   useEffect(() => {
-    if (!effectRan.current) {
-      userListing();
-      effectRan.current = true;
-    }
-  }, []);
+    userListing();
+  }, [page, limit, searchQuery]);
 
   const handleDeleteUser = async (id) => {
     const token = window.localStorage.getItem("adminToken");
@@ -209,8 +212,6 @@ export default function UserList() {
               gap: 2,
             }}
           >
-        
-
             <TextField
               variant="outlined"
               size="small"
@@ -224,7 +225,7 @@ export default function UserList() {
                 minWidth: { xs: "100%", sm: 200 },
               }}
             />
-                <Button
+            <Button
               variant="contained"
               onClick={() => navigate("/add-user")}
               sx={{
@@ -382,7 +383,7 @@ export default function UserList() {
           </Table>
         </TableContainer>
 
-        {totalPages > 1 && (
+        {totalPages > 1 && userStoredData.length > 0 && (
           <Box sx={{ display: "flex", justifyContent: "center", p: 2 }}>
             <Pagination
               page={page}
@@ -411,72 +412,91 @@ export default function UserList() {
       </Dialog>
 
       {/* Update Password Dialog */}
-      <Dialog
-        open={open2}
-        onClose={handleClose2}
-        maxWidth="xs"
-        fullWidth
-        PaperProps={{
-          sx: {
-            borderRadius: "16px", // ✅ round corners
-          },
-        }}
-      >
-        <DialogTitle
-          sx={{
-            textAlign: "center",
-            fontWeight: "bold",
-            fontSize: "18px",
-            color: "#d32f2f",
-          }}
-        >
-          Delete User
-        </DialogTitle>
+   <Dialog
+  open={open2}
+  onClose={handleClose2}
+  maxWidth="xs"
+  fullWidth
+  PaperProps={{
+    sx: {
+      borderRadius: "16px",
+      boxShadow: "0px 8px 24px rgba(0,0,0,0.12)", // softer shadow
+    },
+  }}
+>
+  {/* Title */}
+  <DialogTitle
+    sx={{
+      textAlign: "center",
+      fontWeight: 600,
+      fontSize: "20px",
+      color: "#d32f2f",
+      pb: 1,
+    }}
+  >
+    Delete User
+  </DialogTitle>
 
-        <DialogContent sx={{ textAlign: "center", py: 2 }}>
-          <p style={{ marginBottom: "10px", fontSize: "15px", color: "#444" }}>
-            Are you sure you want to delete this user? This action cannot be
-            undone.
-          </p>
+  {/* Content */}
+  <DialogContent sx={{ textAlign: "center", py: 2 }}>
+    <p
+      style={{
+        marginBottom: "10px",
+        fontSize: "15px",
+        color: "#555",
+        lineHeight: 1.6,
+      }}
+    >
+      Are you sure you want to delete this user? <br />
+      <strong>This action cannot be undone.</strong>
+    </p>
+  </DialogContent>
 
-          <div
-            style={{
-              background: "#fff5f5",
-              border: "1px solid #f0caca",
-              borderRadius: "8px", // ✅ round box corners
-              padding: "12px",
-              display: "inline-block",
-              fontSize: "14px",
-            }}
-          >
-            <strong style={{ color: "#b71c1c" }}>
-              {open2?.firstName} {open2?.lastName}
-            </strong>
-          </div>
-        </DialogContent>
+  {/* Actions */}
+  <DialogActions
+    sx={{
+      justifyContent: "center",
+      gap: 2,
+      pb: 2,
+    }}
+  >
+    <Button
+      onClick={handleClose2}
+      variant="outlined"
+      color="inherit"
+      sx={{
+        borderRadius: "8px",
+        px: 3,
+        textTransform: "none",
+      }}
+    >
+      Cancel
+    </Button>
+    <Button
+      onClick={() => handleDeleteUser(open2?.id)}
+      variant="contained"
+      color="error"
+      disabled={loading}
+      sx={{
+        borderRadius: "8px",
+        px: 3,
+        textTransform: "none",
+        boxShadow: "0px 4px 12px rgba(211,47,47,0.3)",
+        background: loading ? "#b71c1c" : "#d32f2f",
+        "&:hover": {
+          background: "#b71c1c",
+        },
+      }}
+    >
+      {loading ? (
+        <CircularProgress size={22} sx={{ color: "white" }} />
+      ) : (
+        "Delete"
+      )}
+    </Button>
+  </DialogActions>
+</Dialog>
 
-        <DialogActions sx={{ justifyContent: "center", pb: 2 }}>
-          <Button
-            onClick={handleClose2}
-            variant="outlined"
-            sx={{ borderRadius: "8px", px: 3 }}
-          >
-            Cancel
-          </Button>
-          <Button
-            onClick={() => handleDeleteUser(open2?.id)}
-            variant="contained"
-            color="error"
-            sx={{ borderRadius: "8px", px: 3 }}
-          >
-            {loading ? (
-              <CircularProgress size={24} sx={{ color: "white" }} />
-            ) : (
-              "Delete"
-            )}
-          </Button>
-        </DialogActions>
-      </Dialog>
     </>
   );
 }

@@ -53,6 +53,7 @@ export default function WithDraw() {
   // Pagination
   const handlePageChange = (event, value) => setPage(value);
     const depositListing = async () => {
+      setLoading(true)
       try {
         const token = window.localStorage.getItem("adminToken");
   
@@ -69,6 +70,7 @@ export default function WithDraw() {
   
         if (response?.status === 200) {
           setPaginatedUsers(response?.data);
+           setLoading(false)
           // toast.success(
           //   response?.data?.message || "Deposits loaded successfully ✅"
           // );
@@ -77,6 +79,7 @@ export default function WithDraw() {
         }
       } catch (error) {
         console.error("API ERROR RESPONSE:", error?.response?.data || error);
+         setLoading(false)
         // toast.error(
         //   error?.response?.data?.message || "Failed to fetch deposits ❌"
         // );

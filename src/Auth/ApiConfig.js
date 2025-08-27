@@ -15,6 +15,7 @@ const ApiConfig = {
   userDelete: `${url}/api/v1/user/delete`,
   whatsAppList: `${url}/api/v1/whatsappUser/list`,
   errorList: `${url}/api/v1/crmApiLogs/list`,
+  dashboardList: `${url}/api/v1/dashboard/stats`,
   
 };
 export default ApiConfig;

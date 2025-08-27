@@ -68,7 +68,7 @@ const Dashboard = () => {
       });
 
       if (response.status === 200) {
-       setUserStoredData(response?.data?.data?.docs?.slice(0, 1));
+       setUserStoredData(response?.data?.data?.docs?.slice(0, 6));
       } else {
         setUserStoredData([]);
       }
@@ -195,10 +195,10 @@ if (loading) {
   }
 
   return (
-    <Box sx={{ px: { xs: 2, sm: 4, md: 4 }, py: 2, width: "100%" }}>
+    <Box sx={{ px: { xs: 2, sm: 4, md: 2 }, py: 2, width: "100%" }}>
       {/* Filter Dropdown */}
       <Box sx={{ mb: 3, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <Typography sx={{ fontWeight: "bold",fontSize:'22px' }}>Dashboard ({filter.charAt(0).toUpperCase() + filter.slice(1)})</Typography>
+        <Typography  variant="h4" sx={{ fontWeight: "700" }}>Dashboard ({filter.charAt(0).toUpperCase() + filter.slice(1)})</Typography>
         <FormControl sx={{ minWidth: 150 }} size="small">
           <InputLabel id="dashboard-filter-label">Filter</InputLabel>
           <Select
@@ -320,7 +320,7 @@ if (loading) {
           </Card>
         </Grid>
       </Grid> */}
-      <Typography sx={{ fontWeight: "bold",fontSize:'22px' }}>User Details</Typography>
+      <Typography variant="h4" sx={{ fontWeight: "700" }}>User Details</Typography>
         <TableContainer
           component={Paper}
           elevation={3}

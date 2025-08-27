@@ -212,7 +212,7 @@ const AddUser = () => {
                         color: "#000",
                         display: "block",
                         marginBottom: -5,
-                        paddingTop: isSmall ? "0px" : "20px",
+                        paddingTop: isSmall ? "0px" : "0px",
                       }}
                     >
                       {label}

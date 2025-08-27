@@ -19,7 +19,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { IoEyeSharp } from "react-icons/io5";
 import ApiConfig from "../../Auth/ApiConfig";
 import axios from "axios";
-import PoliciesPlan from "../../Common/DashboardCards/PoliciesPlan";
 import { AuthContext } from "../../Auth/context/Auth";
 import toast from "react-hot-toast";
 
@@ -80,7 +79,6 @@ export default function Account() {
 
   return (
     <>
-      {["admin", "insurance"].includes(userData?.role) && <PoliciesPlan />}
 
       <Box
         sx={{
@@ -139,12 +137,13 @@ export default function Account() {
             <TableHead>
               <TableRow>
                 {[
-                  "Serial Number",
-                  "Policy Name",
-                  "Email",
-                  "Policy Holder",
+                  "Sr No.",
+                  "Name",
+                  "Account Name",
+                  "Account Type",
+                  "Currency",
                   "Status",
-                  "Action",
+                  "Date",
                 ].map((heading, i) => (
                   <TableCell key={i} sx={{ fontWeight: "bold" }}>
                     {heading}

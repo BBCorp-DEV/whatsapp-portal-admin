@@ -91,7 +91,7 @@ const ViewUserList = () => {
                     sx={{
                       fontWeight: "bold",
                       color:
-                        userData.status === "active" ? "#4caf50" : "#f44336",
+                        userData.status === "ACTIVE" ? "#4caf50" : "#f44336",
                       textTransform: "capitalize",
                     }}
                   >

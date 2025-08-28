@@ -428,7 +428,7 @@ const Dashboard = () => {
       <Typography variant="h6" sx={{ mb: 2, fontWeight: "bold" }}>
         Transfer Count
       </Typography>
-      <Grid container spacing={3}>
+           <Grid container spacing={3}>
         {bottomCardsTransfer.map((card, i) => (
           <Grid key={i} size={{ xs: 12, md: 4 }}>
             <Card
@@ -459,7 +459,6 @@ const Dashboard = () => {
                   {card.value}
                 </Typography>
               </CardContent>
-              <Box>{card.icon}</Box>
             </Card>
           </Grid>
         ))}

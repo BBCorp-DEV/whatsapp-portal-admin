@@ -113,7 +113,7 @@ const AddUser = () => {
       console.log("bwgbeg", response);
       if (response.status === 200) {
         toast.success(response.data?.message);
-        navigate("/user-list");
+        navigate("/sub-admin");
         setLoading(false);
       } else {
         setLoading(false);
@@ -137,7 +137,7 @@ const AddUser = () => {
           alignItems: "center",
           justifyContent: "center",
         }}
-        onClick={() => navigate("/user-list")}
+        onClick={() => navigate("/sub-admin")}
       >
         <IconButton sx={{ color: "#000", p: 0 }}>
           <IoArrowBackSharp size={25} />
@@ -186,13 +186,7 @@ const AddUser = () => {
               gutterBottom
               sx={{ fontSize: { xs: "20px", sm: "24px" } }}
             >
-              {userType === "userList"
-                ? "Add New User"
-                : userType === "hospital"
-                ? "Add New Hospital"
-                : userType === "insurance"
-                ? "Add New Insurance"
-                : "Add New User"}
+              Add New Sub Admin
             </Typography>
 
             <form onSubmit={formik.handleSubmit}>

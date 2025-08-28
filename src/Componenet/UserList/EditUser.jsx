@@ -108,7 +108,7 @@ const EditUser = () => {
       );
       if (response?.status === 200) {
         toast.success(response.data.message);
-        navigate("/user-list");
+        navigate("/sub-admin");
         auth.getProfileData();
       }
     } catch (error) {
@@ -197,7 +197,7 @@ const EditUser = () => {
           alignItems: "center",
           justifyContent: "center",
         }}
-        onClick={() => navigate("/user-list")}
+        onClick={() => navigate("/sub-admin")}
       >
         <IconButton sx={{ color: "#000", p: 0 }}>
           <IoArrowBackSharp size={25} />
@@ -234,7 +234,7 @@ const EditUser = () => {
               gutterBottom
               sx={{ fontSize: { xs: "1.4rem", md: "1.5rem" } }}
             >
-              Edit User Details
+              Edit Sub Admin Details
             </Typography>
 
             <form onSubmit={formik.handleSubmit}>

@@ -34,7 +34,7 @@ const ViewUserList = () => {
       {/* Back Button - moved outside the card */}
       <Box sx={{ alignSelf: "flex-start", mb: 0 }}>
         <IconButton
-          onClick={() => navigate("/user-list")}
+          onClick={() => navigate("/sub-admin")}
           sx={{
             width: 40,
             height: 40,
@@ -61,7 +61,7 @@ const ViewUserList = () => {
             align="center"
             sx={{ fontWeight: 700, mb: 3, color: "#000" }}
           >
-            User Details
+            Sub Admin Details
           </Typography>
 
           <Divider sx={{ mb: 3 }} />
@@ -75,7 +75,7 @@ const ViewUserList = () => {
               { label: "User Type", value: userData.userType },
               { label: "Date & Time", value: moment(getDataStored.dob).format("lll") },
               {
-                label: "Role",
+                label: "Permission",
                 value: Array.isArray(userData?.role)
                   ? userData.role.join(", ")
                   : userData?.role,

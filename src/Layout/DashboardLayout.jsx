@@ -125,12 +125,7 @@ export default function DashboardLayout({ children }) {
       roles: ["Dashboard"],
     },
   
-    {
-      text: "User Management",
-      path: "/user-list",
-      icon: <FaUsers size={24} />,
-      roles: ["admin"],
-    },
+ 
     {
       text: "WhatsApp User",
       path: "/whatsapp-user",
@@ -166,6 +161,12 @@ export default function DashboardLayout({ children }) {
       path: "/error-lists",
       icon: <MdOutlineReportGmailerrorred size={24} />,
       roles: ["admin", "Error Log"],
+    },
+       {
+      text: "Sub Admin",
+      path: "/sub-admin",
+      icon: <FaUsers size={24} />,
+      roles: ["admin"],
     },
   ];
 

@@ -222,7 +222,7 @@ export default function UserList() {
           }}
         >
           <Typography variant="h4" sx={{ fontWeight: 700 }}>
-            User List
+            Sub Admin List
           </Typography>
 
           <Box
@@ -256,7 +256,7 @@ export default function UserList() {
             />
             <Button
               variant="contained"
-              onClick={() => navigate("/add-user")}
+              onClick={() => navigate("/add-subadmin")}
               sx={{
                 backgroundColor: "#0077cc",
                 textTransform: "none",
@@ -268,7 +268,7 @@ export default function UserList() {
                 "&:hover": { backgroundColor: "#0077cc" },
               }}
             >
-              Add User
+              Add SubAdmin
             </Button>
             <Button
               variant="contained"
@@ -369,16 +369,16 @@ export default function UserList() {
                       <Tooltip title="Edit profile">
                         <IconButton
                           onClick={() =>
-                            navigate("/edit-user", { state: { userData: row } })
+                            navigate("/edit-subadmin", { state: { userData: row } })
                           }
                         >
                           <MdModeEditOutline />
                         </IconButton>
                       </Tooltip>
-                      <Tooltip title="View User">
+                      <Tooltip title="View SubAdmin">
                         <IconButton
                           onClick={() =>
-                            navigate("/view-user", { state: { userData: row } })
+                            navigate("/view-subadmin", { state: { userData: row } })
                           }
                         >
                           <MdOutlineRemoveRedEye />
@@ -436,7 +436,7 @@ export default function UserList() {
             pb: 1,
           }}
         >
-          Delete User
+          Delete Sub Admin
         </DialogTitle>
         <DialogContent sx={{ textAlign: "center", py: 2 }}>
           <p
@@ -447,7 +447,7 @@ export default function UserList() {
               lineHeight: 1.6,
             }}
           >
-            Are you sure you want to delete this user? <br />
+            Are you sure you want to delete this subadmin? <br />
             <strong>This action cannot be undone.</strong>
           </p>
         </DialogContent>

@@ -84,7 +84,7 @@ const App = () => {
               }
             />
             <Route
-              path="/user-list"
+              path="/sub-admin"
               element={
                 <AuthGuard>
                   <DashboardLayout>
@@ -124,7 +124,7 @@ const App = () => {
               }
             />
             <Route
-              path="/add-user"
+              path="/add-subadmin"
               element={
                 <AuthGuard>
                   <DashboardLayout>
@@ -135,7 +135,7 @@ const App = () => {
               }
             />
             <Route
-              path="/edit-user"
+              path="/edit-subadmin"
               element={
                 <AuthGuard>
                   <DashboardLayout>
@@ -165,7 +165,7 @@ const App = () => {
               }
             />
             <Route
-              path="/view-user"
+              path="/view-subadmin"
               element={
                 <AuthGuard>
                   <DashboardLayout>

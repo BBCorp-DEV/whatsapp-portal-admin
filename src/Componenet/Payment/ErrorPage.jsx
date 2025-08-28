@@ -48,6 +48,7 @@ export default function ErrorPage() {
   };
 
   const errortisting = async () => {
+    setLoading(true)
     try {
       const token = window.localStorage.getItem("adminToken");
       const response = await axios({
@@ -60,18 +61,21 @@ export default function ErrorPage() {
         params: {
           page: page,
           limit: limit,
+          search:searchQuery
         },
       });
 
       console.log("depositResponse", response);
 
       if (response?.status === 200) {
+           setLoading(false)
         setErrorData(response?.data?.data?.docs);
         setTotalPages(response?.data?.data?.totalPages);
       } else {
         // toast.error(response?.data?.message || "Something went wrong ❌");
       }
     } catch (error) {
+         setLoading(false)
       console.error("API ERROR RESPONSE:", error?.response?.data || error);
 
       // toast.error(
@@ -82,10 +86,10 @@ export default function ErrorPage() {
   };
   useEffect(() => {
     errortisting();
-  }, [page, limit]);
+  }, [page, limit,searchQuery]);
   return (
     <>
-      {["admin", "insurance"].includes(userData?.role) && <PlansCard />}
+    
       <Box
         sx={{
           height: "100vh",

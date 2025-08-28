@@ -50,10 +50,16 @@ export default function Account() {
         headers: {
           authorization: `Bearer ${token}`,
         },
+        params:{
+          page:page,
+          limit:limit,
+          search:searchQuery
+        }
       });
 
       if (response.status === 200) {
         setUserStoredData(response?.data?.data?.docs);
+        setTotalPages(response?.data?.data?.totalPages)
             // toast.success(response?.data?.message || "Users loaded successfully ✅");
       } else {
 //  toast.error(response?.data?.message || "Something went wrong ❌");
@@ -68,11 +74,8 @@ export default function Account() {
     }
   };
     useEffect(() => {
-      if (!effectRan.current) {
-        userListing();
-        effectRan.current = true;
-      }
-    }, [])
+    userListing();
+    },[page,limit,searchQuery])
 
   const handleSearchQueryChange = (event) => {
     setSearchQuery(event.target.value);

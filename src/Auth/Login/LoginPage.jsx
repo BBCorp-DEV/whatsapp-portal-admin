@@ -156,7 +156,7 @@ const LoginPage = () => {
               {/* Logo at center */}
               <Box sx={{ mb: 3 }}>
                 <img
-                  src="/images/bbc_loginlogo.jpg"
+                  src="/images/NavbarLogo1.png"
                   alt="Login Logo"
                   style={{ width: "120px", height: "auto" ,background: "white", }}
                 />

@@ -28,12 +28,14 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import DownloadIcon from "@mui/icons-material/Download";
+import ApiDocModal from "../ApiDocModal";
 
 const statusOptions = ["all", "pending", "success", "failed"];
 const typeOptions = ["Bank Transfer", "UPI", "Wallet"];
 
 export default function Deposite() {
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [paginatedDeposits, setPaginatedDeposits] = useState([]);
@@ -65,7 +67,7 @@ export default function Deposite() {
           page: page,
           limit: limit,
           search: searchQuery,
-           fromDate: fromDate,
+          fromDate: fromDate,
           toDate: toDate,
         },
       });
@@ -161,17 +163,17 @@ export default function Deposite() {
               setSearchQuery(e.target.value);
               setPage(1);
             }}
-             sx={{
-            backgroundColor: "#fff",
-            borderRadius: "8px",
-            marginTop: { xs: "10px", md: "0px" },
-            minWidth: 200,
-            "& .MuiOutlinedInput-root": {
-              paddingRight: 0,
-              padding: "2.5px 0px",
-              borderRadius: "10px",
-            },
-          }}
+            sx={{
+              backgroundColor: "#fff",
+              borderRadius: "8px",
+              marginTop: { xs: "10px", md: "0px" },
+              minWidth: 200,
+              "& .MuiOutlinedInput-root": {
+                paddingRight: 0,
+                padding: "2.5px 0px",
+                borderRadius: "10px",
+              },
+            }}
           />
 
           <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -216,7 +218,7 @@ export default function Deposite() {
                     sx: {
                       backgroundColor: "#fff",
                       borderRadius: "8px",
-                     width: 150,
+                      width: 150,
                     },
                   },
                 }}
@@ -237,23 +239,23 @@ export default function Deposite() {
               </Button>
             </Box>
           </LocalizationProvider>
-           <Button
-              variant="contained"
-              onClick={downloadExcel}
-              sx={{
-                backgroundColor: "#0077cc",
-                textTransform: "none",
-                px: 4,
-                py: 1,
-                borderRadius: "8px",
-                fontWeight: "bold",
-                color: "#fff",
-                "&:hover": { backgroundColor: "#0077cc" },
-              }}
-            >
-              <DownloadIcon />
-              &nbsp; Download Xlsx
-            </Button>
+          <Button
+            variant="contained"
+            onClick={downloadExcel}
+            sx={{
+              backgroundColor: "#0077cc",
+              textTransform: "none",
+              px: 4,
+              py: 1,
+              borderRadius: "8px",
+              fontWeight: "bold",
+              color: "#fff",
+              "&:hover": { backgroundColor: "#0077cc" },
+            }}
+          >
+            <DownloadIcon />
+            &nbsp; Download Xlsx
+          </Button>
         </Box>
       </Box>
 
@@ -307,11 +309,12 @@ export default function Deposite() {
                   <TableCell>
                     <Tooltip title="Vie Deposit">
                       <IconButton
-                        onClick={() =>
-                          navigate("/view-deposit", {
-                            state: { paginatedDeposits },
-                          })
-                        }
+                        onClick={() => setOpen(row)}
+                      // onClick={() =>
+                      //   navigate("/view-deposit", {
+                      //     state: { paginatedDeposits },
+                      //   })
+                      // }
                       >
                         <IoEyeSharp />
                       </IconButton>
@@ -329,6 +332,9 @@ export default function Deposite() {
           </TableBody>
         </Table>
       </TableContainer>
+
+      {open && <ApiDocModal open={open} onClose={() => setOpen(false)} />}
+
 
       {/* Pagination */}
       {totalPages > 1 && (

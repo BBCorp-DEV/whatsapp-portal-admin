@@ -28,6 +28,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import DownloadIcon from "@mui/icons-material/Download";
+import ApiDocModal from "../ApiDocModal";
 
 const statusOptions = ["all", "pending", "success", "failed"];
 const typeOptions = ["Bank Transfer", "UPI", "Wallet"];
@@ -81,6 +82,8 @@ export default function Whatsapp() {
   const [page, setPage] = useState(1);
   const navigate = useNavigate();
   const limit = 10;
+    const [open, setOpen] = useState(false);
+  
   const [loading, setLoading] = useState(false);
 
   const filteredDeposits = deposits.filter((d) => {
@@ -336,11 +339,12 @@ export default function Whatsapp() {
                   <TableCell>
                     <Tooltip title="View WhatsApp">
                       <IconButton
-                        onClick={() =>
-                          navigate("/view-whatsapp", {
-                            state: { whatsData },
-                          })
-                        }
+                          onClick={() => setOpen(row)}
+                        // onClick={() =>
+                        //   navigate("/view-whatsapp", {
+                        //     state: { whatsData },
+                        //   })
+                        // }
                       >
                         <IoEyeSharp />
                       </IconButton>
@@ -358,6 +362,8 @@ export default function Whatsapp() {
           </TableBody>
         </Table>
       </TableContainer>
+            {open && <ApiDocModal open={open} onClose={() => setOpen(false)} />}
+
 
       {/* Pagination */}
       {/* {totalPages > 1 && (

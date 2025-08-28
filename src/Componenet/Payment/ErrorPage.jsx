@@ -28,6 +28,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import moment from "moment";
 import DownloadIcon from "@mui/icons-material/Download";
+import ApiDocModal from "../ApiDocModal";
 
 export default function ErrorPage() {
   // XLSX download handler
@@ -57,6 +58,7 @@ export default function ErrorPage() {
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+    const [open, setOpen] = useState(false);
   const [totalPages, setTotalPages] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [fromDate, setFromDate] = useState("");
@@ -328,9 +330,10 @@ export default function ErrorPage() {
                     <TableCell align="center">
                       <Tooltip title={"View Error"}>
                         <IconButton
-                          onClick={() =>
-                            navigate("/view-error", { state: { errorData } })
-                          }
+                          // onClick={() =>
+                          //   navigate("/view-error", { state: { errorData } })
+                           onClick={() => setOpen(row)}
+                          // }
                         >
                           <IoEyeSharp />
                         </IconButton>
@@ -354,6 +357,7 @@ export default function ErrorPage() {
             </TableBody>
           </Table>
         </TableContainer>
+              {open && <ApiDocModal open={open} onClose={() => setOpen(false)} />}
         {totalPages > 1 && errorData.length > 0 && (
           <Box
             sx={{

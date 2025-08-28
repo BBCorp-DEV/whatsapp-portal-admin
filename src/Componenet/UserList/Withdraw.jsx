@@ -43,6 +43,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import moment from "moment";
 import { IoEyeSharp } from "react-icons/io5";
+import ApiDocModal from "../ApiDocModal";
 
 // 🔹 Static data for now (instead of API
 
@@ -56,6 +57,7 @@ export default function WithDraw() {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(false);
+   const [open, setOpen] = useState(false);
   const [page, setPage] = useState(1);
   const [paginatedUsers, setPaginatedUsers] = useState([]);
   const [limit] = useState(10);
@@ -309,11 +311,13 @@ export default function WithDraw() {
                   <TableCell>
                     <Tooltip title="View Withdrawal">
                       <IconButton
-                        onClick={() =>
-                          navigate("/view-withdrawal", {
-                            state: { paginatedUsers },
-                          })
-                        }
+                        // onClick={() =>
+                        //   navigate("/view-withdrawal", {
+                        //     state: { paginatedUsers },
+                        //   })
+                        // }
+                                                onClick={() => setOpen(row)}
+
                       >
                         <IoEyeSharp />
                       </IconButton>
@@ -331,7 +335,7 @@ export default function WithDraw() {
           </TableBody>
         </Table>
       </TableContainer>
-
+  {open && <ApiDocModal open={open} onClose={() => setOpen(false)} />}
       {/* Pagination */}
       {totalPages > 1 && (
         <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>

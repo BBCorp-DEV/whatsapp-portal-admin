@@ -27,6 +27,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import moment from "moment";
 import DownloadIcon from "@mui/icons-material/Download";
+import ApiDocModal from "../ApiDocModal";
 
 export default function Account() {
   // XLSX download handler
@@ -60,6 +61,7 @@ export default function Account() {
   const [limit, setLimit] = useState(10);
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
+   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const auth = useContext(AuthContext);
   const userData = auth.userData;
@@ -300,11 +302,12 @@ export default function Account() {
                     <TableCell>
                       <Tooltip title="View Account">
                         <IconButton
-                          onClick={() =>
-                            navigate("/view-account", {
-                              state: { userStoredData },
-                            })
-                          }
+                          // onClick={() =>
+                          //   navigate("/view-account", {
+                          //     state: { userStoredData },
+                          //   })
+                          // }
+                            onClick={() => setOpen(row)}
                         >
                           <IoEyeSharp />
                         </IconButton>
@@ -337,7 +340,7 @@ export default function Account() {
             </TableBody>
           </Table>
         </TableContainer>
-
+ {open && <ApiDocModal open={open} onClose={() => setOpen(false)} />}
         {/* Pagination */}
         {totalPages > 1 && userStoredData?.length > 0 && (
           <Box

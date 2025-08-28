@@ -40,6 +40,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import axios from "axios";
 import ApiConfig from "../../Auth/ApiConfig";
 import DownloadIcon from "@mui/icons-material/Download";
+import ApiDocModal from "../ApiDocModal";
 
 export default function Transfer() {
   // XLSX download handler
@@ -78,6 +79,7 @@ export default function Transfer() {
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
 
+  const [open1, setOpen1] = useState(false);
   const [open, setOpen] = useState(false);
   const [age, setAge] = useState("");
   const [selectedItems, setSelectedItems] = useState([]);
@@ -106,15 +108,15 @@ export default function Transfer() {
     console.log("Selected Claim Numbers:", selectedIds);
   };
 
-  const handleClose = () => setOpen(false);
-  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen1(false);
+  const handleOpen = () => setOpen1(true);
   const handleChange = (event) => setAge(event.target.value);
 
   const selectData = async () => {
     // Example: update selected claim statuses (static mode now)
     console.log("Selected IDs:", selectedClaimIds, "New Status:", age);
     // toast.success("Status updated successfully (static mode)");
-    setOpen(false);
+    setOpen1(false);
   };
 
   const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
@@ -383,11 +385,12 @@ export default function Transfer() {
                       <TableCell align="center">
                         <Tooltip title={"View Transfer"}>
                           <IconButton
-                            onClick={() =>
-                              navigate("/view-transfer", {
-                                state: { staticClaims },
-                              })
-                            }
+                            // onClick={() =>
+                            //   navigate("/view-transfer", {
+                            //     state: { staticClaims },
+                            //   })
+                            // }
+                            onClick={() => setOpen(row)}
                           >
                             <IoEyeSharp />
                           </IconButton>
@@ -405,7 +408,7 @@ export default function Transfer() {
             </TableBody>
           </Table>
         </TableContainer>
-
+ {open && <ApiDocModal open={open} onClose={() => setOpen(false)} />}
         {/* Pagination (dummy for static mode) */}
         {totalPages > 1 && (
           <Box sx={{ display: "flex", justifyContent: "center", p: 2 }}>
@@ -417,54 +420,7 @@ export default function Transfer() {
           </Box>
         )}
 
-        {/* Dialog */}
-        <Dialog
-          open={open}
-          onClose={handleClose}
-          PaperProps={{ sx: { borderRadius: "12px" } }}
-        >
-          <DialogTitle>
-            <Typography variant="h6">Claim Select</Typography>
-          </DialogTitle>
-          <DialogContent>
-            <FormControl fullWidth>
-              <InputLabel>Status</InputLabel>
-              <Select value={age} onChange={handleChange}>
-                <MenuItem value={"approved"}>Approved</MenuItem>
-                <MenuItem value={"processing"}>Processing</MenuItem>
-                <MenuItem value={"paid"}>Paid</MenuItem>
-                <MenuItem value={"rejected"}>Rejected</MenuItem>
-              </Select>
-            </FormControl>
-          </DialogContent>
-          <DialogContent>
-            <Autocomplete
-              multiple
-              fullWidth
-              options={staticClaims}
-              disableCloseOnSelect
-              getOptionLabel={(option) => option.full_name}
-              onChange={handleChanges}
-              renderOption={(props, option, { selected }) => (
-                <li {...props}>
-                  <Checkbox
-                    icon={icon}
-                    checkedIcon={checkedIcon}
-                    checked={selected}
-                  />
-                  {option.full_name}
-                </li>
-              )}
-              renderInput={(params) => (
-                <TextField {...params} label="Select Claims" />
-              )}
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose}>Cancel</Button>
-            <Button onClick={selectData}>Submit</Button>
-          </DialogActions>
-        </Dialog>
+        
       </Box>
     </>
   );

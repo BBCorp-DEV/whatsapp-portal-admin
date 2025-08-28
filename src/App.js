@@ -1,5 +1,10 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import LoginPage from "./Auth/Login/LoginPage";
 import DashboardLayout from "./Layout/DashboardLayout";
 import AddUser from "./Componenet/UserList/AddUser";
@@ -11,32 +16,28 @@ import { Toaster } from "react-hot-toast";
 import AuthGuard from "./Auth/AuthGuard";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import AdminUserList from "./Componenet/UserList/AdminUserlist"
+import AdminUserList from "./Componenet/UserList/AdminUserlist";
 import ViewUserList from "./Componenet/UserList/ViewUserList";
 import Deposite from "./Componenet/UserList/Deposite";
 import Whatsapp from "./Componenet/Whatsapp/Whatsapp";
 import WithDraw from "./Componenet/UserList/Withdraw";
-import Personal from "../src/Common/PersonalInformation/Personal"
-import Transfer from "./Componenet/ClaimList/Transfer"
-import ErrorPage from "./Componenet/Payment/ErrorPage"
-import AccountView from "./Componenet/AccountView"
-import WhatsAppView from "./Componenet/WhatsAppView"
-import DepositView from "./Componenet/DepositView"
-import TransferView from "./Componenet/TransferView"
-import ErrorView from "./Componenet/ErrorView"
-import WitddrawView from "./Componenet/WitddrawView"
-
-
+import Personal from "../src/Common/PersonalInformation/Personal";
+import Transfer from "./Componenet/ClaimList/Transfer";
+import ErrorPage from "./Componenet/Payment/ErrorPage";
+import AccountView from "./Componenet/AccountView";
+import WhatsAppView from "./Componenet/WhatsAppView";
+import DepositView from "./Componenet/DepositView";
+import TransferView from "./Componenet/TransferView";
+import ErrorView from "./Componenet/ErrorView";
+import WitddrawView from "./Componenet/WitddrawView";
 
 // Home Page Component
 
 const LoginInPageSection = () => (
   <>
     <LoginPage />
- 
   </>
 );
-
 
 const App = () => {
   const auth = React.useContext(AuthContext);
@@ -60,16 +61,16 @@ const App = () => {
       <AuthProvider>
         <Router>
           <Routes>
-            <Route path="/login" element={<LoginInPageSection/>} />
+            <Route path="/" element={<Navigate to="/login" replace />} />{" "}
+              <Route path="/login" element={<LoginInPageSection />} />
             <Route
               path="/dashboard"
               element={
                 <AuthGuard>
                   <DashboardLayout>
                     <Personal />
-                  
                   </DashboardLayout>
-                 </AuthGuard>
+                </AuthGuard>
               }
             />
             <Route
@@ -77,9 +78,9 @@ const App = () => {
               element={
                 <AuthGuard>
                   <DashboardLayout>
-                   <Deposite />
+                    <Deposite />
                   </DashboardLayout>
-                 </AuthGuard>
+                </AuthGuard>
               }
             />
             <Route
@@ -87,20 +88,19 @@ const App = () => {
               element={
                 <AuthGuard>
                   <DashboardLayout>
-           <AdminUserList />
+                    <AdminUserList />
                   </DashboardLayout>
-                 </AuthGuard>
+                </AuthGuard>
               }
             />
-       
             <Route
               path="/whatsapp-user"
               element={
                 <AuthGuard>
                   <DashboardLayout>
-             <Whatsapp />
+                    <Whatsapp />
                   </DashboardLayout>
-                 </AuthGuard>
+                </AuthGuard>
               }
             />
             <Route
@@ -108,9 +108,9 @@ const App = () => {
               element={
                 <AuthGuard>
                   <DashboardLayout>
-             <Transfer />
+                    <Transfer />
                   </DashboardLayout>
-                 </AuthGuard>
+                </AuthGuard>
               }
             />
             <Route
@@ -118,10 +118,9 @@ const App = () => {
               element={
                 <AuthGuard>
                   <DashboardLayout>
-                   <WithDraw />
-                 
+                    <WithDraw />
                   </DashboardLayout>
-                   </AuthGuard>
+                </AuthGuard>
               }
             />
             <Route
@@ -130,9 +129,9 @@ const App = () => {
                 <AuthGuard>
                   <DashboardLayout>
                     <AddUser />
-                       {/* <Subadmin /> */}
+                    {/* <Subadmin /> */}
                   </DashboardLayout>
-                 </AuthGuard>
+                </AuthGuard>
               }
             />
             <Route
@@ -142,47 +141,37 @@ const App = () => {
                   <DashboardLayout>
                     <EditUser />
                   </DashboardLayout>
-                 </AuthGuard>
+                </AuthGuard>
               }
             />
-   
-    
-    
-      
             <Route
               path="/error-lists"
               element={
                 <AuthGuard>
                   <DashboardLayout>
-              <ErrorPage />
+                    <ErrorPage />
                   </DashboardLayout>
-                 </AuthGuard>
+                </AuthGuard>
               }
             />
- 
             <Route
               path="/acounts-list"
               element={
                 <AuthGuard>
                   <DashboardLayout>
-             
                     <Account />
                   </DashboardLayout>
-                 </AuthGuard>
+                </AuthGuard>
               }
             />
-     
-    
-  
-          
             <Route
               path="/view-user"
               element={
                 <AuthGuard>
                   <DashboardLayout>
-                  <ViewUserList />
+                    <ViewUserList />
                   </DashboardLayout>
-                 </AuthGuard>
+                </AuthGuard>
               }
             />
             <Route
@@ -190,9 +179,9 @@ const App = () => {
               element={
                 <AuthGuard>
                   <DashboardLayout>
-                 <WhatsAppView />
+                    <WhatsAppView />
                   </DashboardLayout>
-                 </AuthGuard>
+                </AuthGuard>
               }
             />
             <Route
@@ -200,9 +189,9 @@ const App = () => {
               element={
                 <AuthGuard>
                   <DashboardLayout>
-                  <DepositView />
+                    <DepositView />
                   </DashboardLayout>
-                 </AuthGuard>
+                </AuthGuard>
               }
             />
             <Route
@@ -210,9 +199,9 @@ const App = () => {
               element={
                 <AuthGuard>
                   <DashboardLayout>
-                  <TransferView />
+                    <TransferView />
                   </DashboardLayout>
-                 </AuthGuard>
+                </AuthGuard>
               }
             />
             <Route
@@ -220,9 +209,9 @@ const App = () => {
               element={
                 <AuthGuard>
                   <DashboardLayout>
-                 <AccountView />
+                    <AccountView />
                   </DashboardLayout>
-                 </AuthGuard>
+                </AuthGuard>
               }
             />
             <Route
@@ -230,9 +219,9 @@ const App = () => {
               element={
                 <AuthGuard>
                   <DashboardLayout>
-                  <ErrorView />
+                    <ErrorView />
                   </DashboardLayout>
-                 </AuthGuard>
+                </AuthGuard>
               }
             />
             <Route
@@ -240,9 +229,9 @@ const App = () => {
               element={
                 <AuthGuard>
                   <DashboardLayout>
-                 <WitddrawView   />
+                    <WitddrawView />
                   </DashboardLayout>
-                 </AuthGuard>
+                </AuthGuard>
               }
             />
           </Routes>

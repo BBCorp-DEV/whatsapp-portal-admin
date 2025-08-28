@@ -79,7 +79,7 @@ export default function DashboardLayout({ children }) {
   const handleLogout = () => {
     setOpenLogoutDialog(false);
     localStorage.removeItem("adminToken");
-    navigate("/login");
+    navigate("/");
   };
 
   const icons = [

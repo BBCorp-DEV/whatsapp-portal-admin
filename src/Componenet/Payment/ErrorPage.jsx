@@ -76,8 +76,8 @@ export default function ErrorPage() {
           page: page,
           limit: limit,
           search: searchQuery,
-          startDate: fromDate,
-          endDate: toDate,
+          fromDate: fromDate,
+          toDate: toDate,
         },
       });
 
@@ -312,7 +312,7 @@ export default function ErrorPage() {
             </TableBody>
           </Table>
         </TableContainer>
-        {totalPages > 1 && (
+        {totalPages > 1 && errorData.length > 0 && (
           <Box
             sx={{
               display: "flex",

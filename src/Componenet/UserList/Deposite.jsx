@@ -139,7 +139,10 @@ export default function Deposite() {
               setPage(1);
             }}
              sx={{
-            backgroundColor: "#fff",
+             backgroundColor: {
+                  xs: "transparent", // 0 - 899px
+                  md: "#fff", // 900px and above
+                },
             borderRadius: "8px",
             marginTop: { xs: "10px", md: "0px" },
             minWidth: 200,

@@ -111,6 +111,8 @@ export default function Transfer() {
           page: page,
           limit: limit,
           search: searchQuery,
+              fromDate: fromDate,
+          toDate: toDate,
         },
       });
 

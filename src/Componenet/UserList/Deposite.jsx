@@ -22,6 +22,9 @@ import toast from "react-hot-toast";
 import moment from "moment";
 import { IoEyeSharp } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
 const statusOptions = ["all", "pending", "success", "failed"];
 const typeOptions = ["Bank Transfer", "UPI", "Wallet"];
@@ -32,6 +35,8 @@ export default function Deposite() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [paginatedDeposits, setPaginatedDeposits] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
   const [page, setPage] = useState(1);
   const limit = 10;
   const [loading, setLoading] = useState(false);
@@ -53,29 +58,31 @@ export default function Deposite() {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        params:{
-          page:page,
-          limit:limit,
-          search:searchQuery
-        }
+        params: {
+          page: page,
+          limit: limit,
+          search: searchQuery,
+              fromDate: fromDate,
+          toDate: toDate,
+        },
       });
 
       console.log("depositResponse", response);
 
       if (response?.status === 200) {
         setPaginatedDeposits(response?.data?.data?.docs);
-         setTotalPages(response?.data?.data?.totalPages)
+        setTotalPages(response?.data?.data?.totalPages);
         setLoading(false);
         // toast.success(
         //   response?.data?.message || "Deposits loaded successfully ✅"
         // );
       } else {
-        setPaginatedDeposits([])
+        setPaginatedDeposits([]);
         // toast.error(response?.data?.message || "Something went wrong ❌");
       }
     } catch (error) {
       setLoading(false);
-      setPaginatedDeposits([])
+      setPaginatedDeposits([]);
       console.error("API ERROR RESPONSE:", error?.response?.data || error);
       // toast.error(
       //   error?.response?.data?.message || "Failed to fetch deposits ❌"
@@ -84,9 +91,8 @@ export default function Deposite() {
     }
   };
   useEffect(() => {
-      depositListing();
- 
-  }, [page,limit,searchQuery]);
+    depositListing();
+  }, [page, limit, searchQuery, fromDate, toDate]);
   return (
     <Box
       sx={{
@@ -138,28 +144,41 @@ export default function Deposite() {
             }}
           />
 
-          {/* Status Filter */}
-          {/* <TextField
-            select
-            variant="outlined"
-            size="small"
-            value={statusFilter}
-            onChange={(e) => {
-              setStatusFilter(e.target.value);
-              setPage(1);
-            }}
-            sx={{
-              backgroundColor: "#fff",
-              borderRadius: "8px",
-              minWidth: { xs: "100%", sm: 150 },
-            }}
-          >
-            {statusOptions.map((status) => (
-              <MenuItem key={status} value={status}>
-                {status.charAt(0).toUpperCase() + status.slice(1)}
-              </MenuItem>
-            ))}
-          </TextField> */}
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <Box display="flex" gap={2} flexWrap="wrap">
+              <DatePicker
+                label="From Date"
+                value={fromDate}
+                onChange={(newValue) => setFromDate(newValue)}
+                slotProps={{
+                  textField: {
+                    size: "small",
+                    sx: {
+                      backgroundColor: "#fff",
+                      borderRadius: "8px",
+                      minWidth: 160,
+                    },
+                  },
+                }}
+              />
+
+              <DatePicker
+                label="To Date"
+                value={toDate}
+                onChange={(newValue) => setToDate(newValue)}
+                slotProps={{
+                  textField: {
+                    size: "small",
+                    sx: {
+                      backgroundColor: "#fff",
+                      borderRadius: "8px",
+                      minWidth: 160,
+                    },
+                  },
+                }}
+              />
+            </Box>
+          </LocalizationProvider>
         </Box>
       </Box>
 

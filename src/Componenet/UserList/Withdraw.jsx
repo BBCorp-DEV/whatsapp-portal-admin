@@ -79,6 +79,8 @@ export default function WithDraw() {
           page: page,
           limit: limit,
           search: searchQuery,
+              fromDate: fromDate,
+          toDate: toDate,
         },
       });
 

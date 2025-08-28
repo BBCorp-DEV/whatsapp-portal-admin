@@ -21,6 +21,9 @@ import ApiConfig from "../../Auth/ApiConfig";
 import axios from "axios";
 import { AuthContext } from "../../Auth/context/Auth";
 import toast from "react-hot-toast";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import moment from "moment";
 
 export default function Account() {
@@ -31,10 +34,12 @@ export default function Account() {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
   const navigate = useNavigate();
   const auth = useContext(AuthContext);
   const userData = auth.userData;
-   const effectRan = useRef(false);
+  const effectRan = useRef(false);
 
   const handlePageChange = (event, value) => {
     setPage(value);
@@ -50,19 +55,21 @@ export default function Account() {
         headers: {
           authorization: `Bearer ${token}`,
         },
-        params:{
-          page:page,
-          limit:limit,
-          search:searchQuery
-        }
+        params: {
+          page: page,
+          limit: limit,
+          search: searchQuery,
+          fromDate: fromDate,
+          toDate: toDate,
+        },
       });
 
       if (response.status === 200) {
         setUserStoredData(response?.data?.data?.docs);
-        setTotalPages(response?.data?.data?.totalPages)
-            // toast.success(response?.data?.message || "Users loaded successfully ✅");
+        setTotalPages(response?.data?.data?.totalPages);
+        // toast.success(response?.data?.message || "Users loaded successfully ✅");
       } else {
-//  toast.error(response?.data?.message || "Something went wrong ❌");
+        //  toast.error(response?.data?.message || "Something went wrong ❌");
         setUserStoredData([]);
       }
     } catch (error) {
@@ -73,9 +80,9 @@ export default function Account() {
       setLoading(false);
     }
   };
-    useEffect(() => {
+  useEffect(() => {
     userListing();
-    },[page,limit,searchQuery])
+  }, [page, limit, searchQuery, fromDate, toDate]);
 
   const handleSearchQueryChange = (event) => {
     setSearchQuery(event.target.value);
@@ -83,14 +90,13 @@ export default function Account() {
 
   return (
     <>
-
       <Box
         sx={{
           height: "100vh",
           marginTop: { xs: "0px", md: "0px" },
           background: "#F5F5F5",
-            px: 2,
-        py:0,
+          px: 2,
+          py: 0,
         }}
       >
         {/* Header + Search */}
@@ -101,31 +107,65 @@ export default function Account() {
             flexDirection: { xs: "column", md: "row" },
           }}
         >
-          <Typography
-            variant="h4"
-            sx={{  fontWeight: "700",}}
-          >
+          <Typography variant="h4" sx={{ fontWeight: "700" }}>
             Account List
           </Typography>
-          <TextField
-            variant="outlined"
-            size="small"
-            placeholder="Search..."
-            type="search"
-            value={searchQuery}
-            onChange={handleSearchQueryChange}
-         sx={{
-              backgroundColor: "#fff",
-              borderRadius: "8px",
-              marginTop: { xs: "10px", md: "0px" },
-              minWidth: 200,
-              "& .MuiOutlinedInput-root": {
-                paddingRight: 0,
-                padding: "2.5px 0px",
-                borderRadius: "10px",
-              },
-            }}
-          />
+          <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+            <TextField
+              variant="outlined"
+              size="small"
+              placeholder="Search..."
+              type="search"
+              value={searchQuery}
+              onChange={handleSearchQueryChange}
+              sx={{
+                backgroundColor: "#fff",
+                borderRadius: "8px",
+                marginTop: { xs: "10px", md: "0px" },
+                minWidth: 200,
+                "& .MuiOutlinedInput-root": {
+                  paddingRight: 0,
+                  padding: "2.5px 0px",
+                  borderRadius: "10px",
+                },
+              }}
+            />
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <Box display="flex" gap={2} flexWrap="wrap">
+                <DatePicker
+                  label="From Date"
+                  value={fromDate}
+                  onChange={(newValue) => setFromDate(newValue)}
+                  slotProps={{
+                    textField: {
+                      size: "small",
+                      sx: {
+                        backgroundColor: "#fff",
+                        borderRadius: "8px",
+                        minWidth: 160,
+                      },
+                    },
+                  }}
+                />
+
+                <DatePicker
+                  label="To Date"
+                  value={toDate}
+                  onChange={(newValue) => setToDate(newValue)}
+                  slotProps={{
+                    textField: {
+                      size: "small",
+                      sx: {
+                        backgroundColor: "#fff",
+                        borderRadius: "8px",
+                        minWidth: 160,
+                      },
+                    },
+                  }}
+                />
+              </Box>
+            </LocalizationProvider>
+          </Box>
         </Box>
 
         {/* Table */}
@@ -149,7 +189,7 @@ export default function Account() {
                   "Amount",
                   "Status",
                   "Date",
-                  "Action"
+                  "Action",
                 ].map((heading, i) => (
                   <TableCell key={i} sx={{ fontWeight: "bold" }}>
                     {heading}
@@ -175,9 +215,7 @@ export default function Account() {
                     }}
                   >
                     <TableCell> {(page - 1) * limit + index + 1}</TableCell>
-                    <TableCell sx={{ fontWeight: 500 }}>
-                      {row.name}
-                    </TableCell>
+                    <TableCell sx={{ fontWeight: 500 }}>{row.name}</TableCell>
                     <TableCell sx={{ fontWeight: 500 }}>
                       {row.requestData?.name}
                     </TableCell>
@@ -186,7 +224,10 @@ export default function Account() {
                     </TableCell>
                     <TableCell>{row.requestData?.balance}</TableCell>
                     <TableCell>{row.status}</TableCell>
-                    <TableCell>  {moment(row.createdAt).format("YYYY-MM-DD")}</TableCell>
+                    <TableCell>
+                      {" "}
+                      {moment(row.createdAt).format("YYYY-MM-DD")}
+                    </TableCell>
                     <TableCell>
                       <Tooltip title="View Policy">
                         <IconButton

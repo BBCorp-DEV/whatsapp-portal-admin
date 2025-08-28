@@ -30,6 +30,7 @@ import DepositView from "./Componenet/DepositView";
 import TransferView from "./Componenet/TransferView";
 import ErrorView from "./Componenet/ErrorView";
 import WitddrawView from "./Componenet/WitddrawView";
+import SuccessLog from "./Componenet/SuccessLog";
 
 // Home Page Component
 
@@ -150,6 +151,16 @@ const App = () => {
                 <AuthGuard>
                   <DashboardLayout>
                     <ErrorPage />
+                  </DashboardLayout>
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="/success-lists"
+              element={
+                <AuthGuard>
+                  <DashboardLayout>
+                  <SuccessLog />
                   </DashboardLayout>
                 </AuthGuard>
               }

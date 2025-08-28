@@ -68,6 +68,7 @@ const EditUser = () => {
     "Transfer",
     "Account",
     "Error Log",
+      "Success Log",
     // Add more as needed
   ];
 

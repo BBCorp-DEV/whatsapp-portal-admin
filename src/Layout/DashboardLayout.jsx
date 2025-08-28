@@ -42,6 +42,7 @@ import {
   MdPolicy,
   MdPayments,
   MdOutlineReportGmailerrorred,
+  MdOutlineCheckCircle ,
 } from "react-icons/md";
 import { FaUsers, FaHospitalUser } from "react-icons/fa6";
 import { GiStaticGuard } from "react-icons/gi";
@@ -97,6 +98,7 @@ export default function DashboardLayout({ children }) {
     <FaHospitalUser />,
     <MdOutlineUnsubscribe />,
     <MdOutlineReportGmailerrorred />,
+    <MdOutlineCheckCircle  />
   ];
 
   const handleDrawerToggle = () => {
@@ -160,6 +162,12 @@ export default function DashboardLayout({ children }) {
       text: "Error Logs",
       path: "/error-lists",
       icon: <MdOutlineReportGmailerrorred size={24} />,
+      roles: ["admin", "Error Log"],
+    },
+    {
+      text: "Success Logs",
+      path: "/success-lists",
+      icon: <MdOutlineCheckCircle  size={24} />,
       roles: ["admin", "Error Log"],
     },
        {

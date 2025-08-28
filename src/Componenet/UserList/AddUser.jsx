@@ -42,6 +42,7 @@ const AddUser = () => {
     "Transfer",
     "Account",
     "Error Log",
+    "Success Log",
   ];
 
   const formik = useFormik({

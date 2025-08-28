@@ -53,21 +53,29 @@ export default function Deposite() {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
+        params:{
+          page:page,
+          limit:limit,
+          search:searchQuery
+        }
       });
 
       console.log("depositResponse", response);
 
       if (response?.status === 200) {
         setPaginatedDeposits(response?.data?.data?.docs);
+         setTotalPages(response?.data?.data?.totalPages)
         setLoading(false);
         // toast.success(
         //   response?.data?.message || "Deposits loaded successfully ✅"
         // );
       } else {
+        setPaginatedDeposits([])
         // toast.error(response?.data?.message || "Something went wrong ❌");
       }
     } catch (error) {
       setLoading(false);
+      setPaginatedDeposits([])
       console.error("API ERROR RESPONSE:", error?.response?.data || error);
       // toast.error(
       //   error?.response?.data?.message || "Failed to fetch deposits ❌"
@@ -76,11 +84,9 @@ export default function Deposite() {
     }
   };
   useEffect(() => {
-    if (!effectRan.current) {
       depositListing();
-      effectRan.current = true; // ✅ prevents second run
-    }
-  }, []);
+ 
+  }, [page,limit,searchQuery]);
   return (
     <Box
       sx={{
@@ -118,7 +124,7 @@ export default function Deposite() {
           <TextField
             variant="outlined"
             size="small"
-            placeholder="Search by Username"
+            placeholder="Search"
             type="search"
             value={searchQuery}
             onChange={(e) => {
@@ -133,7 +139,7 @@ export default function Deposite() {
           />
 
           {/* Status Filter */}
-          <TextField
+          {/* <TextField
             select
             variant="outlined"
             size="small"
@@ -153,7 +159,7 @@ export default function Deposite() {
                 {status.charAt(0).toUpperCase() + status.slice(1)}
               </MenuItem>
             ))}
-          </TextField>
+          </TextField> */}
         </Box>
       </Box>
 

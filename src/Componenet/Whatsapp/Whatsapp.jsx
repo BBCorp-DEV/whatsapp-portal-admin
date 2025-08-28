@@ -51,7 +51,7 @@ export default function Whatsapp() {
   const [page, setPage] = useState(1);
   const navigate = useNavigate();
   const limit = 10;
-  const [loading] = useState(false);
+  const [loading,setLoading] = useState(false);
 
   const filteredDeposits = deposits.filter((d) => {
     const matchesSearch = d.username
@@ -71,6 +71,8 @@ export default function Whatsapp() {
     setPage(value);
   };
   const whatisting = async () => {
+    setLoading(true)
+    
     try {
       const token = window.localStorage.getItem("adminToken");
       const response = await axios({
@@ -80,17 +82,27 @@ export default function Whatsapp() {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
+        params:{
+          page:page,
+          limit:limit,
+          search:searchQuery
+        }
       });
 
       console.log("depositResponse", response);
 
       if (response?.status === 200) {
         setWhatsData(response?.data?.data?.docs);
+          setLoading(false)
+        
       } else {
+        setWhatsData([])
         // toast.error(response?.data?.message || "Something went wrong ❌");
       }
     } catch (error) {
       console.error("API ERROR RESPONSE:", error?.response?.data || error);
+      setWhatsData([])
+        setLoading(false)
 
       // toast.error(
       //   error?.response?.data?.message || "Failed to fetch deposits ❌"
@@ -100,7 +112,7 @@ export default function Whatsapp() {
   };
   useEffect(() => {
     whatisting();
-  }, []);
+  }, [page,limit,searchQuery]);
   return (
     <Box
       sx={{
@@ -138,7 +150,7 @@ export default function Whatsapp() {
           <TextField
             variant="outlined"
             size="small"
-            placeholder="Search by Username"
+            placeholder="Search"
             type="search"
             value={searchQuery}
             onChange={(e) => {
@@ -153,7 +165,7 @@ export default function Whatsapp() {
           />
 
           {/* Status Filter */}
-          <TextField
+          {/* <TextField
             select
             variant="outlined"
             size="small"
@@ -173,7 +185,7 @@ export default function Whatsapp() {
                 {status.charAt(0).toUpperCase() + status.slice(1)}
               </MenuItem>
             ))}
-          </TextField>
+          </TextField> */}
         </Box>
       </Box>
 

@@ -99,6 +99,7 @@ export default function UserList() {
       if (response.status === 200) {
         setUserStoredData(response?.data?.data?.docs);
         setTotalPages(response?.data?.data?.totalPages);
+        setTotalPages(response?.data?.data?.totalPages);
         // toast.success(
         //   response?.data?.message || "Users loaded successfully ✅"
         // );
@@ -144,7 +145,7 @@ export default function UserList() {
       console.error("Delete error:", error);
       toast.error(error?.response?.data?.message || "Failed to delete user ❌");
     } finally {
-      setLoading(false);
+      setDataLoading(false);
     }
   };
 
@@ -463,7 +464,7 @@ export default function UserList() {
             onClick={() => handleDeleteUser(open2?.id)}
             variant="contained"
             color="error"
-            disabled={loading}
+            disabled={dataLoading}
             sx={{
               borderRadius: "8px",
               px: 3,
@@ -471,7 +472,7 @@ export default function UserList() {
               background: "#0077CC",
             }}
           >
-            {loading ? (
+            {dataLoading ? (
               <CircularProgress size={22} sx={{ color: "white" }} />
             ) : (
               "Delete"

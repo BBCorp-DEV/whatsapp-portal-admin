@@ -14,10 +14,10 @@ import { AuthContext } from "../Auth/context/Auth";
 
 const TransferView = () => {
   const location = useLocation();
-  console.log("bvdigberiu",location)
+  console.log("bvdigberiu", location);
   const userData = location.state.staticClaims[0];
   const navigate = useNavigate();
-    console.log("bvdigbregreheriu",userData)
+  console.log("bvdigbregreheriu", userData);
   const auth = useContext(AuthContext);
 
   const [getDataStored] = useState([]);
@@ -71,12 +71,20 @@ const TransferView = () => {
           {/* User Info */}
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             {[
-              { label: "Full Name", value:userData.name },
+              { label: "Full Name", value: userData.name },
               { label: "Email", value: userData.email },
               { label: "Phone", value: userData.whatsappPhone },
               { label: "Type", value: userData.type },
-              { label: "Date & Time", value: moment(getDataStored.dob).format("lll") },
-                { label: "Amount", value: userData.requestData?.amount },
+              {
+                label: "Date & Time",
+                value: moment(getDataStored.dob).format("lll"),
+              },
+              { label: "Amount", value: userData.requestData?.amount },
+              {
+                label: "Currency",
+                value: userData.responseData?.data?.currency?.name || "N/A",
+              },
+
               {
                 label: "Status",
                 value: (

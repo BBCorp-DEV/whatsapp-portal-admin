@@ -137,8 +137,7 @@ export default function Transfer() {
           height: "100vh",
           marginTop: { xs: "0px", md: "0px" },
           background: "#F5F5F5",
-            px: 2,
-        py:0,
+          p: 2,
         }}
       >
         {/* Header */}

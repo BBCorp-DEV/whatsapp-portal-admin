@@ -459,6 +459,7 @@ const Dashboard = () => {
                   {card.value}
                 </Typography>
               </CardContent>
+              <Box>{card.icon}</Box>
             </Card>
           </Grid>
         ))}
@@ -466,34 +467,36 @@ const Dashboard = () => {
       {/* <Grid container spacing={2}>
         <Grid size={{ xs: 12, md: 6 }}>
           <Card sx={{ boxShadow: 5, borderRadius: 3, height: "100%" }}>
-            <CardContent sx={{ height: "100%",mr:3 }}>
+            <CardContent sx={{ height: "100%", mr: 3 }}>
               <Typography variant="h6" gutterBottom fontWeight="bold">
                 Daily Report
               </Typography>
               <Box sx={{ width: "100%", height: 350 }}>
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={dailyData}>
-  <CartesianGrid strokeDasharray="3 3" />
-  <XAxis dataKey="name" tick={{ fontSize: 10 }} />
-  <YAxis tick={{ fontSize: 10 }} />
-  <Tooltip contentStyle={{ fontSize: 10 }} itemStyle={{ fontSize: 10 }} />
-  <Legend wrapperStyle={{ fontSize: 10 }} />
-  <Line
-    type="monotone"
-    dataKey="users"
-    stroke="#1976d2"
-    strokeWidth={2}
-    dot={{ r: 4 }}
-  />
-  <Line
-    type="monotone"
-    dataKey="deposits"
-    stroke="#2e7d32"
-    strokeWidth={2}
-    dot={{ r: 4 }}
-  />
-</LineChart>
-
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" tick={{ fontSize: 10 }} />
+                    <YAxis tick={{ fontSize: 10 }} />
+                    <Tooltip
+                      contentStyle={{ fontSize: 10 }}
+                      itemStyle={{ fontSize: 10 }}
+                    />
+                    <Legend wrapperStyle={{ fontSize: 10 }} />
+                    <Line
+                      type="monotone"
+                      dataKey="users"
+                      stroke="#1976d2"
+                      strokeWidth={2}
+                      dot={{ r: 4 }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="deposits"
+                      stroke="#2e7d32"
+                      strokeWidth={2}
+                      dot={{ r: 4 }}
+                    />
+                  </LineChart>
                 </ResponsiveContainer>
               </Box>
             </CardContent>
@@ -501,7 +504,7 @@ const Dashboard = () => {
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
           <Card sx={{ boxShadow: 5, borderRadius: 3, height: "100%" }}>
-              <CardContent sx={{ height: "100%",mr:3 }}>
+            <CardContent sx={{ height: "100%", mr: 3 }}>
               <Typography variant="h6" gutterBottom fontWeight="bold">
                 Monthly Report
               </Typography>

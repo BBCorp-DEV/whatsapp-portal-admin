@@ -81,8 +81,7 @@ export default function Deposite() {
         width: "100%",
         backgroundColor: "#F5F5F5",
         minHeight: "100vh",
-        px: 2,
-        py:0,
+        p: 2,
       }}
     >
       {/* Header + Search + Filter */}

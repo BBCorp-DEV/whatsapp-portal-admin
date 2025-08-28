@@ -93,8 +93,7 @@ export default function WithDraw() {
       }
     }, [])
   return (
-    <Box sx={{ width: "100%", backgroundColor: "#F5F5F5", minHeight: "100vh",    px: 2,
-        py:0, }}>
+    <Box sx={{ width: "100%", backgroundColor: "#F5F5F5", minHeight: "100vh",p:2 }}>
       <Box sx={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 2, alignItems: "center", mb: 2 }}>
         <Typography variant="h4" sx={{ fontWeight: "700", }}>
           Withdrawal List

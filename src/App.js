@@ -60,16 +60,16 @@ const App = () => {
       <AuthProvider>
         <Router>
           <Routes>
-            <Route path="/" element={<LoginInPageSection/>} />
+            <Route path="/login" element={<LoginInPageSection/>} />
             <Route
               path="/dashboard"
               element={
-                // <AuthGuard>
+                <AuthGuard>
                   <DashboardLayout>
                     <Personal />
                   
                   </DashboardLayout>
-                // </AuthGuard>
+                 </AuthGuard>
               }
             />
             <Route
@@ -178,71 +178,71 @@ const App = () => {
             <Route
               path="/view-user"
               element={
-                // <AuthGuard>
+                <AuthGuard>
                   <DashboardLayout>
                   <ViewUserList />
                   </DashboardLayout>
-                // </AuthGuard>
+                 </AuthGuard>
               }
             />
             <Route
               path="/view-whatsapp"
               element={
-                // <AuthGuard>
+                <AuthGuard>
                   <DashboardLayout>
                  <WhatsAppView />
                   </DashboardLayout>
-                // </AuthGuard>
+                 </AuthGuard>
               }
             />
             <Route
               path="/view-deposit"
               element={
-                // <AuthGuard>
+                <AuthGuard>
                   <DashboardLayout>
                   <DepositView />
                   </DashboardLayout>
-                // </AuthGuard>
+                 </AuthGuard>
               }
             />
             <Route
               path="/view-transfer"
               element={
-                // <AuthGuard>
+                <AuthGuard>
                   <DashboardLayout>
                   <TransferView />
                   </DashboardLayout>
-                // </AuthGuard>
+                 </AuthGuard>
               }
             />
             <Route
               path="/view-account"
               element={
-                // <AuthGuard>
+                <AuthGuard>
                   <DashboardLayout>
                  <AccountView />
                   </DashboardLayout>
-                // </AuthGuard>
+                 </AuthGuard>
               }
             />
             <Route
               path="/view-error"
               element={
-                // <AuthGuard>
+                <AuthGuard>
                   <DashboardLayout>
                   <ErrorView />
                   </DashboardLayout>
-                // </AuthGuard>
+                 </AuthGuard>
               }
             />
             <Route
               path="/view-withdrawal"
               element={
-                // <AuthGuard>
+                <AuthGuard>
                   <DashboardLayout>
                  <WitddrawView   />
                   </DashboardLayout>
-                // </AuthGuard>
+                 </AuthGuard>
               }
             />
           </Routes>

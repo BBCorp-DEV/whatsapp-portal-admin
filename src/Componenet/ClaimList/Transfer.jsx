@@ -199,7 +199,7 @@ export default function Transfer() {
               mb: { xs: 1, md: 0 },
             }}
           >
-            Transfer Management
+            Transfer List
           </Typography>
 
           {/* Filters */}

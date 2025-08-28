@@ -143,7 +143,7 @@ export default function Whatsapp() {
         }}
       >
         <Typography variant="h4" sx={{ fontWeight: 700 }}>
-          Whatsapp Management
+          Whatsapp List
         </Typography>
 
         <Box

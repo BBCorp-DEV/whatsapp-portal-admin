@@ -140,7 +140,7 @@ export default function Deposite() {
         }}
       >
         <Typography variant="h4" sx={{ fontWeight: 700 }}>
-          Deposit Management
+          Deposit List
         </Typography>
 
         <Box

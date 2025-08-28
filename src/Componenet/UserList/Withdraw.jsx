@@ -70,22 +70,30 @@ export default function WithDraw() {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
+        params:{
+          page:page,
+          limit:limit,
+          search:searchQuery,
+        }
       });
 
       console.log("depositResponse", response);
 
       if (response?.status === 200) {
         setPaginatedUsers(response?.data?.data?.docs);
+         setTotalPages(response?.data?.data?.totalPages)
         setLoading(false);
         // toast.success(
         //   response?.data?.message || "Deposits loaded successfully ✅"
         // );
       } else {
         // toast.error(response?.data?.message || "Something went wrong ❌");
+        setPaginatedUsers([])
       }
     } catch (error) {
       console.error("API ERROR RESPONSE:", error?.response?.data || error);
       setLoading(false);
+      setPaginatedUsers([])
       // toast.error(
       //   error?.response?.data?.message || "Failed to fetch deposits ❌"
       // );
@@ -93,11 +101,10 @@ export default function WithDraw() {
     }
   };
   useEffect(() => {
-    if (!effectRan.current) {
+
       depositListing();
-      effectRan.current = true; // ✅ prevents second run
-    }
-  }, []);
+
+  }, [page,limit,searchQuery]);
   return (
     <Box
       sx={{

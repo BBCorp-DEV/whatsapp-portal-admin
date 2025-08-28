@@ -102,23 +102,31 @@ export default function Transfer() {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
+        params:{
+          page:page,
+          limit:limit,
+          search:searchQuery,
+        }
       });
 
       console.log("depositResponse", response);
 
       if (response?.status === 200) {
         setStaticClaims(response?.data?.data?.docs);
+        setTotalPages(response?.data?.data?.totalPages)
         console.log("depositResponsedddddd", response?.data?.data?.docs);
         setLoading(false);
         // toast.success(
         //   response?.data?.message || "Transfer successfully ✅"
         // );
       } else {
+        setStaticClaims([])
         // toast.error(response?.data?.message || "Something went wrong ❌");
       }
     } catch (error) {
       console.error("API ERROR RESPONSE:", error?.response?.data || error);
       setLoading(false);
+      setStaticClaims([])
       // toast.error(
       //   error?.response?.data?.message || "Failed to fetch deposits ❌"
       // );
@@ -126,11 +134,9 @@ export default function Transfer() {
     }
   };
   useEffect(() => {
-    if (!effectRan.current) {
       depositListing();
-      effectRan.current = true; // ✅ prevents second run
-    }
-  }, []);
+  
+  }, [page,limit,searchQuery]);
   return (
     <>
       {["admin", "insurance"].includes(userData?.role) && <ClaimCard />}
@@ -192,7 +198,7 @@ export default function Transfer() {
             />
 
             {/* Status */}
-            <FormControl
+            {/* <FormControl
               size="small"
               fullWidth
               sx={{
@@ -212,7 +218,7 @@ export default function Transfer() {
                 <MenuItem value="pending">Pending</MenuItem>
                 <MenuItem value="rejected">Rejected</MenuItem>
               </Select>
-            </FormControl>
+            </FormControl> */}
           </Box>
         </Box>
 

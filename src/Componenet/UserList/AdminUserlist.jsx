@@ -98,7 +98,7 @@ export default function UserList() {
 
       if (response.status === 200) {
         setUserStoredData(response?.data?.data?.docs);
-        setTotalPages(response?.data?.data?.totalPages);
+        setTotalPages(response?.data?.data?.totalPages)
         // toast.success(
         //   response?.data?.message || "Users loaded successfully ✅"
         // );
@@ -206,7 +206,7 @@ export default function UserList() {
           marginTop: { xs: "0px", md: "0px" },
           background: "#F5F5F5",
           px: 2,
-          py: 0,
+        py: 0,
         }}
       >
         <Box

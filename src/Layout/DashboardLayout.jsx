@@ -162,7 +162,7 @@ export default function DashboardLayout({ children }) {
       roles: ["Account"],
     },
     {
-      text: "Error Log",
+      text: "Error Logs",
       path: "/error-lists",
       icon: <MdOutlineReportGmailerrorred size={24} />,
       roles: ["admin", "Error Log"],

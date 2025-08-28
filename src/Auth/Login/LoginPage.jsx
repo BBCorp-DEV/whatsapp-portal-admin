@@ -16,6 +16,8 @@ import ApiConfig from "../ApiConfig";
 import { AuthContext } from "../context/Auth";
 import axios from "axios";
 import toast from "react-hot-toast";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -86,7 +88,7 @@ const LoginPage = () => {
 
       console.log("FULL API RESPONSE:", response);
       if (response?.status === 200) {
-        toast.success(response.data.message);
+        toast.success("Login successfully");
         auth.checkLogin(response?.data?.token);
 
         window.localStorage.setItem("adminToken", response?.data?.data?.token);
@@ -164,7 +166,7 @@ const LoginPage = () => {
                 variant="h5"
                 fontWeight="bold"
                 gutterBottom
-                onClick={() => navigate("/home")}
+                // onClick={() => navigate("/home")}
               >
                 Login
               </Typography>
@@ -307,25 +309,28 @@ const LoginPage = () => {
                 }}
               />
 
-              <Button
-                variant="contained"
-                fullWidth
-                onClick={handleSubmit}
-                sx={{
-                  mt: 4,
-                  background: "#0077cc",
-                  textTransform: "none",
-                  fontWeight: "bold",
-                  borderRadius: "8px",
-                  padding: "10px",
-                }}
-              >
-                {loading ? (
-                  <CircularProgress size={24} sx={{ color: "white" }} />
-                ) : (
-                  "Submit"
-                )}
-              </Button>
+             <Button
+  variant="contained"
+  fullWidth
+  onClick={handleSubmit}
+  sx={{
+    mt: 4,
+    background: "#0077cc",
+    textTransform: "none",
+    fontWeight: "bold",
+    borderRadius: "8px",
+    padding: "10px",
+  }}
+>
+  {loading ? (
+    <CircularProgress size={24} sx={{ color: "white" }} />
+  ) : (
+    <span style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+      Sign In
+      <ArrowForwardIcon fontSize="small" />
+    </span>
+  )}
+</Button>
             </Paper>
           </Grid>
         </Grid>

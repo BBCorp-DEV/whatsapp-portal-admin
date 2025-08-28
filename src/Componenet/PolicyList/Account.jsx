@@ -14,6 +14,7 @@ import {
   Tooltip,
   Pagination,
   TextField,
+  Button,
 } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import { IoEyeSharp } from "react-icons/io5";
@@ -131,40 +132,68 @@ export default function Account() {
               }}
             />
             <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <Box display="flex" gap={2} flexWrap="wrap">
-                <DatePicker
-                  label="From Date"
-                  value={fromDate}
-                  onChange={(newValue) => setFromDate(newValue)}
-                  slotProps={{
-                    textField: {
-                      size: "small",
-                      sx: {
-                        backgroundColor: "#fff",
-                        borderRadius: "8px",
-                        minWidth: 160,
-                      },
+            <Box display="flex" gap={2} flexWrap="wrap" alignItems="center">
+              <DatePicker
+                label="From Date"
+                value={fromDate ? new Date(fromDate) : null}
+                onChange={(newValue) => {
+                  if (newValue) {
+                    const formatted = moment(newValue).format("YYYY-MM-DD");
+                    setFromDate(formatted);
+                  } else {
+                    setFromDate("");
+                  }
+                }}
+                slotProps={{
+                  textField: {
+                    size: "small",
+                    sx: {
+                      backgroundColor: "#fff",
+                      borderRadius: "8px",
+                      width: 150,
                     },
-                  }}
-                />
+                  },
+                }}
+              />
 
-                <DatePicker
-                  label="To Date"
-                  value={toDate}
-                  onChange={(newValue) => setToDate(newValue)}
-                  slotProps={{
-                    textField: {
-                      size: "small",
-                      sx: {
-                        backgroundColor: "#fff",
-                        borderRadius: "8px",
-                        minWidth: 160,
-                      },
+              <DatePicker
+                label="To Date"
+                value={toDate ? new Date(toDate) : null}
+                onChange={(newValue) => {
+                  if (newValue) {
+                    const formatted = moment(newValue).format("YYYY-MM-DD");
+                    setToDate(formatted);
+                  } else {
+                    setToDate("");
+                  }
+                }}
+                slotProps={{
+                  textField: {
+                    size: "small",
+                    sx: {
+                      backgroundColor: "#fff",
+                      borderRadius: "8px",
+                     width: 150,
                     },
-                  }}
-                />
-              </Box>
-            </LocalizationProvider>
+                  },
+                }}
+              />
+
+              <Button
+                variant="outlined"
+                color="primary"
+                sx={{ height: 40, minWidth: 100, textTransform: "none", borderRadius: "8px" }}
+                onClick={() => {
+                  setSearchQuery("");
+                  setFromDate("");
+                  setToDate("");
+                  setPage(1);
+                }}
+              >
+                Reset
+              </Button>
+            </Box>
+          </LocalizationProvider>
           </Box>
         </Box>
 
@@ -229,7 +258,7 @@ export default function Account() {
                       {moment(row.createdAt).format("YYYY-MM-DD")}
                     </TableCell>
                     <TableCell>
-                      <Tooltip title="View Policy">
+                      <Tooltip title="View Account">
                         <IconButton
                           onClick={() =>
                             navigate("/view-account", {
@@ -259,7 +288,7 @@ export default function Account() {
                         color="textSecondary"
                         sx={{ fontSize: "15px !important" }}
                       >
-                        No Data Found
+                        No data Found
                       </Typography>
                     </Box>
                   </TableCell>

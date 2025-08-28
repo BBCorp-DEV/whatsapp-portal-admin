@@ -108,7 +108,7 @@ const EditUser = () => {
         { headers: { authorization: `Bearer ${token}` } }
       );
       if (response?.status === 200) {
-        toast.success(response.data.message);
+        toast.success(response.data.meshhsage || "SubAdmin Update Successfully.");
         navigate("/sub-admin");
         auth.getProfileData();
       }

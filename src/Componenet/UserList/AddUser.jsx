@@ -113,7 +113,7 @@ const AddUser = () => {
       });
       console.log("bwgbeg", response);
       if (response.status === 200) {
-        toast.success(response.data?.message);
+        toast.success(response.data?.messa5ge || "SubAdmin Created Successfully. ");
         navigate("/sub-admin");
         setLoading(false);
       } else {

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import * as XLSX from "xlsx";
 import {
   Box,
   Typography,
@@ -26,6 +27,7 @@ import { useNavigate } from "react-router-dom";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import DownloadIcon from "@mui/icons-material/Download";
 
 const statusOptions = ["all", "pending", "success", "failed"];
 const typeOptions = ["Bank Transfer", "UPI", "Wallet"];
@@ -94,6 +96,27 @@ export default function Deposite() {
   useEffect(() => {
     depositListing();
   }, [page, limit, searchQuery, fromDate, toDate]);
+  // XLSX download handler
+  const downloadExcel = () => {
+    if (!paginatedDeposits || paginatedDeposits.length === 0) {
+      toast.error("No deposit data to download");
+      return;
+    }
+    const dataToExport = paginatedDeposits.map((row, idx) => ({
+      "Sr. No.": (page - 1) * limit + idx + 1,
+      Name: row.name,
+      Amount: row.requestData?.amount,
+      Date: moment(row.createdAt).format("YYYY-MM-DD"),
+      Type: row.requestData?.transactionType,
+      Status: row.status,
+    }));
+    const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Deposits");
+    XLSX.writeFile(workbook, "DepositList.xlsx");
+    toast.success("Deposit list downloaded ✅");
+  };
+
   return (
     <Box
       sx={{
@@ -217,6 +240,23 @@ export default function Deposite() {
               </Button>
             </Box>
           </LocalizationProvider>
+           <Button
+              variant="contained"
+              onClick={downloadExcel}
+              sx={{
+                backgroundColor: "#0077cc",
+                textTransform: "none",
+                px: 4,
+                py: 1,
+                borderRadius: "8px",
+                fontWeight: "bold",
+                color: "#fff",
+                "&:hover": { backgroundColor: "#0077cc" },
+              }}
+            >
+              <DownloadIcon />
+              &nbsp; Download Xlsx
+            </Button>
         </Box>
       </Box>
 

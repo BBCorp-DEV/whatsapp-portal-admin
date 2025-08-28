@@ -39,8 +39,32 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import axios from "axios";
 import ApiConfig from "../../Auth/ApiConfig";
+import DownloadIcon from "@mui/icons-material/Download";
 
 export default function Transfer() {
+  // XLSX download handler
+  const downloadExcel = () => {
+    if (!staticClaims || staticClaims.length === 0) {
+      toast.error("No transfer data to download");
+      return;
+    }
+    const dataToExport = staticClaims.map((row, idx) => ({
+      "Sr. No.": (page - 1) * limit + idx + 1,
+      Name: row.name,
+      "From Account": row.responseData?.data?.from,
+      "To Account": row.responseData?.data?.to,
+      Amount: row.responseData?.data?.amount,
+      Currency: row.responseData?.data?.currency?.name,
+      Status: row.status,
+      Date: moment(row.created_at).format("YYYY-MM-DD"),
+    }));
+    const XLSX = require("xlsx");
+    const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Transfers");
+    XLSX.writeFile(workbook, "TransferList.xlsx");
+    toast.success("Transfer list downloaded ✅");
+  };
   const navigate = useNavigate();
   const location = useLocation();
   const [page, setPage] = useState(1);
@@ -262,6 +286,23 @@ export default function Transfer() {
                        </Button>
                      </Box>
                    </LocalizationProvider>
+                    <Button
+              variant="contained"
+              onClick={downloadExcel}
+              sx={{
+                backgroundColor: "#0077cc",
+                textTransform: "none",
+                px: 4,
+                py: 1,
+                borderRadius: "8px",
+                fontWeight: "bold",
+                color: "#fff",
+                "&:hover": { backgroundColor: "#0077cc" },
+              }}
+            >
+              <DownloadIcon />
+              &nbsp; Download Xlsx
+            </Button>
           </Box>
         </Box>
 

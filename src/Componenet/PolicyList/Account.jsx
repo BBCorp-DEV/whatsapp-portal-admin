@@ -26,8 +26,31 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import moment from "moment";
+import DownloadIcon from "@mui/icons-material/Download";
 
 export default function Account() {
+  // XLSX download handler
+  const downloadExcel = () => {
+    if (!userStoredData || userStoredData.length === 0) {
+      toast.error("No account data to download");
+      return;
+    }
+    const dataToExport = userStoredData.map((row, idx) => ({
+      "Sr No.": (page - 1) * limit + idx + 1,
+      Name: row.name,
+      "Account Name": row.requestData?.name,
+      "Account Type": row.requestData?.type,
+      Amount: row.requestData?.balance,
+      Status: row.status,
+      Date: moment(row.createdAt).format("YYYY-MM-DD"),
+    }));
+    const XLSX = require("xlsx");
+    const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Accounts");
+    XLSX.writeFile(workbook, "AccountList.xlsx");
+    toast.success("Account list downloaded ✅");
+  };
   const location = useLocation();
   const [totalPages, setTotalPages] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
@@ -194,6 +217,23 @@ export default function Account() {
               </Button>
             </Box>
           </LocalizationProvider>
+           <Button
+              variant="contained"
+              onClick={downloadExcel}
+              sx={{
+                backgroundColor: "#0077cc",
+                textTransform: "none",
+                px: 4,
+                py: 1,
+                borderRadius: "8px",
+                fontWeight: "bold",
+                color: "#fff",
+                "&:hover": { backgroundColor: "#0077cc" },
+              }}
+            >
+              <DownloadIcon />
+              &nbsp; Download Xlsx
+            </Button>
           </Box>
         </Box>
 

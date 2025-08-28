@@ -15,6 +15,7 @@ import {
   MenuItem,
   Tooltip,
   IconButton,
+  Button,
 } from "@mui/material";
 import axios from "axios";
 import ApiConfig from "../../Auth/ApiConfig";
@@ -171,18 +172,25 @@ export default function Whatsapp() {
           />
 
           <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <Box display="flex" gap={2} flexWrap="wrap">
+            <Box display="flex" gap={2} flexWrap="wrap" alignItems="center">
               <DatePicker
                 label="From Date"
-                value={fromDate}
-                onChange={(newValue) => setFromDate(newValue)}
+                value={fromDate ? new Date(fromDate) : null}
+                onChange={(newValue) => {
+                  if (newValue) {
+                    const formatted = moment(newValue).format("YYYY-MM-DD");
+                    setFromDate(formatted);
+                  } else {
+                    setFromDate("");
+                  }
+                }}
                 slotProps={{
                   textField: {
                     size: "small",
                     sx: {
                       backgroundColor: "#fff",
                       borderRadius: "8px",
-                      minWidth: 160,
+                      width: 150,
                     },
                   },
                 }}
@@ -190,19 +198,40 @@ export default function Whatsapp() {
 
               <DatePicker
                 label="To Date"
-                value={toDate}
-                onChange={(newValue) => setToDate(newValue)}
+                value={toDate ? new Date(toDate) : null}
+                onChange={(newValue) => {
+                  if (newValue) {
+                    const formatted = moment(newValue).format("YYYY-MM-DD");
+                    setToDate(formatted);
+                  } else {
+                    setToDate("");
+                  }
+                }}
                 slotProps={{
                   textField: {
                     size: "small",
                     sx: {
                       backgroundColor: "#fff",
                       borderRadius: "8px",
-                      minWidth: 160,
+                     width: 150,
                     },
                   },
                 }}
               />
+
+              <Button
+                variant="outlined"
+                color="primary"
+                sx={{ height: 40, minWidth: 100, textTransform: "none", borderRadius: "8px" }}
+                onClick={() => {
+                  setSearchQuery("");
+                  setFromDate("");
+                  setToDate("");
+                  setPage(1);
+                }}
+              >
+                Reset
+              </Button>
             </Box>
           </LocalizationProvider>
         </Box>

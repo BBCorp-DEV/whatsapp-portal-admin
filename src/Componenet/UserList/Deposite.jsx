@@ -228,7 +228,7 @@ export default function Deposite() {
             <TableRow>
               {[
                 "Sr. No.",
-                "Username",
+                "Name",
                 "Amount",
                 "Date",
                 "Type",

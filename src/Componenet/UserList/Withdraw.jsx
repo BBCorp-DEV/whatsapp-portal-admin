@@ -229,7 +229,7 @@ export default function WithDraw() {
             <TableRow>
               {[
                 "Sr. No.",
-                "Username",
+                "Name",
                 "Amount",
                 "Date",
                 "Type",

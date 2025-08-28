@@ -164,11 +164,17 @@ export default function Whatsapp() {
               setSearchQuery(e.target.value);
               setPage(1);
             }}
-            sx={{
-              backgroundColor: "#fff",
-              borderRadius: "8px",
-              minWidth: { xs: "100%", sm: 200 },
-            }}
+             sx={{
+            backgroundColor: "#fff",
+            borderRadius: "8px",
+            marginTop: { xs: "10px", md: "0px" },
+            minWidth: 200,
+            "& .MuiOutlinedInput-root": {
+              paddingRight: 0,
+              padding: "2.5px 0px",
+              borderRadius: "10px",
+            },
+          }}
           />
 
           <LocalizationProvider dateAdapter={AdapterDateFns}>

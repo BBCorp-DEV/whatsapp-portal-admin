@@ -98,7 +98,7 @@ export default function UserList() {
 
       if (response.status === 200) {
         setUserStoredData(response?.data?.data?.docs);
-        setTotalPages(response?.data?.data?.totalPages);
+        setTotalPages(response?.data?.data?.totalPages)
         // toast.success(
         //   response?.data?.message || "Users loaded successfully ✅"
         // );
@@ -206,7 +206,7 @@ export default function UserList() {
           marginTop: { xs: "0px", md: "0px" },
           background: "#F5F5F5",
           px: 2,
-          py: 0,
+        py: 0,
         }}
       >
         <Box
@@ -238,11 +238,17 @@ export default function UserList() {
               type="search"
               value={searchQuery}
               onChange={handleSearchQueryChange}
-              sx={{
-                backgroundColor: "#fff",
-                borderRadius: "8px",
-                minWidth: { xs: "100%", sm: 200 },
-              }}
+               sx={{
+            backgroundColor: "#fff",
+            borderRadius: "8px",
+            marginTop: { xs: "10px", md: "0px" },
+            minWidth: 200,
+            "& .MuiOutlinedInput-root": {
+              paddingRight: 0,
+              padding: "2.5px 0px",
+              borderRadius: "10px",
+            },
+          }}
             />
             <Button
               variant="contained"

@@ -55,6 +55,7 @@ export default function Transfer() {
   const [selectedClaimIds, setSelectedClaimIds] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
   const [staticClaims, setStaticClaims] = useState([]);
+  console.log("wegfrigt54y54yh", staticClaims);
   const effectRan = useRef(false);
 
   const auth = useContext(AuthContext);
@@ -101,22 +102,31 @@ export default function Transfer() {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
+        params:{
+          page:page,
+          limit:limit,
+          search:searchQuery,
+        }
       });
 
       console.log("depositResponse", response);
 
       if (response?.status === 200) {
-        setStaticClaims(response?.data);
+        setStaticClaims(response?.data?.data?.docs);
+        setTotalPages(response?.data?.data?.totalPages)
+        console.log("depositResponsedddddd", response?.data?.data?.docs);
         setLoading(false);
         // toast.success(
         //   response?.data?.message || "Transfer successfully ✅"
         // );
       } else {
+        setStaticClaims([])
         // toast.error(response?.data?.message || "Something went wrong ❌");
       }
     } catch (error) {
       console.error("API ERROR RESPONSE:", error?.response?.data || error);
       setLoading(false);
+      setStaticClaims([])
       // toast.error(
       //   error?.response?.data?.message || "Failed to fetch deposits ❌"
       // );
@@ -124,11 +134,9 @@ export default function Transfer() {
     }
   };
   useEffect(() => {
-    if (!effectRan.current) {
       depositListing();
-      effectRan.current = true; // ✅ prevents second run
-    }
-  }, []);
+  
+  }, [page,limit,searchQuery]);
   return (
     <>
       {["admin", "insurance"].includes(userData?.role) && <ClaimCard />}
@@ -137,7 +145,8 @@ export default function Transfer() {
           height: "100vh",
           marginTop: { xs: "0px", md: "0px" },
           background: "#F5F5F5",
-          p: 2,
+          px: 2,
+          py: 0,
         }}
       >
         {/* Header */}
@@ -189,7 +198,7 @@ export default function Transfer() {
             />
 
             {/* Status */}
-            <FormControl
+            {/* <FormControl
               size="small"
               fullWidth
               sx={{
@@ -209,7 +218,7 @@ export default function Transfer() {
                 <MenuItem value="pending">Pending</MenuItem>
                 <MenuItem value="rejected">Rejected</MenuItem>
               </Select>
-            </FormControl>
+            </FormControl> */}
           </Box>
         </Box>
 
@@ -256,11 +265,7 @@ export default function Transfer() {
                 </TableRow>
               ) : staticClaims.length > 0 ? (
                 staticClaims
-                  .filter((row) =>
-                    row.full_name
-                      .toLowerCase()
-                      .includes(searchQuery.toLowerCase())
-                  )
+
                   .filter((row) => (status ? row.status === status : true))
                   .map((row, index) => (
                     <TableRow
@@ -270,32 +275,39 @@ export default function Transfer() {
                           index % 2 === 0 ? "#f9f9f9" : "#ffffff",
                       }}
                     >
+                      <TableCell align="center">{index + 1}</TableCell>
+                      <TableCell align="center">{row.name}</TableCell>
+                      <TableCell align="center">
+                        {row.responseData?.data?.from}
+                      </TableCell>
+                      <TableCell align="center">
+                        {row.responseData?.data?.to}
+                      </TableCell>
+                      <TableCell align="center">
+                        {row.responseData?.data?.amount}
+                      </TableCell>
+                      <TableCell align="center">
+                        <TableCell align="center">
+                          {row.responseData?.data?.currency?.name}
+                        </TableCell>
+                      </TableCell>
+                      <TableCell align="center">{row.status}</TableCell>
                       <TableCell align="center">
                         {moment(row.created_at).format("YYYY-MM-DD")}
                       </TableCell>
-                      <TableCell align="center">{row.full_name}</TableCell>
-                      <TableCell align="center">{row.claim_number}</TableCell>
-                      <TableCell align="center">{row.claim_amount}</TableCell>
-                      <TableCell align="center">
-                        {row.claim_approved_amount}
-                      </TableCell>
-                      <TableCell align="center">
-                        {row.status.charAt(0).toUpperCase() +
-                          row.status.slice(1)}
-                      </TableCell>
-                      {userData?.role !== "hospital" && (
+                    
                         <TableCell align="center">
                           <Tooltip title={"View Claim"}>
                             <IconButton
                               onClick={() =>
-                                navigate("/viewClaim", { state: { row } })
+                                navigate("/view-transfer", { state: { staticClaims} })
                               }
                             >
                               <IoEyeSharp />
                             </IconButton>
                           </Tooltip>
                         </TableCell>
-                      )}
+                    
                     </TableRow>
                   ))
               ) : (

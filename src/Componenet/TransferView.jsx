@@ -14,8 +14,10 @@ import { AuthContext } from "../Auth/context/Auth";
 
 const TransferView = () => {
   const location = useLocation();
-  const userData = location.state.userData;
+  console.log("bvdigberiu",location)
+  const userData = location.state.staticClaims[0];
   const navigate = useNavigate();
+    console.log("bvdigbregreheriu",userData)
   const auth = useContext(AuthContext);
 
   const [getDataStored] = useState([]);
@@ -69,20 +71,12 @@ const TransferView = () => {
           {/* User Info */}
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             {[
-              { label: "Full Name", value: `${userData?.firstName || ""} ${userData?.lastName || ""}` },
+              { label: "Full Name", value:userData.name },
               { label: "Email", value: userData.email },
-              { label: "Phone", value: userData.phone },
-              { label: "User Type", value: userData.userType },
+              { label: "Phone", value: userData.whatsappPhone },
+              { label: "Type", value: userData.type },
               { label: "Date & Time", value: moment(getDataStored.dob).format("lll") },
-              {
-                label: "Role",
-                value: Array.isArray(userData?.role)
-                  ? userData.role.join(", ")
-                  : userData?.role,
-              },
-              ...(userData.role === "hospital"
-                ? [{ label: "Type", value: userData.type_of_hospital }]
-                : []),
+                { label: "Amount", value: userData.requestData?.amount },
               {
                 label: "Status",
                 value: (
@@ -91,7 +85,7 @@ const TransferView = () => {
                     sx={{
                       fontWeight: "bold",
                       color:
-                        userData.status === "ACTIVE" ? "#4caf50" : "#f44336",
+                        userData.status === "success" ? "#4caf50" : "#f44336",
                       textTransform: "capitalize",
                     }}
                   >

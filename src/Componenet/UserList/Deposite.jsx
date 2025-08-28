@@ -13,30 +13,36 @@ import {
   CircularProgress,
   Pagination,
   MenuItem,
+  Tooltip,
+  IconButton,
 } from "@mui/material";
 import axios from "axios";
 import ApiConfig from "../../Auth/ApiConfig";
 import toast from "react-hot-toast";
+import moment from "moment";
+import { IoEyeSharp } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
 
 const statusOptions = ["all", "pending", "success", "failed"];
 const typeOptions = ["Bank Transfer", "UPI", "Wallet"];
 
 export default function Deposite() {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [paginatedDeposits, setPaginatedDeposits] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
   const [page, setPage] = useState(1);
   const limit = 10;
-  const [loading,setLoading] = useState(false);
-   const effectRan = useRef(false);
+  const [loading, setLoading] = useState(false);
+  const effectRan = useRef(false);
 
   const handlePageChange = (_, value) => {
     setPage(value);
   };
 
   const depositListing = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
       const token = window.localStorage.getItem("adminToken");
 
@@ -47,21 +53,29 @@ export default function Deposite() {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
+        params:{
+          page:page,
+          limit:limit,
+          search:searchQuery
+        }
       });
 
       console.log("depositResponse", response);
 
       if (response?.status === 200) {
-        setPaginatedDeposits(response?.data);
-          setLoading(false)
+        setPaginatedDeposits(response?.data?.data?.docs);
+         setTotalPages(response?.data?.data?.totalPages)
+        setLoading(false);
         // toast.success(
         //   response?.data?.message || "Deposits loaded successfully ✅"
         // );
       } else {
+        setPaginatedDeposits([])
         // toast.error(response?.data?.message || "Something went wrong ❌");
       }
     } catch (error) {
-        setLoading(false)
+      setLoading(false);
+      setPaginatedDeposits([])
       console.error("API ERROR RESPONSE:", error?.response?.data || error);
       // toast.error(
       //   error?.response?.data?.message || "Failed to fetch deposits ❌"
@@ -70,18 +84,17 @@ export default function Deposite() {
     }
   };
   useEffect(() => {
-    if (!effectRan.current) {
       depositListing();
-      effectRan.current = true; // ✅ prevents second run
-    }
-  }, [])
+ 
+  }, [page,limit,searchQuery]);
   return (
     <Box
       sx={{
         width: "100%",
         backgroundColor: "#F5F5F5",
         minHeight: "100vh",
-        p: 2,
+        px: 2,
+        py: 0,
       }}
     >
       {/* Header + Search + Filter */}
@@ -111,7 +124,7 @@ export default function Deposite() {
           <TextField
             variant="outlined"
             size="small"
-            placeholder="Search by Username"
+            placeholder="Search"
             type="search"
             value={searchQuery}
             onChange={(e) => {
@@ -126,7 +139,7 @@ export default function Deposite() {
           />
 
           {/* Status Filter */}
-          <TextField
+          {/* <TextField
             select
             variant="outlined"
             size="small"
@@ -146,7 +159,7 @@ export default function Deposite() {
                 {status.charAt(0).toUpperCase() + status.slice(1)}
               </MenuItem>
             ))}
-          </TextField>
+          </TextField> */}
         </Box>
       </Box>
 
@@ -159,13 +172,19 @@ export default function Deposite() {
         <Table>
           <TableHead>
             <TableRow>
-              {["Sr. No.", "Username", "Amount", "Date", "Type", "Status"].map(
-                (heading, i) => (
-                  <TableCell key={i} sx={{ fontWeight: "bold" }}>
-                    {heading}
-                  </TableCell>
-                )
-              )}
+              {[
+                "Sr. No.",
+                "Username",
+                "Amount",
+                "Date",
+                "Type",
+                "Status",
+                "Action",
+              ].map((heading, i) => (
+                <TableCell key={i} sx={{ fontWeight: "bold" }}>
+                  {heading}
+                </TableCell>
+              ))}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -182,13 +201,27 @@ export default function Deposite() {
                   sx={{ background: index % 2 === 0 ? "#f5f5f5" : "#fff" }}
                 >
                   <TableCell>{(page - 1) * limit + index + 1}</TableCell>
-                  <TableCell>{row.username}</TableCell>
-                  <TableCell>${row.amount}</TableCell>
-                  <TableCell>{"25-08-2025"}</TableCell>
-                  <TableCell>{row.type}</TableCell>
+                  <TableCell>{row.name}</TableCell>
+                  <TableCell>{row.requestData?.amount}</TableCell>
+                  <TableCell>
+                    {" "}
+                    {moment(row.createdAt).format("YYYY-MM-DD")}
+                  </TableCell>
+                  <TableCell>{row.requestData?.transactionType}</TableCell>
+                  <TableCell>{row.status}</TableCell>
 
-                  <TableCell sx={{ textTransform: "capitalize" }}>
-                    {row.status}
+                  <TableCell>
+                    <Tooltip title="Vie Deposit">
+                      <IconButton
+                        onClick={() =>
+                          navigate("/view-deposit", {
+                            state: { paginatedDeposits },
+                          })
+                        }
+                      >
+                        <IoEyeSharp />
+                      </IconButton>
+                    </Tooltip>
                   </TableCell>
                 </TableRow>
               ))

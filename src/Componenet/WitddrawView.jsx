@@ -14,7 +14,7 @@ import { AuthContext } from "../Auth/context/Auth";
 
 const WitddrawView = () => {
   const location = useLocation();
-  const userData = location.state.userData;
+  const userData = location.state.paginatedUsers[0];
   const navigate = useNavigate();
   const auth = useContext(AuthContext);
 
@@ -69,20 +69,15 @@ const WitddrawView = () => {
           {/* User Info */}
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             {[
-              { label: "Full Name", value: `${userData?.firstName || ""} ${userData?.lastName || ""}` },
+              { label: "Full Name", value: userData.name },
               { label: "Email", value: userData.email },
-              { label: "Phone", value: userData.phone },
-              { label: "User Type", value: userData.userType },
-              { label: "Date & Time", value: moment(getDataStored.dob).format("lll") },
+              { label: "Phone", value: userData.whatsappPhone },
+              { label: "Type", value: userData.type },
               {
-                label: "Role",
-                value: Array.isArray(userData?.role)
-                  ? userData.role.join(", ")
-                  : userData?.role,
+                label: "Date & Time",
+                value: moment(getDataStored.dob).format("lll"),
               },
-              ...(userData.role === "hospital"
-                ? [{ label: "Type", value: userData.type_of_hospital }]
-                : []),
+              { label: "Amount", value: userData?.requestData?.amount },
               {
                 label: "Status",
                 value: (
@@ -91,7 +86,7 @@ const WitddrawView = () => {
                     sx={{
                       fontWeight: "bold",
                       color:
-                        userData.status === "ACTIVE" ? "#4caf50" : "#f44336",
+                        userData.status === "success" ? "#4caf50" : "#f44336",
                       textTransform: "capitalize",
                     }}
                   >

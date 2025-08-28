@@ -13,9 +13,14 @@ import {
   CircularProgress,
   Pagination,
   MenuItem,
+  Tooltip,
+  IconButton,
 } from "@mui/material";
 import axios from "axios";
 import ApiConfig from "../../Auth/ApiConfig";
+import moment from "moment";
+import { IoEyeSharp } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
 
 const statusOptions = ["all", "pending", "success", "failed"];
 const typeOptions = ["Bank Transfer", "UPI", "Wallet"];
@@ -44,8 +49,9 @@ export default function Whatsapp() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [whatsData, setWhatsData] = useState([]);
   const [page, setPage] = useState(1);
+  const navigate = useNavigate();
   const limit = 10;
-  const [loading] = useState(false);
+  const [loading,setLoading] = useState(false);
 
   const filteredDeposits = deposits.filter((d) => {
     const matchesSearch = d.username
@@ -65,6 +71,8 @@ export default function Whatsapp() {
     setPage(value);
   };
   const whatisting = async () => {
+    setLoading(true)
+    
     try {
       const token = window.localStorage.getItem("adminToken");
       const response = await axios({
@@ -74,17 +82,27 @@ export default function Whatsapp() {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
+        params:{
+          page:page,
+          limit:limit,
+          search:searchQuery
+        }
       });
 
       console.log("depositResponse", response);
 
       if (response?.status === 200) {
-        setWhatsData(response?.data);
+        setWhatsData(response?.data?.data?.docs);
+          setLoading(false)
+        
       } else {
+        setWhatsData([])
         // toast.error(response?.data?.message || "Something went wrong ❌");
       }
     } catch (error) {
       console.error("API ERROR RESPONSE:", error?.response?.data || error);
+      setWhatsData([])
+        setLoading(false)
 
       // toast.error(
       //   error?.response?.data?.message || "Failed to fetch deposits ❌"
@@ -94,14 +112,15 @@ export default function Whatsapp() {
   };
   useEffect(() => {
     whatisting();
-  }, []);
+  }, [page,limit,searchQuery]);
   return (
     <Box
       sx={{
         width: "100%",
         backgroundColor: "#F5F5F5",
         minHeight: "100vh",
-        p: 2,
+        px: 2,
+        py: 0,
       }}
     >
       {/* Header + Search + Filter */}
@@ -131,7 +150,7 @@ export default function Whatsapp() {
           <TextField
             variant="outlined"
             size="small"
-            placeholder="Search by Username"
+            placeholder="Search"
             type="search"
             value={searchQuery}
             onChange={(e) => {
@@ -146,7 +165,7 @@ export default function Whatsapp() {
           />
 
           {/* Status Filter */}
-          <TextField
+          {/* <TextField
             select
             variant="outlined"
             size="small"
@@ -166,7 +185,7 @@ export default function Whatsapp() {
                 {status.charAt(0).toUpperCase() + status.slice(1)}
               </MenuItem>
             ))}
-          </TextField>
+          </TextField> */}
         </Box>
       </Box>
 
@@ -179,13 +198,19 @@ export default function Whatsapp() {
         <Table>
           <TableHead>
             <TableRow>
-              {["Sr. No.", "Name", "Email", "Phone", "Status", "Date"].map(
-                (heading, i) => (
-                  <TableCell key={i} sx={{ fontWeight: "bold" }}>
-                    {heading}
-                  </TableCell>
-                )
-              )}
+              {[
+                "Sr. No.",
+                "Name",
+                "Email",
+                "Phone",
+                "Status",
+                "Date",
+                "Action",
+              ].map((heading, i) => (
+                <TableCell key={i} sx={{ fontWeight: "bold" }}>
+                  {heading}
+                </TableCell>
+              ))}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -201,14 +226,27 @@ export default function Whatsapp() {
                   key={row.id}
                   sx={{ background: index % 2 === 0 ? "#f5f5f5" : "#fff" }}
                 >
-                  <TableCell>{(page - 1) * limit + index + 1}</TableCell>
-                  <TableCell>{row.username}</TableCell>
-                  <TableCell>${row.amount}</TableCell>
-                  <TableCell>{"25-08-2025"}</TableCell>
-                  <TableCell>{row.type}</TableCell>
+                  <TableCell> {(page - 1) * limit + index + 1}</TableCell>
+                  <TableCell>{row.name}</TableCell>
+                  <TableCell>{row.email}</TableCell>
+                  <TableCell>{row?.whatsappPhone}</TableCell>
+                  <TableCell>{row.status}</TableCell>
 
                   <TableCell sx={{ textTransform: "capitalize" }}>
-                    {row.status}
+                    {moment(row.createdAt).format("YYYY-MM-DD")}
+                  </TableCell>
+                  <TableCell>
+                    <Tooltip title="View WhatsApp">
+                      <IconButton
+                        onClick={() =>
+                          navigate("/view-whatsapp", {
+                            state: { whatsData },
+                          })
+                        }
+                      >
+                        <IoEyeSharp />
+                      </IconButton>
+                    </Tooltip>
                   </TableCell>
                 </TableRow>
               ))

@@ -195,7 +195,7 @@ export default function Transfer() {
           <Typography
             variant="h4"
             sx={{
-              fontSize: "30px",
+              // fontSize: "30px",
               fontWeight: "700",
               // fontFamily: "rubik",
               mb: { xs: 1, md: 0 },

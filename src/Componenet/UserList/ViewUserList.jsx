@@ -72,7 +72,7 @@ const ViewUserList = () => {
               { label: "Full Name", value: `${userData?.firstName || ""} ${userData?.lastName || ""}` },
               { label: "Email", value: userData.email },
               { label: "Phone", value: userData.phone },
-              { label: "User Type", value: userData.userType },
+              { label: "User Type", value: userData.userTyphe || "Sub Admin" },
               { label: "Date & Time", value: moment(getDataStored.dob).format("lll") },
               {
                 label: "Permission",

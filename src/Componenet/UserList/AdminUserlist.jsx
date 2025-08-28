@@ -366,7 +366,7 @@ export default function UserList() {
                       {moment(row.createdAt).format("DD-MMM-YYYY")}
                     </TableCell>
                     <TableCell>
-                      <Tooltip title="Edit profile">
+                      <Tooltip title="Edit SubAdmin">
                         <IconButton
                           onClick={() =>
                             navigate("/edit-subadmin", { state: { userData: row } })
@@ -384,7 +384,7 @@ export default function UserList() {
                           <MdOutlineRemoveRedEye />
                         </IconButton>
                       </Tooltip>
-                      <Tooltip title="Delete User">
+                      <Tooltip title="Delete SubAdmin">
                         <IconButton onClick={() => OpenModal2(row)}>
                           <TbTrash />
                         </IconButton>

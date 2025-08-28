@@ -205,7 +205,8 @@ export default function UserList() {
           height: "100vh",
           marginTop: { xs: "0px", md: "0px" },
           background: "#F5F5F5",
-          p: 2,
+          px: 2,
+        py: 0,
         }}
       >
         <Box

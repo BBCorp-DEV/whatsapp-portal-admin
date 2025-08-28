@@ -327,7 +327,7 @@ export default function SuccessLog() {
                       {moment(row.createdAt).format("YYYY-MM-DD")}
                     </TableCell>
                     <TableCell align="center">
-                      <Tooltip title={"View Error"}>
+                      <Tooltip title={"View Success"}>
                         <IconButton
                           // onClick={() =>
                           //   navigate("/view-error", { state: { errorData } })

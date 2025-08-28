@@ -119,9 +119,11 @@ export default function ErrorPage() {
           sx={{
             display: "flex",
             justifyContent: "space-between",
-            flexDirection: { xs: "column", md: "row" },
-            alignItems: "center",
+            flexWrap: "wrap",
             gap: 2,
+            alignItems: "center",
+            mb: 2,
+            flexDirection: { xs: "column", sm: "row" },
           }}
         >
           <Typography variant="h4" sx={{ fontWeight: "700" }}>

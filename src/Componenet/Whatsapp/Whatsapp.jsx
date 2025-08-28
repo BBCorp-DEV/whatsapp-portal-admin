@@ -22,14 +22,38 @@ import ApiConfig from "../../Auth/ApiConfig";
 import moment from "moment";
 import { IoEyeSharp } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import DownloadIcon from "@mui/icons-material/Download";
 
 const statusOptions = ["all", "pending", "success", "failed"];
 const typeOptions = ["Bank Transfer", "UPI", "Wallet"];
 
 export default function Whatsapp() {
+  // XLSX download handler
+  const downloadExcel = () => {
+    if (!whatsData || whatsData.length === 0) {
+      alert("No WhatsApp data to download");
+      return;
+    }
+    const dataToExport = whatsData.map((row, idx) => ({
+      "Sr. No.": (page - 1) * limit + idx + 1,
+      Name: row.name,
+      Email: row.email,
+      Phone: row.whatsappPhone,
+      Status: row.status,
+      Date: moment(row.createdAt).format("YYYY-MM-DD"),
+    }));
+    const XLSX = require("xlsx");
+    const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Whatsapp");
+    XLSX.writeFile(workbook, "WhatsappList.xlsx");
+    toast.success("Whatsapp list downloaded ✅");
+  };
   const [deposits] = useState([
     { id: 1, username: "alice", amount: 200, type: "UPI", status: "pending" },
     {
@@ -240,6 +264,23 @@ export default function Whatsapp() {
               </Button>
             </Box>
           </LocalizationProvider>
+           <Button
+                            variant="contained"
+                            onClick={downloadExcel}
+                            sx={{
+                              backgroundColor: "#0077cc",
+                              textTransform: "none",
+                              px: 4,
+                              py: 1,
+                              borderRadius: "8px",
+                              fontWeight: "bold",
+                              color: "#fff",
+                              "&:hover": { backgroundColor: "#0077cc" },
+                            }}
+                          >
+                            <DownloadIcon />
+                            &nbsp; Download Xlsx
+                          </Button>
         </Box>
       </Box>
 

@@ -22,12 +22,36 @@ import ApiConfig from "../../Auth/ApiConfig";
 import PlansCard from "../../Common/DashboardCards/PlansCard";
 import { IoEyeSharp } from "react-icons/io5";
 import { AuthContext } from "../../Auth/context/Auth";
+import toast from "react-hot-toast";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import moment from "moment";
+import DownloadIcon from "@mui/icons-material/Download";
 
 export default function ErrorPage() {
+  // XLSX download handler
+  const downloadExcel = () => {
+    if (!errorData || errorData.length === 0) {
+      toast.error("No error data to download");
+      return;
+    }
+    const dataToExport = errorData.map((row, idx) => ({
+      "Sr No.": (page - 1) * limit + idx + 1,
+      Name: row.name,
+      URL: row.url,
+      Method: row.method,
+      "Status Code": row.statusCode,
+      Status: row.status,
+      Date: moment(row.createdAt).format("YYYY-MM-DD"),
+    }));
+    const XLSX = require("xlsx");
+    const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Errors");
+    XLSX.writeFile(workbook, "ErrorList.xlsx");
+    toast.success("Error list downloaded ✅");
+  };
   const location = useLocation();
   const isAdminPayment = location.pathname === "/payments";
   const [plans, setPlans] = useState([]);
@@ -75,9 +99,10 @@ export default function ErrorPage() {
         params: {
           page: page,
           limit: limit,
+          status:'error',
           search: searchQuery,
-          startDate: fromDate,
-          endDate: toDate,
+          fromDate: fromDate,
+          toDate: toDate,
         },
       });
 
@@ -213,6 +238,23 @@ export default function ErrorPage() {
               </Button>
             </Box>
           </LocalizationProvider>
+           <Button
+              variant="contained"
+              onClick={downloadExcel}
+              sx={{
+                backgroundColor: "#0077cc",
+                textTransform: "none",
+                px: 4,
+                py: 1,
+                borderRadius: "8px",
+                fontWeight: "bold",
+                color: "#fff",
+                "&:hover": { backgroundColor: "#0077cc" },
+              }}
+            >
+              <DownloadIcon />
+              &nbsp; Download Xlsx
+            </Button>
           </Box>
         </Box>
         <TableContainer

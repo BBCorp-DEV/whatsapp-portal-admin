@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
+import * as XLSX from "xlsx";
 import {
   Table,
   TableBody,
@@ -22,6 +23,8 @@ import {
   DialogActions,
 } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
+import DownloadIcon from "@mui/icons-material/Download";
+
 import {
   MdModeEditOutline,
   MdBlock,
@@ -110,6 +113,27 @@ export default function WithDraw() {
   useEffect(() => {
     depositListing();
   }, [page, limit, searchQuery, fromDate, toDate]);
+  // XLSX download handler
+  const downloadExcel = () => {
+    if (!paginatedUsers || paginatedUsers.length === 0) {
+      toast.error("No withdrawal data to download");
+      return;
+    }
+    const dataToExport = paginatedUsers.map((row, idx) => ({
+      "Sr. No.": (page - 1) * limit + idx + 1,
+      Name: row.name,
+      Amount: row.requestData?.amount,
+      Date: moment(row.createdAt).format("YYYY-MM-DD"),
+      Type: row.requestData?.transactionType,
+      Status: row.status,
+    }));
+    const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Withdrawals");
+    XLSX.writeFile(workbook, "WithdrawalList.xlsx");
+    toast.success("Withdrawal list downloaded ✅");
+  };
+
   return (
     <Box
       sx={{
@@ -216,6 +240,23 @@ export default function WithDraw() {
                    </Button>
                  </Box>
                </LocalizationProvider>
+                <Button
+                  variant="contained"
+                  onClick={downloadExcel}
+                  sx={{
+                    backgroundColor: "#0077cc",
+                    textTransform: "none",
+                    px: 4,
+                    py: 1,
+                    borderRadius: "8px",
+                    fontWeight: "bold",
+                    color: "#fff",
+                    "&:hover": { backgroundColor: "#0077cc" },
+                  }}
+                >
+                  <DownloadIcon />
+                  &nbsp; Download Xlsx
+                </Button>
         </Box>
       </Box>
 

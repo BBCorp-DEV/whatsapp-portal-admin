@@ -10,7 +10,6 @@ import DashboardLayout from "./Layout/DashboardLayout";
 import AddUser from "./Componenet/UserList/AddUser";
 import EditUser from "./Componenet/UserList/EditUser";
 import Account from "./Componenet/PolicyList/Account";
-import AdminUpdate from "./Componenet/AdminUpdate.jsx/AdminUpdate";
 import AuthProvider, { AuthContext } from "./Auth/context/Auth";
 import { Toaster } from "react-hot-toast";
 import AuthGuard from "./Auth/AuthGuard";
@@ -21,8 +20,7 @@ import ViewUserList from "./Componenet/UserList/ViewUserList";
 import Deposite from "./Componenet/UserList/Deposite";
 import Whatsapp from "./Componenet/Whatsapp/Whatsapp";
 import WithDraw from "./Componenet/UserList/Withdraw";
-import Personal from "../src/Common/PersonalInformation/Personal";
-import Transfer from "./Componenet/ClaimList/Transfer";
+import Personal from "./Common/PersonalInformation/Personal";
 import ErrorPage from "./Componenet/Payment/ErrorPage";
 import AccountView from "./Componenet/AccountView";
 import WhatsAppView from "./Componenet/WhatsAppView";
@@ -30,8 +28,9 @@ import DepositView from "./Componenet/DepositView";
 import TransferView from "./Componenet/TransferView";
 import ErrorView from "./Componenet/ErrorView";
 import WitddrawView from "./Componenet/WitddrawView";
+import Transfer from "./Componenet/ClaimList/Transfer";
 
-// Home Page Component
+
 
 const LoginInPageSection = () => (
   <>
@@ -42,27 +41,16 @@ const LoginInPageSection = () => (
 const App = () => {
   const auth = React.useContext(AuthContext);
   const userData = auth?.userData;
-  console.log("ADfsadfsdafs", userData);
+
   return (
     <div>
-      <Toaster
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-        // theme={theme.palette.type}
-      />
+      <Toaster position="top-right" />
       <AuthProvider>
         <Router>
           <Routes>
-            <Route path="/" element={<Navigate to="/login" replace />} />{" "}
-              <Route path="/login" element={<LoginInPageSection />} />
+            <Route path="/" element={<Navigate to="/login" replace />} />
+            <Route path="/login" element={<LoginInPageSection />} />
+
             <Route
               path="/dashboard"
               element={
@@ -129,7 +117,6 @@ const App = () => {
                 <AuthGuard>
                   <DashboardLayout>
                     <AddUser />
-                    {/* <Subadmin /> */}
                   </DashboardLayout>
                 </AuthGuard>
               }

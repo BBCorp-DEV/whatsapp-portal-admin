@@ -32,7 +32,7 @@ import { IoEyeSharp } from "react-icons/io5";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import toast from "react-hot-toast";
-import ClaimCard from "../../Pages/ClaimCard";
+// import ClaimCard from "../../Pages/ClaimCard";
 import { AuthContext } from "../../Auth/context/Auth";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -171,7 +171,7 @@ export default function Transfer() {
   }, [page, limit, searchQuery, fromDate, toDate]);
   return (
     <>
-      {["admin", "insurance"].includes(userData?.role) && <ClaimCard />}
+      {/* {["admin", "insurance"].includes(userData?.role) && <ClaimCard />} */}
       <Box
         sx={{
           height: "100vh",

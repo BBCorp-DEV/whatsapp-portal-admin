@@ -301,9 +301,9 @@ const Dashboard = () => {
           >
             <MenuItem value="all">All</MenuItem>
 
-            <MenuItem value="daily">Daily</MenuItem>
-            <MenuItem value="weekly">Weekly</MenuItem>
-            <MenuItem value="monthly">Monthly</MenuItem>
+            <MenuItem value="daily">Today</MenuItem>
+            <MenuItem value="weekly">This Week</MenuItem>
+            <MenuItem value="monthly">This Monthly</MenuItem>
           </Select>
         </FormControl>
       </Box>

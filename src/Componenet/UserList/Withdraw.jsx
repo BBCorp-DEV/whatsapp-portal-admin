@@ -33,6 +33,9 @@ import { TbPasswordUser } from "react-icons/tb";
 // import toast from "react-hot-toast";
 import { AuthContext } from "../../Auth/context/Auth";
 import ApiConfig from "../../Auth/ApiConfig";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import axios from "axios";
 import toast from "react-hot-toast";
 import moment from "moment";
@@ -54,6 +57,8 @@ export default function WithDraw() {
   const [paginatedUsers, setPaginatedUsers] = useState([]);
   const [limit] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
   const effectRan = useRef(false);
 
   // Pagination
@@ -70,30 +75,30 @@ export default function WithDraw() {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        params:{
-          page:page,
-          limit:limit,
-          search:searchQuery,
-        }
+        params: {
+          page: page,
+          limit: limit,
+          search: searchQuery,
+        },
       });
 
       console.log("depositResponse", response);
 
       if (response?.status === 200) {
         setPaginatedUsers(response?.data?.data?.docs);
-         setTotalPages(response?.data?.data?.totalPages)
+        setTotalPages(response?.data?.data?.totalPages);
         setLoading(false);
         // toast.success(
         //   response?.data?.message || "Deposits loaded successfully ✅"
         // );
       } else {
         // toast.error(response?.data?.message || "Something went wrong ❌");
-        setPaginatedUsers([])
+        setPaginatedUsers([]);
       }
     } catch (error) {
       console.error("API ERROR RESPONSE:", error?.response?.data || error);
       setLoading(false);
-      setPaginatedUsers([])
+      setPaginatedUsers([]);
       // toast.error(
       //   error?.response?.data?.message || "Failed to fetch deposits ❌"
       // );
@@ -101,10 +106,8 @@ export default function WithDraw() {
     }
   };
   useEffect(() => {
-
-      depositListing();
-
-  }, [page,limit,searchQuery]);
+    depositListing();
+  }, [page, limit, searchQuery, fromDate, toDate]);
   return (
     <Box
       sx={{
@@ -128,6 +131,7 @@ export default function WithDraw() {
         <Typography variant="h4" sx={{ fontWeight: "700" }}>
           Withdrawal List
         </Typography>
+         <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
         <TextField
           variant="outlined"
           size="small"
@@ -147,79 +151,115 @@ export default function WithDraw() {
             },
           }}
         />
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <Box display="flex" gap={2} flexWrap="wrap">
+            <DatePicker
+              label="From Date"
+              value={fromDate}
+              onChange={(newValue) => setFromDate(newValue)}
+              slotProps={{
+                textField: {
+                  size: "small",
+                  sx: {
+                    backgroundColor: "#fff",
+                    borderRadius: "8px",
+                    minWidth: 160,
+                  },
+                },
+              }}
+            />
+
+            <DatePicker
+              label="To Date"
+              value={toDate}
+              onChange={(newValue) => setToDate(newValue)}
+              slotProps={{
+                textField: {
+                  size: "small",
+                  sx: {
+                    backgroundColor: "#fff",
+                    borderRadius: "8px",
+                    minWidth: 160,
+                  },
+                },
+              }}
+            />
+          </Box>
+        </LocalizationProvider>
+        </Box>
       </Box>
 
-       <TableContainer
-         component={Paper}
-         elevation={3}
-         sx={{ mt: 2, borderRadius: "10px" }}
-       >
-         <Table>
-           <TableHead>
-             <TableRow>
-               {[
-                 "Sr. No.",
-                 "Username",
-                 "Amount",
-                 "Date",
-                 "Type",
-                 "Status",
-                 "Action",
-               ].map((heading, i) => (
-                 <TableCell key={i} sx={{ fontWeight: "bold" }}>
-                   {heading}
-                 </TableCell>
-               ))}
-             </TableRow>
-           </TableHead>
-           <TableBody>
-             {loading ? (
-               <TableRow>
-                 <TableCell colSpan={5} align="center">
-                   <CircularProgress />
-                 </TableCell>
-               </TableRow>
-             ) : paginatedUsers.length > 0 ? (
-               paginatedUsers.map((row, index) => (
-                 <TableRow
-                   key={row.id}
-                   sx={{ background: index % 2 === 0 ? "#f5f5f5" : "#fff" }}
-                 >
-                   <TableCell>{(page - 1) * limit + index + 1}</TableCell>
-                   <TableCell>{row.name}</TableCell>
-                   <TableCell>{row.requestData?.amount}</TableCell>
-                   <TableCell>
-                     {" "}
-                     {moment(row.createdAt).format("YYYY-MM-DD")}
-                   </TableCell>
-                   <TableCell>{row.requestData?.transactionType}</TableCell>
-                   <TableCell>{row.status}</TableCell>
- 
-                   <TableCell>
-                     <Tooltip title="Vie Withdrawal">
-                       <IconButton
-                         onClick={() =>
-                           navigate("/view-withdrawal", {
-                             state: { paginatedUsers },
-                           })
-                         }
-                       >
-                         <IoEyeSharp />
-                       </IconButton>
-                     </Tooltip>
-                   </TableCell>
-                 </TableRow>
-               ))
-             ) : (
-               <TableRow>
-                 <TableCell colSpan={5} align="center">
-                   No deposits found
-                 </TableCell>
-               </TableRow>
-             )}
-           </TableBody>
-         </Table>
-       </TableContainer>
+      <TableContainer
+        component={Paper}
+        elevation={3}
+        sx={{ mt: 2, borderRadius: "10px" }}
+      >
+        <Table>
+          <TableHead>
+            <TableRow>
+              {[
+                "Sr. No.",
+                "Username",
+                "Amount",
+                "Date",
+                "Type",
+                "Status",
+                "Action",
+              ].map((heading, i) => (
+                <TableCell key={i} sx={{ fontWeight: "bold" }}>
+                  {heading}
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {loading ? (
+              <TableRow>
+                <TableCell colSpan={5} align="center">
+                  <CircularProgress />
+                </TableCell>
+              </TableRow>
+            ) : paginatedUsers.length > 0 ? (
+              paginatedUsers.map((row, index) => (
+                <TableRow
+                  key={row.id}
+                  sx={{ background: index % 2 === 0 ? "#f5f5f5" : "#fff" }}
+                >
+                  <TableCell>{(page - 1) * limit + index + 1}</TableCell>
+                  <TableCell>{row.name}</TableCell>
+                  <TableCell>{row.requestData?.amount}</TableCell>
+                  <TableCell>
+                    {" "}
+                    {moment(row.createdAt).format("YYYY-MM-DD")}
+                  </TableCell>
+                  <TableCell>{row.requestData?.transactionType}</TableCell>
+                  <TableCell>{row.status}</TableCell>
+
+                  <TableCell>
+                    <Tooltip title="Vie Withdrawal">
+                      <IconButton
+                        onClick={() =>
+                          navigate("/view-withdrawal", {
+                            state: { paginatedUsers },
+                          })
+                        }
+                      >
+                        <IoEyeSharp />
+                      </IconButton>
+                    </Tooltip>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={5} align="center">
+                  No deposits found
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
       {/* Pagination */}
       {totalPages > 1 && (

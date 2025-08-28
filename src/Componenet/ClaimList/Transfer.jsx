@@ -34,6 +34,9 @@ import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import toast from "react-hot-toast";
 import ClaimCard from "../../Pages/ClaimCard";
 import { AuthContext } from "../../Auth/context/Auth";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import axios from "axios";
 import ApiConfig from "../../Auth/ApiConfig";
 
@@ -48,6 +51,8 @@ export default function Transfer() {
   const [claimListing, setClaimListing] = useState([]);
   const [claimNo, setClaimNo] = useState("");
   const [status, setStatus] = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
 
   const [open, setOpen] = useState(false);
   const [age, setAge] = useState("");
@@ -102,31 +107,31 @@ export default function Transfer() {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        params:{
-          page:page,
-          limit:limit,
-          search:searchQuery,
-        }
+        params: {
+          page: page,
+          limit: limit,
+          search: searchQuery,
+        },
       });
 
       console.log("depositResponse", response);
 
       if (response?.status === 200) {
         setStaticClaims(response?.data?.data?.docs);
-        setTotalPages(response?.data?.data?.totalPages)
+        setTotalPages(response?.data?.data?.totalPages);
         console.log("depositResponsedddddd", response?.data?.data?.docs);
         setLoading(false);
         // toast.success(
         //   response?.data?.message || "Transfer successfully ✅"
         // );
       } else {
-        setStaticClaims([])
+        setStaticClaims([]);
         // toast.error(response?.data?.message || "Something went wrong ❌");
       }
     } catch (error) {
       console.error("API ERROR RESPONSE:", error?.response?.data || error);
       setLoading(false);
-      setStaticClaims([])
+      setStaticClaims([]);
       // toast.error(
       //   error?.response?.data?.message || "Failed to fetch deposits ❌"
       // );
@@ -134,9 +139,8 @@ export default function Transfer() {
     }
   };
   useEffect(() => {
-      depositListing();
-  
-  }, [page,limit,searchQuery]);
+    depositListing();
+  }, [page, limit, searchQuery, fromDate, toDate]);
   return (
     <>
       {["admin", "insurance"].includes(userData?.role) && <ClaimCard />}
@@ -173,15 +177,7 @@ export default function Transfer() {
           </Typography>
 
           {/* Filters */}
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: { xs: "column", sm: "row" },
-              gap: 2,
-              width: { xs: "100%", md: "auto" },
-            }}
-          >
-            {/* Search */}
+          <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
             <TextField
               variant="outlined"
               size="small"
@@ -189,36 +185,53 @@ export default function Transfer() {
               type="search"
               value={searchQuery}
               onChange={handleSearchQueryChange}
-              fullWidth
               sx={{
                 backgroundColor: "#fff",
                 borderRadius: "8px",
-                minWidth: { sm: 200 },
+                marginTop: { xs: "10px", md: "0px" },
+                minWidth: 200,
+                "& .MuiOutlinedInput-root": {
+                  paddingRight: 0,
+                  padding: "2.5px 0px",
+                  borderRadius: "10px",
+                },
               }}
             />
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <Box display="flex" gap={2} flexWrap="wrap">
+                <DatePicker
+                  label="From Date"
+                  value={fromDate}
+                  onChange={(newValue) => setFromDate(newValue)}
+                  slotProps={{
+                    textField: {
+                      size: "small",
+                      sx: {
+                        backgroundColor: "#fff",
+                        borderRadius: "8px",
+                        minWidth: 160,
+                      },
+                    },
+                  }}
+                />
 
-            {/* Status */}
-            {/* <FormControl
-              size="small"
-              fullWidth
-              sx={{
-                minWidth: { sm: 150 },
-                backgroundColor: "#fff",
-                borderRadius: 2,
-              }}
-            >
-              <InputLabel>Status</InputLabel>
-              <Select
-                value={status}
-                label="Status"
-                onChange={(e) => setStatus(e.target.value)}
-              >
-                <MenuItem value="">All</MenuItem>
-                <MenuItem value="approved">Approved</MenuItem>
-                <MenuItem value="pending">Pending</MenuItem>
-                <MenuItem value="rejected">Rejected</MenuItem>
-              </Select>
-            </FormControl> */}
+                <DatePicker
+                  label="To Date"
+                  value={toDate}
+                  onChange={(newValue) => setToDate(newValue)}
+                  slotProps={{
+                    textField: {
+                      size: "small",
+                      sx: {
+                        backgroundColor: "#fff",
+                        borderRadius: "8px",
+                        minWidth: 160,
+                      },
+                    },
+                  }}
+                />
+              </Box>
+            </LocalizationProvider>
           </Box>
         </Box>
 
@@ -295,19 +308,20 @@ export default function Transfer() {
                       <TableCell align="center">
                         {moment(row.created_at).format("YYYY-MM-DD")}
                       </TableCell>
-                    
-                        <TableCell align="center">
-                          <Tooltip title={"View Claim"}>
-                            <IconButton
-                              onClick={() =>
-                                navigate("/view-transfer", { state: { staticClaims} })
-                              }
-                            >
-                              <IoEyeSharp />
-                            </IconButton>
-                          </Tooltip>
-                        </TableCell>
-                    
+
+                      <TableCell align="center">
+                        <Tooltip title={"View Claim"}>
+                          <IconButton
+                            onClick={() =>
+                              navigate("/view-transfer", {
+                                state: { staticClaims },
+                              })
+                            }
+                          >
+                            <IoEyeSharp />
+                          </IconButton>
+                        </Tooltip>
+                      </TableCell>
                     </TableRow>
                   ))
               ) : (

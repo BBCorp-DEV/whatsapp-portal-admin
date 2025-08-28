@@ -21,6 +21,9 @@ import ApiConfig from "../../Auth/ApiConfig";
 import PlansCard from "../../Common/DashboardCards/PlansCard";
 import { IoEyeSharp } from "react-icons/io5";
 import { AuthContext } from "../../Auth/context/Auth";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import moment from "moment";
 
 export default function ErrorPage() {
@@ -31,6 +34,8 @@ export default function ErrorPage() {
   const navigate = useNavigate();
   const [totalPages, setTotalPages] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
   const [page, setPage] = useState(1); // keep page starting from 1 for Pagination
   const [limit, setLimit] = useState(10);
   const [errorData, setErrorData] = useState([]);
@@ -47,8 +52,16 @@ export default function ErrorPage() {
     setSearchQuery(event.target.value);
   };
 
+  const handleFromDateChange = (event) => {
+    setFromDate(event.target.value);
+  };
+
+  const handleToDateChange = (event) => {
+    setToDate(event.target.value);
+  };
+
   const errortisting = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
       const token = window.localStorage.getItem("adminToken");
       const response = await axios({
@@ -61,21 +74,25 @@ export default function ErrorPage() {
         params: {
           page: page,
           limit: limit,
-          search:searchQuery
+          search: searchQuery,
+          startDate: fromDate,
+          endDate: toDate,
         },
       });
 
       console.log("depositResponse", response);
 
       if (response?.status === 200) {
-           setLoading(false)
+        setLoading(false);
         setErrorData(response?.data?.data?.docs);
         setTotalPages(response?.data?.data?.totalPages);
       } else {
+        setErrorData([]);
         // toast.error(response?.data?.message || "Something went wrong ❌");
       }
     } catch (error) {
-         setLoading(false)
+      setLoading(false);
+      setErrorData([]);
       console.error("API ERROR RESPONSE:", error?.response?.data || error);
 
       // toast.error(
@@ -86,10 +103,9 @@ export default function ErrorPage() {
   };
   useEffect(() => {
     errortisting();
-  }, [page, limit,searchQuery]);
+  }, [page, limit, searchQuery, fromDate, toDate]);
   return (
     <>
-    
       <Box
         sx={{
           height: "100vh",
@@ -104,31 +120,69 @@ export default function ErrorPage() {
             display: "flex",
             justifyContent: "space-between",
             flexDirection: { xs: "column", md: "row" },
+            alignItems: "center",
+            gap: 2,
           }}
         >
           <Typography variant="h4" sx={{ fontWeight: "700" }}>
             Error List
           </Typography>
-          <TextField
-            variant="outlined"
-            size="small"
-            placeholder="Search..."
-            type="search"
-            value={searchQuery}
-            onChange={handleSearchQueryChange}
-            sx={{
-              backgroundColor: "#fff",
-              borderRadius: "8px",
-              marginTop: { xs: "10px", md: "0px" },
-              minWidth: 200,
-              "& .MuiOutlinedInput-root": {
-                paddingRight: 0,
-                padding: "2.5px 0px",
-                borderRadius: "10px",
-              },
-            }}
-            InputProps={{ sx: { paddingRight: "8px" } }}
-          />
+          <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+            <TextField
+              variant="outlined"
+              size="small"
+              placeholder="Search..."
+              type="search"
+              value={searchQuery}
+              onChange={handleSearchQueryChange}
+              sx={{
+                backgroundColor: "#fff",
+                borderRadius: "8px",
+                minWidth: 200,
+                "& .MuiOutlinedInput-root": {
+                  paddingRight: 0,
+                  padding: "2.5px 0px",
+                  borderRadius: "10px",
+                },
+              }}
+              InputProps={{ sx: { paddingRight: "8px" } }}
+            />
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <Box display="flex" gap={2} flexWrap="wrap">
+                <DatePicker
+                  label="From Date"
+                  value={fromDate}
+                  onChange={(newValue) => setFromDate(newValue)}
+                  slotProps={{
+                    textField: {
+                      size: "small",
+                      sx: {
+                        backgroundColor: "#fff",
+                        borderRadius: "8px",
+                        minWidth: 160,
+                      },
+                    },
+                  }}
+                />
+
+                <DatePicker
+                  label="To Date"
+                  value={toDate}
+                  onChange={(newValue) => setToDate(newValue)}
+                  slotProps={{
+                    textField: {
+                      size: "small",
+                      sx: {
+                        backgroundColor: "#fff",
+                        borderRadius: "8px",
+                        minWidth: 160,
+                      },
+                    },
+                  }}
+                />
+              </Box>
+            </LocalizationProvider>
+          </Box>
         </Box>
         <TableContainer
           component={Paper}

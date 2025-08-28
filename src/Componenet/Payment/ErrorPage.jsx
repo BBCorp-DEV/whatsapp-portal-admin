@@ -247,7 +247,7 @@ export default function ErrorPage() {
                 backgroundColor: "#0077cc",
                 textTransform: "none",
                 px: 4,
-                py: 1,
+                  py: 1.25,
                 borderRadius: "8px",
                 fontWeight: "bold",
                 color: "#fff",

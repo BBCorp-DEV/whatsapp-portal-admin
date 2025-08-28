@@ -57,7 +57,7 @@ export default function WithDraw() {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(false);
-   const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false);
   const [page, setPage] = useState(1);
   const [paginatedUsers, setPaginatedUsers] = useState([]);
   const [limit] = useState(10);
@@ -84,7 +84,7 @@ export default function WithDraw() {
           page: page,
           limit: limit,
           search: searchQuery,
-              fromDate: fromDate,
+          fromDate: fromDate,
           toDate: toDate,
         },
       });
@@ -159,106 +159,111 @@ export default function WithDraw() {
         <Typography variant="h4" sx={{ fontWeight: "700" }}>
           Withdrawal List
         </Typography>
-         <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-        <TextField
-          variant="outlined"
-          size="small"
-          placeholder="Search..."
-          type="search"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          sx={{
-            backgroundColor: "#fff",
-            borderRadius: "8px",
-            marginTop: { xs: "10px", md: "0px" },
-            minWidth: 200,
-            "& .MuiOutlinedInput-root": {
-              paddingRight: 0,
-              padding: "2.5px 0px",
-              borderRadius: "10px",
-            },
-          }}
-        />
-       <LocalizationProvider dateAdapter={AdapterDateFns}>
-                 <Box display="flex" gap={2} flexWrap="wrap" alignItems="center">
-                   <DatePicker
-                     label="From Date"
-                     value={fromDate ? new Date(fromDate) : null}
-                     onChange={(newValue) => {
-                       if (newValue) {
-                         const formatted = moment(newValue).format("YYYY-MM-DD");
-                         setFromDate(formatted);
-                       } else {
-                         setFromDate("");
-                       }
-                     }}
-                     slotProps={{
-                       textField: {
-                         size: "small",
-                         sx: {
-                           backgroundColor: "#fff",
-                           borderRadius: "8px",
-                           width: 150,
-                         },
-                       },
-                     }}
-                   />
-     
-                   <DatePicker
-                     label="To Date"
-                     value={toDate ? new Date(toDate) : null}
-                     onChange={(newValue) => {
-                       if (newValue) {
-                         const formatted = moment(newValue).format("YYYY-MM-DD");
-                         setToDate(formatted);
-                       } else {
-                         setToDate("");
-                       }
-                     }}
-                     slotProps={{
-                       textField: {
-                         size: "small",
-                         sx: {
-                           backgroundColor: "#fff",
-                           borderRadius: "8px",
-                          width: 150,
-                         },
-                       },
-                     }}
-                   />
-     
-                   <Button
-                     variant="outlined"
-                     color="primary"
-                     sx={{ height: 40, minWidth: 100, textTransform: "none", borderRadius: "8px" }}
-                     onClick={() => {
-                       setSearchQuery("");
-                       setFromDate("");
-                       setToDate("");
-                       setPage(1);
-                     }}
-                   >
-                     Reset
-                   </Button>
-                 </Box>
-               </LocalizationProvider>
-                <Button
-                  variant="contained"
-                  onClick={downloadExcel}
-                  sx={{
-                    backgroundColor: "#0077cc",
-                    textTransform: "none",
-                    px: 4,
-                    py: 1,
-                    borderRadius: "8px",
-                    fontWeight: "bold",
-                    color: "#fff",
-                    "&:hover": { backgroundColor: "#0077cc" },
-                  }}
-                >
-                  <DownloadIcon />
-                  &nbsp; Download Xlsx
-                </Button>
+        <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+          <TextField
+            variant="outlined"
+            size="small"
+            placeholder="Search..."
+            type="search"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            sx={{
+              backgroundColor: "#fff",
+              borderRadius: "8px",
+              marginTop: { xs: "10px", md: "0px" },
+              minWidth: 200,
+              "& .MuiOutlinedInput-root": {
+                paddingRight: 0,
+                padding: "2.5px 0px",
+                borderRadius: "10px",
+              },
+            }}
+          />
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <Box display="flex" gap={2} flexWrap="wrap" alignItems="center">
+              <DatePicker
+                label="From Date"
+                value={fromDate ? new Date(fromDate) : null}
+                onChange={(newValue) => {
+                  if (newValue) {
+                    const formatted = moment(newValue).format("YYYY-MM-DD");
+                    setFromDate(formatted);
+                  } else {
+                    setFromDate("");
+                  }
+                }}
+                slotProps={{
+                  textField: {
+                    size: "small",
+                    sx: {
+                      backgroundColor: "#fff",
+                      borderRadius: "8px",
+                      width: 150,
+                    },
+                  },
+                }}
+              />
+
+              <DatePicker
+                label="To Date"
+                value={toDate ? new Date(toDate) : null}
+                onChange={(newValue) => {
+                  if (newValue) {
+                    const formatted = moment(newValue).format("YYYY-MM-DD");
+                    setToDate(formatted);
+                  } else {
+                    setToDate("");
+                  }
+                }}
+                slotProps={{
+                  textField: {
+                    size: "small",
+                    sx: {
+                      backgroundColor: "#fff",
+                      borderRadius: "8px",
+                      width: 150,
+                    },
+                  },
+                }}
+              />
+
+              <Button
+                variant="outlined"
+                color="primary"
+                sx={{
+                  height: 40,
+                  minWidth: 100,
+                  textTransform: "none",
+                  borderRadius: "8px",
+                }}
+                onClick={() => {
+                  setSearchQuery("");
+                  setFromDate("");
+                  setToDate("");
+                  setPage(1);
+                }}
+              >
+                Reset
+              </Button>
+            </Box>
+          </LocalizationProvider>
+          <Button
+            variant="contained"
+            onClick={downloadExcel}
+            sx={{
+              backgroundColor: "#0077cc",
+              textTransform: "none",
+              px: 4,
+              py: 1.25,
+              borderRadius: "8px",
+              fontWeight: "bold",
+              color: "#fff",
+              "&:hover": { backgroundColor: "#0077cc" },
+            }}
+          >
+            <DownloadIcon />
+            &nbsp; Download Xlsx
+          </Button>
         </Box>
       </Box>
 
@@ -316,8 +321,7 @@ export default function WithDraw() {
                         //     state: { paginatedUsers },
                         //   })
                         // }
-                                                onClick={() => setOpen(row)}
-
+                        onClick={() => setOpen(row)}
                       >
                         <IoEyeSharp />
                       </IconButton>
@@ -335,7 +339,7 @@ export default function WithDraw() {
           </TableBody>
         </Table>
       </TableContainer>
-  {open && <ApiDocModal open={open} onClose={() => setOpen(false)} />}
+      {open && <ApiDocModal open={open} onClose={() => setOpen(false)} />}
       {/* Pagination */}
       {totalPages > 1 && (
         <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>

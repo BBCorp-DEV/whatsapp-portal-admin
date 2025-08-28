@@ -137,7 +137,7 @@ export default function Transfer() {
           page: page,
           limit: limit,
           search: searchQuery,
-              fromDate: fromDate,
+          fromDate: fromDate,
           toDate: toDate,
         },
       });
@@ -225,77 +225,82 @@ export default function Transfer() {
                 },
               }}
             />
-           <LocalizationProvider dateAdapter={AdapterDateFns}>
-                     <Box display="flex" gap={2} flexWrap="wrap" alignItems="center">
-                       <DatePicker
-                         label="From Date"
-                         value={fromDate ? new Date(fromDate) : null}
-                         onChange={(newValue) => {
-                           if (newValue) {
-                             const formatted = moment(newValue).format("YYYY-MM-DD");
-                             setFromDate(formatted);
-                           } else {
-                             setFromDate("");
-                           }
-                         }}
-                         slotProps={{
-                           textField: {
-                             size: "small",
-                             sx: {
-                               backgroundColor: "#fff",
-                               borderRadius: "8px",
-                               width: 150,
-                             },
-                           },
-                         }}
-                       />
-         
-                       <DatePicker
-                         label="To Date"
-                         value={toDate ? new Date(toDate) : null}
-                         onChange={(newValue) => {
-                           if (newValue) {
-                             const formatted = moment(newValue).format("YYYY-MM-DD");
-                             setToDate(formatted);
-                           } else {
-                             setToDate("");
-                           }
-                         }}
-                         slotProps={{
-                           textField: {
-                             size: "small",
-                             sx: {
-                               backgroundColor: "#fff",
-                               borderRadius: "8px",
-                              width: 150,
-                             },
-                           },
-                         }}
-                       />
-         
-                       <Button
-                         variant="outlined"
-                         color="primary"
-                         sx={{ height: 40, minWidth: 100, textTransform: "none", borderRadius: "8px" }}
-                         onClick={() => {
-                           setSearchQuery("");
-                           setFromDate("");
-                           setToDate("");
-                           setPage(1);
-                         }}
-                       >
-                         Reset
-                       </Button>
-                     </Box>
-                   </LocalizationProvider>
-                    <Button
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <Box display="flex" gap={2} flexWrap="wrap" alignItems="center">
+                <DatePicker
+                  label="From Date"
+                  value={fromDate ? new Date(fromDate) : null}
+                  onChange={(newValue) => {
+                    if (newValue) {
+                      const formatted = moment(newValue).format("YYYY-MM-DD");
+                      setFromDate(formatted);
+                    } else {
+                      setFromDate("");
+                    }
+                  }}
+                  slotProps={{
+                    textField: {
+                      size: "small",
+                      sx: {
+                        backgroundColor: "#fff",
+                        borderRadius: "8px",
+                        width: 150,
+                      },
+                    },
+                  }}
+                />
+
+                <DatePicker
+                  label="To Date"
+                  value={toDate ? new Date(toDate) : null}
+                  onChange={(newValue) => {
+                    if (newValue) {
+                      const formatted = moment(newValue).format("YYYY-MM-DD");
+                      setToDate(formatted);
+                    } else {
+                      setToDate("");
+                    }
+                  }}
+                  slotProps={{
+                    textField: {
+                      size: "small",
+                      sx: {
+                        backgroundColor: "#fff",
+                        borderRadius: "8px",
+                        width: 150,
+                      },
+                    },
+                  }}
+                />
+
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  sx={{
+                    height: 40,
+                    minWidth: 100,
+                    textTransform: "none",
+                    borderRadius: "8px",
+                  }}
+                  onClick={() => {
+                    setSearchQuery("");
+                    setFromDate("");
+                    setToDate("");
+                    setPage(1);
+                  }}
+                >
+                  Reset
+                </Button>
+              </Box>
+            </LocalizationProvider>
+            <Button
               variant="contained"
               onClick={downloadExcel}
               sx={{
                 backgroundColor: "#0077cc",
                 textTransform: "none",
                 px: 4,
-                py: 1,
+               py: 1.25,
                 borderRadius: "8px",
                 fontWeight: "bold",
                 color: "#fff",
@@ -408,7 +413,7 @@ export default function Transfer() {
             </TableBody>
           </Table>
         </TableContainer>
- {open && <ApiDocModal open={open} onClose={() => setOpen(false)} />}
+        {open && <ApiDocModal open={open} onClose={() => setOpen(false)} />}
         {/* Pagination (dummy for static mode) */}
         {totalPages > 1 && (
           <Box sx={{ display: "flex", justifyContent: "center", p: 2 }}>
@@ -419,8 +424,6 @@ export default function Transfer() {
             />
           </Box>
         )}
-
-        
       </Box>
     </>
   );

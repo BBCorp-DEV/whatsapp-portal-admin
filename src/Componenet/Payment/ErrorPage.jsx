@@ -1,0 +1,385 @@
+import React, { useContext, useEffect, useState } from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Typography,
+  Box,
+  CircularProgress,
+  Pagination,
+  TextField,
+  Tooltip,
+  IconButton,
+  Button,
+} from "@mui/material";
+import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
+import ApiConfig from "../../Auth/ApiConfig";
+import PlansCard from "../../Common/DashboardCards/PlansCard";
+import { IoEyeSharp } from "react-icons/io5";
+import { AuthContext } from "../../Auth/context/Auth";
+import toast from "react-hot-toast";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import moment from "moment";
+import DownloadIcon from "@mui/icons-material/Download";
+import ApiDocModal from "../ApiDocModal";
+
+export default function ErrorPage() {
+  // XLSX download handler
+  const downloadExcel = () => {
+    if (!errorData || errorData.length === 0) {
+      toast.error("No error data to download");
+      return;
+    }
+    const dataToExport = errorData.map((row, idx) => ({
+      "Sr No.": (page - 1) * limit + idx + 1,
+      Name: row.name,
+      URL: row.url,
+      Method: row.method,
+      "Status Code": row.statusCode,
+      Status: row.status,
+      Date: moment(row.createdAt).format("YYYY-MM-DD"),
+    }));
+    const XLSX = require("xlsx");
+    const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Errors");
+    XLSX.writeFile(workbook, "ErrorList.xlsx");
+    toast.success("Error list downloaded ✅");
+  };
+  const location = useLocation();
+  const isAdminPayment = location.pathname === "/payments";
+  const [plans, setPlans] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+    const [open, setOpen] = useState(false);
+  const [totalPages, setTotalPages] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+  const [page, setPage] = useState(1); // keep page starting from 1 for Pagination
+  const [limit, setLimit] = useState(10);
+  const [errorData, setErrorData] = useState([]);
+  const auth = useContext(AuthContext);
+  const userData = auth.userData;
+
+  // 🔹 Static Data fallback
+
+  const handlePageChange = (event, value) => {
+    setPage(value);
+  };
+
+  const handleSearchQueryChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const handleFromDateChange = (event) => {
+    setFromDate(event.target.value);
+  };
+
+  const handleToDateChange = (event) => {
+    setToDate(event.target.value);
+  };
+
+  const errortisting = async () => {
+    setLoading(true);
+    try {
+      const token = window.localStorage.getItem("adminToken");
+      const response = await axios({
+        method: "GET",
+        url: ApiConfig?.errorList,
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        params: {
+          page: page,
+          limit: limit,
+          status:'error',
+          search: searchQuery,
+          fromDate: fromDate,
+          toDate: toDate,
+        },
+      });
+
+      console.log("depositResponse", response);
+
+      if (response?.status === 200) {
+        setLoading(false);
+        setErrorData(response?.data?.data?.docs);
+        setTotalPages(response?.data?.data?.totalPages);
+      } else {
+        setErrorData([]);
+        // toast.error(response?.data?.message || "Something went wrong ❌");
+      }
+    } catch (error) {
+      setLoading(false);
+      setErrorData([]);
+      console.error("API ERROR RESPONSE:", error?.response?.data || error);
+
+      // toast.error(
+      //   error?.response?.data?.message || "Failed to fetch deposits ❌"
+      // );
+      return error?.response;
+    }
+  };
+  useEffect(() => {
+    errortisting();
+  }, [page, limit, searchQuery, fromDate, toDate]);
+  return (
+    <>
+      <Box
+        sx={{
+          height: "100vh",
+          background: "#F5F5F5",
+          marginTop: { xs: "0px", md: "0px" },
+          px: 2,
+          py: 0,
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            flexWrap: "wrap",
+            gap: 2,
+            alignItems: "center",
+            mb: 2,
+            flexDirection: { xs: "column", sm: "row" },
+          }}
+        >
+          <Typography variant="h4" sx={{ fontWeight: "700" }}>
+            Error List
+          </Typography>
+          <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+            <TextField
+              variant="outlined"
+              size="small"
+              placeholder="Search..."
+              type="search"
+              value={searchQuery}
+              onChange={handleSearchQueryChange}
+              sx={{
+                backgroundColor: "#fff",
+                borderRadius: "8px",
+                minWidth: 200,
+                "& .MuiOutlinedInput-root": {
+                  paddingRight: 0,
+                  padding: "2.5px 0px",
+                  borderRadius: "10px",
+                },
+              }}
+              InputProps={{ sx: { paddingRight: "8px" } }}
+            />
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <Box display="flex" gap={2} flexWrap="wrap" alignItems="center">
+              <DatePicker
+                label="From Date"
+                value={fromDate ? new Date(fromDate) : null}
+                onChange={(newValue) => {
+                  if (newValue) {
+                    const formatted = moment(newValue).format("YYYY-MM-DD");
+                    setFromDate(formatted);
+                  } else {
+                    setFromDate("");
+                  }
+                }}
+                slotProps={{
+                  textField: {
+                    size: "small",
+                    sx: {
+                      backgroundColor: "#fff",
+                      borderRadius: "8px",
+                      width: 150,
+                    },
+                  },
+                }}
+              />
+
+              <DatePicker
+                label="To Date"
+                value={toDate ? new Date(toDate) : null}
+                onChange={(newValue) => {
+                  if (newValue) {
+                    const formatted = moment(newValue).format("YYYY-MM-DD");
+                    setToDate(formatted);
+                  } else {
+                    setToDate("");
+                  }
+                }}
+                slotProps={{
+                  textField: {
+                    size: "small",
+                    sx: {
+                      backgroundColor: "#fff",
+                      borderRadius: "8px",
+                     width: 150,
+                    },
+                  },
+                }}
+              />
+
+              <Button
+                variant="outlined"
+                color="primary"
+                sx={{ height: 40, minWidth: 100, textTransform: "none", borderRadius: "8px" }}
+                onClick={() => {
+                  setSearchQuery("");
+                  setFromDate("");
+                  setToDate("");
+                  setPage(1);
+                }}
+              >
+                Reset
+              </Button>
+            </Box>
+          </LocalizationProvider>
+           <Button
+              variant="contained"
+              onClick={downloadExcel}
+              sx={{
+                backgroundColor: "#0077cc",
+                textTransform: "none",
+                px: 4,
+                  py: 1.25,
+                borderRadius: "8px",
+                fontWeight: "bold",
+                color: "#fff",
+                "&:hover": { backgroundColor: "#0077cc" },
+              }}
+            >
+              <DownloadIcon />
+              &nbsp; Download Xlsx
+            </Button>
+          </Box>
+        </Box>
+        <TableContainer
+          component={Paper}
+          elevation={3}
+          sx={{
+            background: "#fff",
+            borderRadius: "10px",
+            marginTop: "20px",
+            width: { xs: "100%", md: "100%" },
+          }}
+        >
+          <Table>
+            <TableHead>
+              <TableRow>
+                {[
+                  "Sr No.",
+                  "Name",
+                  "URL",
+                  "Method",
+                  "Status Code",
+                  "Status",
+                  "Date",
+                  "Action",
+                ].map((heading, i) => (
+                  <TableCell key={i} sx={{ fontWeight: "bold" }}>
+                    {heading}
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {loading ? (
+                <TableRow>
+                  <TableCell colSpan={7} align="center">
+                    <Box sx={{ py: 4 }}>
+                      <CircularProgress />
+                    </Box>
+                  </TableCell>
+                </TableRow>
+              ) : errorData?.length > 0 ? (
+                errorData.map((row, index) => (
+                  <TableRow
+                    key={index}
+                    sx={{
+                      backgroundColor: index % 2 === 0 ? "#f9f9f9" : "#ffffff",
+                      borderRadius: "10px",
+                      "&:last-child td, &:last-child th": { border: 0 },
+                    }}
+                  >
+                    <TableCell align="left">
+                      {(page - 1) * limit + index + 1}
+                    </TableCell>
+                    <TableCell>{row.name}</TableCell>
+                    <TableCell align="left">
+                      <Tooltip title={row.url} arrow>
+                        <span>
+                          {row.url?.length > 20
+                            ? row.url.substring(0, 20) + "..."
+                            : row.url}
+                        </span>
+                      </Tooltip>
+                    </TableCell>
+                    <TableCell>{row.method}</TableCell>
+                    <TableCell>{row.statusCode}</TableCell>
+                    <TableCell>{row.status}</TableCell>
+                    <TableCell>
+                      {" "}
+                      {moment(row.createdAt).format("YYYY-MM-DD")}
+                    </TableCell>
+                    <TableCell align="center">
+                      <Tooltip title={"View Error"}>
+                        <IconButton
+                          // onClick={() =>
+                          //   navigate("/view-error", { state: { errorData } })
+                           onClick={() => setOpen(row)}
+                          // }
+                        >
+                          <IoEyeSharp />
+                        </IconButton>
+                      </Tooltip>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={7} align="center">
+                    <Typography
+                      variant="h6"
+                      color="textSecondary"
+                      sx={{ fontSize: "15px !important" }}
+                    >
+                      No data Found
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+              {open && <ApiDocModal open={open} onClose={() => setOpen(false)} />}
+        {totalPages > 1 && errorData.length > 0 && (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              paddingTop: "20px",
+              "& .Mui-selected": {
+                backgroundColor: "#00b2ff !important",
+                color: "#fff !important",
+                borderRadius: "5px",
+              },
+              "& .MuiPaginationItem-root": { color: "black" },
+            }}
+          >
+            <Pagination
+              page={page}
+              onChange={handlePageChange}
+              count={totalPages}
+            />
+          </Box>
+        )}
+      </Box>
+    </>
+  );
+}
